@@ -24,15 +24,18 @@ const authNav = [
   { to: '/minhas-cotas', label: 'Minhas Cotas', icon: Ticket },
   { to: '/carteira', label: 'Carteira', icon: Wallet },
   { to: '/depositar', label: 'Depositar', icon: QrCode },
-  { to: '/admin', label: 'Admin', icon: Shield },
 ]
 
+const adminNav = { to: '/admin', label: 'Admin', icon: Shield }
+
 export default function Layout() {
-  const { isAuthenticated, userEmail, logout } = useAuth()
+  const { isAuthenticated, isAdmin, userEmail, logout } = useAuth()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const navItems = isAuthenticated ? authNav : publicNav
+  const navItems = isAuthenticated
+    ? (isAdmin ? [...authNav, adminNav] : authNav)
+    : publicNav
 
   return (
     <div className="min-h-screen bg-bg flex flex-col">

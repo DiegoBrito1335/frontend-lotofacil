@@ -20,6 +20,13 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
+function AdminRoute({ children }: { children: ReactNode }) {
+  const { isAuthenticated, isAdmin } = useAuth()
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (!isAdmin) return <Navigate to="/boloes" replace />
+  return <>{children}</>
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -45,19 +52,19 @@ function AppRoutes() {
         />
         <Route
           path="/admin"
-          element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}
+          element={<AdminRoute><AdminDashboard /></AdminRoute>}
         />
         <Route
           path="/admin/boloes"
-          element={<ProtectedRoute><AdminBoloesPage /></ProtectedRoute>}
+          element={<AdminRoute><AdminBoloesPage /></AdminRoute>}
         />
         <Route
           path="/admin/boloes/novo"
-          element={<ProtectedRoute><AdminCriarBolaoPage /></ProtectedRoute>}
+          element={<AdminRoute><AdminCriarBolaoPage /></AdminRoute>}
         />
         <Route
           path="/admin/boloes/:id"
-          element={<ProtectedRoute><AdminEditarBolaoPage /></ProtectedRoute>}
+          element={<AdminRoute><AdminEditarBolaoPage /></AdminRoute>}
         />
       </Route>
 

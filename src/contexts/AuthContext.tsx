@@ -4,7 +4,8 @@ interface AuthContextType {
   userId: string | null
   userEmail: string | null
   isAuthenticated: boolean
-  login: (userId: string, email?: string) => void
+  isAdmin: boolean
+  login: (userId: string, email?: string, isAdmin?: boolean) => void
   logout: () => void
 }
 
@@ -17,21 +18,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(() =>
     localStorage.getItem('user_email')
   )
+  const [isAdmin, setIsAdmin] = useState<boolean>(() =>
+    localStorage.getItem('is_admin') === 'true'
+  )
 
-  const login = useCallback((id: string, email?: string) => {
+  const login = useCallback((id: string, email?: string, admin?: boolean) => {
     localStorage.setItem('user_id', id)
     setUserId(id)
     if (email) {
       localStorage.setItem('user_email', email)
       setUserEmail(email)
     }
+    localStorage.setItem('is_admin', admin ? 'true' : 'false')
+    setIsAdmin(!!admin)
   }, [])
 
   const logout = useCallback(() => {
     localStorage.removeItem('user_id')
     localStorage.removeItem('user_email')
+    localStorage.removeItem('is_admin')
     setUserId(null)
     setUserEmail(null)
+    setIsAdmin(false)
   }, [])
 
   useEffect(() => {
@@ -47,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         userId,
         userEmail,
         isAuthenticated: !!userId,
+        isAdmin,
         login,
         logout,
       }}
