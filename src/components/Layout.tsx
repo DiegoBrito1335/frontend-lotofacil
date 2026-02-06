@@ -13,7 +13,8 @@ import {
   X,
   User,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { carteiraService } from '@/services/carteiraService'
 
 const publicNav = [
   { to: '/boloes', label: 'Bolões', icon: Ticket },
@@ -32,6 +33,17 @@ export default function Layout() {
   const { isAuthenticated, isAdmin, userEmail, logout } = useAuth()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [saldo, setSaldo] = useState<number>(0)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      carteiraService.getSaldo().then((data) => {
+        setSaldo(Number(data.saldo_disponivel) || 0)
+      }).catch(() => {
+        setSaldo(0)
+      })
+    }
+  }, [isAuthenticated, location.pathname])
 
   const navItems = isAuthenticated
     ? (isAdmin ? [...authNav, adminNav] : authNav)
@@ -75,6 +87,13 @@ export default function Layout() {
                     {userEmail || 'Usuário'}
                   </span>
                 </div>
+                <Link
+                  to="/carteira"
+                  className="flex items-center gap-1.5 bg-yellow-400/90 text-green-900 px-3 py-1.5 rounded-lg text-sm font-bold no-underline hover:bg-yellow-300 transition-colors"
+                >
+                  <Wallet className="w-4 h-4" />
+                  R$ {saldo.toFixed(2).replace('.', ',')}
+                </Link>
                 <button
                   onClick={logout}
                   className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-sm px-3 py-2 rounded-lg transition-colors border-0 cursor-pointer font-medium"
@@ -133,6 +152,14 @@ export default function Layout() {
             <div className="border-t border-white/20 mt-2 pt-2">
               {isAuthenticated ? (
                 <>
+                  <Link
+                    to="/carteira"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 mx-3 mb-2 px-3 py-2 bg-yellow-400/90 text-green-900 rounded-lg text-sm font-bold no-underline hover:bg-yellow-300 transition-colors"
+                  >
+                    <Wallet className="w-4 h-4" />
+                    Saldo: R$ {saldo.toFixed(2).replace('.', ',')}
+                  </Link>
                   <div className="flex items-center gap-2 px-3 py-2 text-white/60 text-xs">
                     <User className="w-3.5 h-3.5" />
                     {userEmail || 'Usuário'}
