@@ -6,6 +6,8 @@ import type {
   BolaoUpdateAdmin,
   JogosCreateBatch,
   ApuracaoResponse,
+  ApuracaoTeimosinhaResponse,
+  StatusApuracao,
   QuickStats,
   RevenueData,
   Atividade,
@@ -60,8 +62,18 @@ export const adminService = {
     return data
   },
 
-  getResultado: async (bolaoId: string): Promise<ApuracaoResponse> => {
+  getResultado: async (bolaoId: string) => {
     const { data } = await api.get(`/admin/boloes/${bolaoId}/resultado`)
+    return data
+  },
+
+  getStatusApuracao: async (bolaoId: string): Promise<StatusApuracao> => {
+    const { data } = await api.get(`/admin/boloes/${bolaoId}/apuracao/status`)
+    return data
+  },
+
+  apurarTeimosinhaAutomatico: async (bolaoId: string): Promise<ApuracaoTeimosinhaResponse> => {
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar/automatico`)
     return data
   },
 

@@ -138,6 +138,22 @@ React hooks (`useState`, `useEffect`) for local state. `AuthContext` for global 
 - Path alias: `@/*` → `src/*`
 - Strict mode enabled
 
+## Deployment
+
+**Production**: Vercel — domain `www.boloeslotofacil.com`
+
+Deployment config:
+- `vercel.json` — SPA rewrite rule (`/(.*) → /index.html`) so React Router works on all paths.
+
+Environment variables on Vercel:
+- `VITE_API_URL` — full backend API base URL including `/api/v1` suffix (e.g., `https://bolao-lotofacil-api.onrender.com/api/v1`). In development, the Vite proxy handles this; in production, this env var is required.
+
+DNS (Hostinger):
+- A record `@` → `76.76.21.21` (Vercel)
+- CNAME `www` → `cname.vercel-dns.com`
+
+After changing environment variables on Vercel, a redeploy is required (Deployments > 3 dots > Redeploy).
+
 ## Dependencies
 
 - **react** 19 + **react-dom** 19

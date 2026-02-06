@@ -147,7 +147,12 @@ export default function AdminBoloesPage() {
                           {b.nome}
                         </Link>
                       </td>
-                      <td className="p-3 text-text-muted">{b.concurso_numero}</td>
+                      <td className="p-3 text-text-muted">
+                        {b.concurso_fim
+                          ? <span>{b.concurso_numero}-{b.concurso_fim} <span className="text-xs text-primary font-medium">(Teimosinha)</span></span>
+                          : b.concurso_numero
+                        }
+                      </td>
                       <td className="p-3">
                         <div className="relative">
                           <button

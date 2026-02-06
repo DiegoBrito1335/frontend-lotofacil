@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { adminService } from '@/services/adminService'
 import { bolaoService } from '@/services/bolaoService'
-import type { Bolao, Jogo, ApuracaoResponse } from '@/types'
+import type { Bolao, Jogo, ApuracaoResponse, ResultadoConcurso } from '@/types'
 import NumberPicker from '@/components/NumberPicker'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
@@ -30,7 +30,10 @@ export default function AdminEditarBolaoPage() {
   const [removingJogo, setRemovingJogo] = useState<string | null>(null)
   const [apurando, setApurando] = useState(false)
   const [resultado, setResultado] = useState<ApuracaoResponse | null>(null)
+  const [resultadosTeimosinha, setResultadosTeimosinha] = useState<ResultadoConcurso[]>([])
+  const [resumoGeral, setResumoGeral] = useState<Record<number, number>>({})
   const [modoApuracao, setModoApuracao] = useState<'auto' | 'manual' | null>(null)
+  const [concursoExpandido, setConcursoExpandido] = useState<number | null>(null)
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
 
   const [form, setForm] = useState({
@@ -62,13 +65,19 @@ export default function AdminEditarBolaoPage() {
         valor_cota: String(bolaoData.valor_cota),
       })
 
-      // Se já apurado, carregar resultado
-      if (bolaoData.status === 'apurado' && bolaoData.resultado_dezenas) {
+      // Carregar resultado se apurado (ou parcialmente apurado para teimosinha)
+      const isTeimosinha = bolaoData.concurso_fim && bolaoData.concurso_fim > bolaoData.concurso_numero
+      if (bolaoData.status === 'apurado' || (isTeimosinha && (bolaoData.concursos_apurados ?? 0) > 0)) {
         try {
           const res = await adminService.getResultado(bolaoId)
-          setResultado(res)
+          if (res.teimosinha && res.resultados) {
+            setResultadosTeimosinha(res.resultados)
+            setResumoGeral(res.resumo_geral || {})
+          } else {
+            setResultado(res)
+          }
         } catch {
-          // Pode não ter endpoint ainda
+          // Pode não ter resultado ainda
         }
       }
     } catch {
@@ -137,9 +146,24 @@ export default function AdminEditarBolaoPage() {
     try {
       setApurando(true)
       setMensagem(null)
-      const res = await adminService.apurarAutomatico(id)
-      setResultado(res)
-      setMensagem({ tipo: 'sucesso', texto: 'Apuração realizada com sucesso!' })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any = await adminService.apurarAutomatico(id)
+
+      // Teimosinha retorna formato diferente
+      if (res.resultados) {
+        setResultadosTeimosinha(res.resultados)
+        setResumoGeral(res.resumo_geral || {})
+        const erros: string[] = res.erros || []
+        if (erros.length > 0) {
+          setMensagem({ tipo: 'erro', texto: `Apuração parcial. Erros: ${erros.join('; ')}` })
+        } else {
+          setMensagem({ tipo: 'sucesso', texto: `Apuração teimosinha concluída! ${res.resultados.length} concursos apurados.` })
+        }
+      } else {
+        setResultado(res)
+        setMensagem({ tipo: 'sucesso', texto: 'Apuração realizada com sucesso!' })
+      }
+
       await loadData(id)
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
@@ -169,6 +193,7 @@ export default function AdminEditarBolaoPage() {
   if (loading) return <LoadingSpinner text="Carregando bolão..." />
   if (!bolao) return <div className="text-center py-12 text-danger">Bolão não encontrado</div>
 
+  const isTeimosinha = !!(bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero)
   const isApurado = bolao.status === 'apurado'
   const canEdit = !isApurado
   const canAddJogos = canEdit
@@ -190,7 +215,17 @@ export default function AdminEditarBolaoPage() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">{bolao.nome}</h1>
-          <p className="text-text-muted mt-1">Concurso {bolao.concurso_numero}</p>
+          <p className="text-text-muted mt-1">
+            {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
+              ? <>Concursos {bolao.concurso_numero} a {bolao.concurso_fim} <span className="text-primary font-medium">(Teimosinha — {bolao.concurso_fim - bolao.concurso_numero + 1} concursos)</span></>
+              : <>Concurso {bolao.concurso_numero}</>
+            }
+          </p>
+          {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero && (bolao.concursos_apurados ?? 0) > 0 && (
+            <p className="text-xs text-text-muted mt-1">
+              {bolao.concursos_apurados} de {bolao.concurso_fim - bolao.concurso_numero + 1} concursos apurados
+            </p>
+          )}
         </div>
         <StatusBadge status={bolao.status} />
       </div>
@@ -283,8 +318,8 @@ export default function AdminEditarBolaoPage() {
           Jogos ({jogos.length})
         </h2>
 
-        {/* Resultado sorteado (se apurado) */}
-        {resultadoDezenas && (
+        {/* Resultado sorteado (concurso único) */}
+        {!isTeimosinha && resultadoDezenas && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
             <p className="text-xs font-semibold text-yellow-800 mb-2">Resultado do Concurso {bolao.concurso_numero}</p>
             <div className="flex flex-wrap gap-2">
@@ -294,6 +329,65 @@ export default function AdminEditarBolaoPage() {
                 </span>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Resultados teimosinha (por concurso) */}
+        {isTeimosinha && resultadosTeimosinha.length > 0 && (
+          <div className="mb-4 space-y-2">
+            <p className="text-xs font-semibold text-text mb-2">Resultados por Concurso</p>
+            {resultadosTeimosinha.map((res) => (
+              <div key={res.concurso_numero} className="bg-yellow-50 border border-yellow-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setConcursoExpandido(concursoExpandido === res.concurso_numero ? null : res.concurso_numero)}
+                  className="w-full flex items-center justify-between p-3 bg-transparent border-0 cursor-pointer text-left"
+                >
+                  <span className="text-sm font-semibold text-yellow-800">Concurso {res.concurso_numero}</span>
+                  <div className="flex items-center gap-2">
+                    {[15, 14, 13].map((n) => res.resumo[n] > 0 && (
+                      <span key={n} className="text-xs bg-yellow-200 text-yellow-800 px-1.5 py-0.5 rounded font-medium">
+                        {res.resumo[n]}x {n}ac
+                      </span>
+                    ))}
+                    <span className="text-xs text-yellow-600">{concursoExpandido === res.concurso_numero ? '▲' : '▼'}</span>
+                  </div>
+                </button>
+                {concursoExpandido === res.concurso_numero && (
+                  <div className="p-3 pt-0 space-y-3">
+                    <div className="flex flex-wrap gap-2">
+                      {res.dezenas.sort((a, b) => a - b).map((d) => (
+                        <span key={d} className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500 text-white font-bold text-xs shadow-sm">
+                          {String(d).padStart(2, '0')}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-5 gap-2 bg-white/50 rounded-lg p-2">
+                      {[15, 14, 13, 12, 11].map((n) => (
+                        <div key={n} className="text-center">
+                          <p className="text-sm font-bold text-primary">{res.resumo[n] || 0}</p>
+                          <p className="text-[10px] text-text-muted">{n} ac</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Resumo geral teimosinha */}
+            {Object.values(resumoGeral).some((v) => v > 0) && (
+              <div className="bg-primary/10 rounded-lg p-4">
+                <p className="text-xs font-semibold text-primary mb-2">Resumo Geral (todos os concursos)</p>
+                <div className="grid grid-cols-5 gap-2">
+                  {[15, 14, 13, 12, 11].map((n) => (
+                    <div key={n} className="text-center">
+                      <p className="text-lg font-bold text-primary">{resumoGeral[n] || 0}</p>
+                      <p className="text-xs text-text-muted">{n} acertos</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -385,6 +479,11 @@ export default function AdminEditarBolaoPage() {
           <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
             <Trophy className="w-5 h-5 text-primary" />
             Apuração
+            {isTeimosinha && (
+              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                Teimosinha — {bolao.concursos_apurados || 0} de {bolao.concurso_fim! - bolao.concurso_numero + 1} concursos
+              </span>
+            )}
           </h2>
 
           <div className="space-y-4">
@@ -395,35 +494,44 @@ export default function AdminEditarBolaoPage() {
               className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
             >
               <Zap className="w-4 h-4" />
-              {apurando ? 'Buscando resultado...' : `Buscar Resultado Automático (Concurso ${bolao.concurso_numero})`}
+              {apurando
+                ? 'Buscando resultados...'
+                : isTeimosinha
+                  ? `Apurar Todos os Concursos (${bolao.concurso_numero} a ${bolao.concurso_fim})`
+                  : `Buscar Resultado Automático (Concurso ${bolao.concurso_numero})`
+              }
             </button>
 
-            <div className="text-center text-text-muted text-xs">ou</div>
+            {!isTeimosinha && (
+              <>
+                <div className="text-center text-text-muted text-xs">ou</div>
 
-            {/* Apuração manual */}
-            {modoApuracao === 'manual' ? (
-              <div>
-                <p className="text-sm font-semibold text-text mb-3">Informe os 15 números sorteados</p>
-                <NumberPicker
-                  onConfirm={handleApurarManual}
-                  disabled={apurando}
-                  buttonLabel="Apurar Resultado"
-                />
-                <button
-                  onClick={() => setModoApuracao(null)}
-                  className="mt-2 text-xs text-text-muted hover:text-text bg-transparent border-0 cursor-pointer"
-                >
-                  Cancelar
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setModoApuracao('manual')}
-                className="w-full flex items-center justify-center gap-2 bg-bg hover:bg-gray-200 text-text font-medium py-3 px-4 rounded-lg transition-colors border border-border cursor-pointer text-sm"
-              >
-                <PenLine className="w-4 h-4" />
-                Apuração Manual
-              </button>
+                {/* Apuração manual (apenas concurso único) */}
+                {modoApuracao === 'manual' ? (
+                  <div>
+                    <p className="text-sm font-semibold text-text mb-3">Informe os 15 números sorteados</p>
+                    <NumberPicker
+                      onConfirm={handleApurarManual}
+                      disabled={apurando}
+                      buttonLabel="Apurar Resultado"
+                    />
+                    <button
+                      onClick={() => setModoApuracao(null)}
+                      className="mt-2 text-xs text-text-muted hover:text-text bg-transparent border-0 cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setModoApuracao('manual')}
+                    className="w-full flex items-center justify-center gap-2 bg-bg hover:bg-gray-200 text-text font-medium py-3 px-4 rounded-lg transition-colors border border-border cursor-pointer text-sm"
+                  >
+                    <PenLine className="w-4 h-4" />
+                    Apuração Manual
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>

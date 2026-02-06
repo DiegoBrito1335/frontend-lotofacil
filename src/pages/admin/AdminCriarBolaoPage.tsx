@@ -14,6 +14,8 @@ export default function AdminCriarBolaoPage() {
     total_cotas: '',
     valor_cota: '',
     status: 'aberto',
+    teimosinha: false,
+    quantidade_concursos: '',
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -31,10 +33,16 @@ export default function AdminCriarBolaoPage() {
 
     try {
       setLoading(true)
+      const concursoNumero = parseInt(form.concurso_numero)
+      const concursoFim = form.teimosinha && form.quantidade_concursos
+        ? concursoNumero + parseInt(form.quantidade_concursos) - 1
+        : undefined
+
       const novoBolao = await adminService.criarBolao({
         nome: form.nome,
         descricao: form.descricao || undefined,
-        concurso_numero: parseInt(form.concurso_numero),
+        concurso_numero: concursoNumero,
+        concurso_fim: concursoFim,
         total_cotas: parseInt(form.total_cotas),
         valor_cota: parseFloat(form.valor_cota),
         status: form.status,
@@ -110,6 +118,51 @@ export default function AdminCriarBolaoPage() {
                 <option value="fechado">Fechado</option>
               </select>
             </div>
+          </div>
+
+          {/* Teimosinha */}
+          <div className="bg-bg rounded-lg p-4 space-y-3">
+            <div className="flex items-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.teimosinha}
+                  onChange={(e) => setForm({ ...form, teimosinha: e.target.checked, quantidade_concursos: '' })}
+                  className="w-4 h-4 accent-primary cursor-pointer"
+                />
+              </label>
+              <div>
+                <span className="text-sm font-medium text-text">Teimosinha</span>
+                <p className="text-xs text-text-muted">Jogar os mesmos números por vários concursos consecutivos</p>
+              </div>
+            </div>
+
+            {form.teimosinha && (
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-text mb-1">Quantidade de concursos</label>
+                  <input
+                    name="quantidade_concursos"
+                    type="number"
+                    min="2"
+                    max="12"
+                    value={form.quantidade_concursos}
+                    onChange={handleChange}
+                    placeholder="Ex: 6"
+                    className="w-full px-3 py-2.5 border border-border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  />
+                </div>
+                {form.concurso_numero && form.quantidade_concursos && (
+                  <div className="flex-1 bg-primary/10 rounded-lg p-3">
+                    <p className="text-xs text-text-muted">Concursos</p>
+                    <p className="text-sm font-bold text-primary">
+                      {form.concurso_numero} a {parseInt(form.concurso_numero) + parseInt(form.quantidade_concursos) - 1}
+                    </p>
+                    <p className="text-xs text-text-muted">{form.quantidade_concursos} concursos</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">

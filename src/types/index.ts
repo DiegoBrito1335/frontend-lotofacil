@@ -10,6 +10,8 @@ export interface Bolao {
   cotas_disponiveis: number
   valor_cota: number
   concurso_numero: number
+  concurso_fim?: number | null
+  concursos_apurados?: number
   status: 'aberto' | 'fechado' | 'apurado' | 'cancelado'
   data_fechamento: string | null
   created_at: string
@@ -26,6 +28,7 @@ export interface Jogo {
   bolao_id: string
   dezenas: number[]
   acertos?: number | null
+  acertos_por_concurso?: { concurso_numero: number; acertos: number }[]
   created_at: string
 }
 
@@ -163,6 +166,7 @@ export interface BolaoCreateAdmin {
   nome: string
   descricao?: string
   concurso_numero: number
+  concurso_fim?: number
   total_cotas: number
   valor_cota: number
   status?: string
@@ -173,8 +177,37 @@ export interface BolaoUpdateAdmin {
   nome?: string
   descricao?: string
   concurso_numero?: number
+  concurso_fim?: number
   total_cotas?: number
   valor_cota?: number
   status?: string
   data_fechamento?: string
+}
+
+// Teimosinha
+export interface ResultadoConcurso {
+  concurso_numero: number
+  dezenas: number[]
+  jogos_resultado: { jogo_id: string; dezenas: number[]; acertos: number }[]
+  resumo: Record<number, number>
+}
+
+export interface ApuracaoTeimosinhaResponse {
+  bolao_id: string
+  concurso_numero: number
+  concurso_fim: number
+  total_concursos: number
+  concursos_apurados: number
+  resultados: ResultadoConcurso[]
+  erros: string[]
+}
+
+export interface StatusApuracao {
+  teimosinha: boolean
+  concurso_numero: number
+  concurso_fim?: number
+  total_concursos?: number
+  concursos_apurados?: number
+  concursos?: { concurso_numero: number; apurado: boolean }[]
+  apurado?: boolean
 }

@@ -68,7 +68,12 @@ export default function HomePage() {
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <h3 className="font-semibold text-lg">{bolao.nome}</h3>
-                    <p className="text-text-muted text-sm">Concurso {bolao.concurso_numero}</p>
+                    <p className="text-text-muted text-sm">
+                      {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
+                        ? <>Teimosinha ({bolao.concurso_fim - bolao.concurso_numero + 1} concursos)</>
+                        : <>Concurso {bolao.concurso_numero}</>
+                      }
+                    </p>
                   </div>
                   <StatusBadge status={bolao.status} />
                 </div>

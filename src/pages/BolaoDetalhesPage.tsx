@@ -93,7 +93,12 @@ export default function BolaoDetalhesPage() {
         <div className="flex items-start justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold">{bolao.nome}</h1>
-            <p className="text-text-muted mt-1">Concurso {bolao.concurso_numero}</p>
+            <p className="text-text-muted mt-1">
+              {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
+                ? <>Concursos {bolao.concurso_numero} a {bolao.concurso_fim} <span className="text-primary font-medium">(Teimosinha)</span></>
+                : <>Concurso {bolao.concurso_numero}</>
+              }
+            </p>
           </div>
           <StatusBadge status={bolao.status} />
         </div>
