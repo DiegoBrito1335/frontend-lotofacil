@@ -145,7 +145,7 @@ export default function AdminCriarBolaoPage() {
                     name="quantidade_concursos"
                     type="number"
                     min="2"
-                    max="12"
+                    max="999"
                     value={form.quantidade_concursos}
                     onChange={handleChange}
                     placeholder="Ex: 6"
