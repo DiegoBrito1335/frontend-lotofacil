@@ -12,17 +12,23 @@ import {
   Menu,
   X,
   User,
+  Trophy,
+  BookOpen,
+  FileText,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { carteiraService } from '@/services/carteiraService'
 
 const publicNav = [
   { to: '/boloes', label: 'Bolões', icon: Ticket },
+  { to: '/como-jogar', label: 'Como Jogar', icon: BookOpen },
+  { to: '/regras', label: 'Regras', icon: FileText },
 ]
 
 const authNav = [
   { to: '/boloes', label: 'Bolões', icon: Home },
   { to: '/minhas-cotas', label: 'Minhas Cotas', icon: Ticket },
+  { to: '/resultados', label: 'Resultados', icon: Trophy },
   { to: '/carteira', label: 'Carteira', icon: Wallet },
   { to: '/depositar', label: 'Depositar', icon: QrCode },
 ]
@@ -211,6 +217,8 @@ export default function Layout() {
             </div>
             <div className="flex items-center gap-6 text-sm text-text-muted">
               <Link to="/boloes" className="hover:text-primary no-underline text-text-muted transition-colors">Bolões</Link>
+              <Link to="/como-jogar" className="hover:text-primary no-underline text-text-muted transition-colors">Como Jogar</Link>
+              <Link to="/regras" className="hover:text-primary no-underline text-text-muted transition-colors">Regras</Link>
               {isAuthenticated ? (
                 <Link to="/carteira" className="hover:text-primary no-underline text-text-muted transition-colors">Carteira</Link>
               ) : (

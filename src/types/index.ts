@@ -223,3 +223,30 @@ export interface StatusApuracao {
   concursos?: StatusConcurso[]
   apurado?: boolean
 }
+
+// ===================================
+// RESULTADOS DO USUÁRIO
+// ===================================
+
+export interface ResultadoJogo {
+  dezenas: number[]
+  acertos: number
+}
+
+export interface ResultadoConcursoUsuario {
+  concurso_numero: number
+  dezenas_sorteadas: number[]
+  premio_total: number
+  jogos: ResultadoJogo[]
+}
+
+export interface ResultadoBolaoUsuario {
+  bolao_id: string
+  bolao_nome: string
+  concurso_numero: number
+  concurso_fim?: number | null
+  status: string
+  resultados: ResultadoConcursoUsuario[]
+  premio_usuario: number
+  quantidade_cotas: number
+}

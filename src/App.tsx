@@ -6,8 +6,11 @@ import LoginPage from '@/pages/LoginPage'
 import HomePage from '@/pages/HomePage'
 import BolaoDetalhesPage from '@/pages/BolaoDetalhesPage'
 import MinhasCotasPage from '@/pages/MinhasCotasPage'
+import ResultadosPage from '@/pages/ResultadosPage'
 import CarteiraPage from '@/pages/CarteiraPage'
 import DepositarPage from '@/pages/DepositarPage'
+import ComoJogarPage from '@/pages/ComoJogarPage'
+import RegrasPage from '@/pages/RegrasPage'
 import AdminDashboard from '@/pages/admin/AdminDashboard'
 import AdminBoloesPage from '@/pages/admin/AdminBoloesPage'
 import AdminCriarBolaoPage from '@/pages/admin/AdminCriarBolaoPage'
@@ -38,9 +41,15 @@ function AppRoutes() {
       <Route element={<Layout />}>
         <Route path="/boloes" element={<HomePage />} />
         <Route path="/bolao/:id" element={<BolaoDetalhesPage />} />
+        <Route path="/como-jogar" element={<ComoJogarPage />} />
+        <Route path="/regras" element={<RegrasPage />} />
         <Route
           path="/minhas-cotas"
           element={<ProtectedRoute><MinhasCotasPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/resultados"
+          element={<ProtectedRoute><ResultadosPage /></ProtectedRoute>}
         />
         <Route
           path="/carteira"

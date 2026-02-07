@@ -1,5 +1,5 @@
 import api from './api'
-import type { ComprarCotaRequest, ComprarCotaResponse, Cota } from '@/types'
+import type { ComprarCotaRequest, ComprarCotaResponse, Cota, ResultadoBolaoUsuario } from '@/types'
 
 export const cotaService = {
   comprar: async (request: ComprarCotaRequest): Promise<ComprarCotaResponse> => {
@@ -9,6 +9,11 @@ export const cotaService = {
 
   minhasCotas: async (): Promise<Cota[]> => {
     const { data } = await api.get('/cotas/minhas')
+    return data
+  },
+
+  meusResultados: async (): Promise<ResultadoBolaoUsuario[]> => {
+    const { data } = await api.get('/cotas/meus-resultados')
     return data
   },
 }
