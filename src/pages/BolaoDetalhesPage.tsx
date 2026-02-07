@@ -6,7 +6,13 @@ import { useAuth } from '@/contexts/AuthContext'
 import type { Bolao, Jogo } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
-import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy } from 'lucide-react'
+import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign } from 'lucide-react'
+
+interface ResultadoPublico {
+  concurso_numero: number
+  dezenas: number[]
+  premio_total: number
+}
 
 export default function BolaoDetalhesPage() {
   const { id } = useParams<{ id: string }>()
@@ -18,6 +24,9 @@ export default function BolaoDetalhesPage() {
   const [loading, setLoading] = useState(true)
   const [quantidade, setQuantidade] = useState(1)
   const [comprando, setComprando] = useState(false)
+  const [resultadosTeimosinha, setResultadosTeimosinha] = useState<ResultadoPublico[]>([])
+  const [premioTotalGeral, setPremioTotalGeral] = useState(0)
+  const [premioUnico, setPremioUnico] = useState(0)
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
 
   useEffect(() => {
@@ -33,6 +42,22 @@ export default function BolaoDetalhesPage() {
       ])
       setBolao(bolaoData)
       setJogos(jogosData)
+
+      // Carregar resultados/premiações se houver concursos apurados
+      const isTeimosinha = bolaoData.concurso_fim && bolaoData.concurso_fim > bolaoData.concurso_numero
+      if (bolaoData.status === 'apurado' || (isTeimosinha && (bolaoData.concursos_apurados ?? 0) > 0)) {
+        try {
+          const res = await bolaoService.getResultado(bolaoId)
+          if (res.teimosinha && res.resultados) {
+            setResultadosTeimosinha(res.resultados)
+            setPremioTotalGeral(res.premio_total_geral || 0)
+          } else if (res.premio_total) {
+            setPremioUnico(res.premio_total)
+          }
+        } catch {
+          // Pode não ter resultado ainda
+        }
+      }
     } catch {
       setMensagem({ tipo: 'erro', texto: 'Erro ao carregar bolão' })
     } finally {
@@ -74,6 +99,7 @@ export default function BolaoDetalhesPage() {
   if (loading) return <LoadingSpinner text="Carregando bolão..." />
   if (!bolao) return <div className="text-center py-12 text-danger">Bolão não encontrado</div>
 
+  const isTeimosinha = !!(bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero)
   const cotasVendidas = bolao.total_cotas - bolao.cotas_disponiveis
   const percentual = bolao.total_cotas > 0 ? (cotasVendidas / bolao.total_cotas) * 100 : 0
   const valorTotal = quantidade * Number(bolao.valor_cota)
@@ -209,18 +235,69 @@ export default function BolaoDetalhesPage() {
 
         {/* Jogos */}
         <div className="lg:col-span-2">
-          {/* Resultado do concurso (se apurado) */}
-          {bolao.status === 'apurado' && bolao.resultado_dezenas && (
+          {/* Resultado do concurso único (se apurado) */}
+          {bolao.status === 'apurado' && bolao.resultado_dezenas && !isTeimosinha && (
             <div className="bg-card rounded-xl border border-border p-5 mb-4">
               <h2 className="font-semibold text-lg mb-3 flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-yellow-500" />
                 Resultado do Concurso {bolao.concurso_numero}
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {bolao.resultado_dezenas.sort((a, b) => a - b).map((d) => (
                   <span key={d} className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-yellow-500 text-white font-bold text-sm shadow-sm">
                     {String(d).padStart(2, '0')}
                   </span>
+                ))}
+              </div>
+              {premioUnico > 0 && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                  <span className="text-sm font-medium text-green-800 flex items-center gap-1">
+                    <DollarSign className="w-4 h-4" />
+                    Prêmio Distribuído
+                  </span>
+                  <span className="text-lg font-bold text-green-700">R$ {premioUnico.toFixed(2)}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Resultados teimosinha (por concurso) */}
+          {isTeimosinha && resultadosTeimosinha.length > 0 && (
+            <div className="bg-card rounded-xl border border-border p-5 mb-4">
+              <h2 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-yellow-500" />
+                Resultados ({resultadosTeimosinha.length} concursos apurados)
+              </h2>
+
+              {premioTotalGeral > 0 && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium text-green-800 flex items-center gap-1">
+                    <DollarSign className="w-4 h-4" />
+                    Prêmio Total
+                  </span>
+                  <span className="text-lg font-bold text-green-700">R$ {premioTotalGeral.toFixed(2)}</span>
+                </div>
+              )}
+
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {resultadosTeimosinha.map((res) => (
+                  <div key={res.concurso_numero} className="bg-bg rounded-lg p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold">Concurso {res.concurso_numero}</span>
+                      {res.premio_total > 0 && (
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-medium">
+                          R$ {res.premio_total.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {res.dezenas.sort((a, b) => a - b).map((d) => (
+                        <span key={d} className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-yellow-500 text-white font-bold text-[11px] shadow-sm">
+                          {String(d).padStart(2, '0')}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

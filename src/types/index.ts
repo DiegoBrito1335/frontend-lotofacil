@@ -190,6 +190,7 @@ export interface ResultadoConcurso {
   dezenas: number[]
   jogos_resultado: { jogo_id: string; dezenas: number[]; acertos: number }[]
   resumo: Record<number, number>
+  premio_total?: number
 }
 
 export interface ApuracaoTeimosinhaResponse {
@@ -200,6 +201,14 @@ export interface ApuracaoTeimosinhaResponse {
   concursos_apurados: number
   resultados: ResultadoConcurso[]
   erros: string[]
+  premio_total_geral?: number
+}
+
+export interface StatusConcurso {
+  concurso_numero: number
+  apurado: boolean
+  premio_total?: number
+  distribuido?: boolean
 }
 
 export interface StatusApuracao {
@@ -208,6 +217,7 @@ export interface StatusApuracao {
   concurso_fim?: number
   total_concursos?: number
   concursos_apurados?: number
-  concursos?: { concurso_numero: number; apurado: boolean }[]
+  premio_total_geral?: number
+  concursos?: StatusConcurso[]
   apurado?: boolean
 }

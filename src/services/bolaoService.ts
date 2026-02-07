@@ -19,6 +19,12 @@ export const bolaoService = {
     return data
   },
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getResultado: async (bolaoId: string): Promise<any> => {
+    const { data } = await api.get(`/boloes/${bolaoId}/resultado`)
+    return data
+  },
+
   verificarDisponibilidade: async (bolaoId: string): Promise<BolaoDisponibilidade> => {
     const { data } = await api.get(`/boloes/${bolaoId}/disponivel`)
     return data

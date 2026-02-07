@@ -7,6 +7,7 @@ import type {
   JogosCreateBatch,
   ApuracaoResponse,
   ApuracaoTeimosinhaResponse,
+  ResultadoConcurso,
   StatusApuracao,
   QuickStats,
   RevenueData,
@@ -74,6 +75,16 @@ export const adminService = {
 
   apurarTeimosinhaAutomatico: async (bolaoId: string): Promise<ApuracaoTeimosinhaResponse> => {
     const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar/automatico`)
+    return data
+  },
+
+  apurarConcurso: async (bolaoId: string, concursoNumero: number): Promise<ResultadoConcurso> => {
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar/concurso/${concursoNumero}`)
+    return data
+  },
+
+  apurarPendentes: async (bolaoId: string): Promise<ApuracaoTeimosinhaResponse> => {
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar/pendentes`)
     return data
   },
 

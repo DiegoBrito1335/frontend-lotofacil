@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { adminService } from '@/services/adminService'
 import { bolaoService } from '@/services/bolaoService'
-import type { Bolao, Jogo, ApuracaoResponse, ResultadoConcurso } from '@/types'
+import type { Bolao, Jogo, ApuracaoResponse, ResultadoConcurso, StatusConcurso } from '@/types'
 import NumberPicker from '@/components/NumberPicker'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
@@ -34,6 +34,9 @@ export default function AdminEditarBolaoPage() {
   const [resumoGeral, setResumoGeral] = useState<Record<number, number>>({})
   const [modoApuracao, setModoApuracao] = useState<'auto' | 'manual' | null>(null)
   const [concursoExpandido, setConcursoExpandido] = useState<number | null>(null)
+  const [statusConcursos, setStatusConcursos] = useState<StatusConcurso[]>([])
+  const [apurandoConcurso, setApurandoConcurso] = useState<number | null>(null)
+  const [premioTotalGeral, setPremioTotalGeral] = useState(0)
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
 
   const [form, setForm] = useState({
@@ -78,6 +81,19 @@ export default function AdminEditarBolaoPage() {
           }
         } catch {
           // Pode não ter resultado ainda
+        }
+      }
+
+      // Carregar status de concursos individuais (teimosinha)
+      if (isTeimosinha) {
+        try {
+          const statusData = await adminService.getStatusApuracao(bolaoId)
+          if (statusData.concursos) {
+            setStatusConcursos(statusData.concursos)
+            setPremioTotalGeral(statusData.premio_total_geral || 0)
+          }
+        } catch {
+          // Ignora erro
         }
       }
     } catch {
@@ -185,6 +201,52 @@ export default function AdminEditarBolaoPage() {
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
       setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro na apuração manual' })
+    } finally {
+      setApurando(false)
+    }
+  }
+
+  const handleApurarConcurso = async (concursoNumero: number) => {
+    if (!id) return
+    try {
+      setApurandoConcurso(concursoNumero)
+      setMensagem(null)
+      const res = await adminService.apurarConcurso(id, concursoNumero)
+      setMensagem({
+        tipo: 'sucesso',
+        texto: `Concurso ${concursoNumero} apurado! Prêmio: R$ ${(res.premio_total || 0).toFixed(2)}`,
+      })
+      await loadData(id)
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || `Erro ao apurar concurso ${concursoNumero}` })
+    } finally {
+      setApurandoConcurso(null)
+    }
+  }
+
+  const handleApurarPendentes = async () => {
+    if (!id) return
+    try {
+      setApurando(true)
+      setMensagem(null)
+      const res = await adminService.apurarPendentes(id)
+      const novos = res.resultados?.length || 0
+      const erros: string[] = res.erros || []
+      if (novos > 0) {
+        setMensagem({
+          tipo: 'sucesso',
+          texto: `${novos} concurso${novos > 1 ? 's' : ''} apurado${novos > 1 ? 's' : ''}! Prêmio total: R$ ${(res.premio_total_geral || 0).toFixed(2)}${erros.length > 0 ? ` | Erros: ${erros.join('; ')}` : ''}`,
+        })
+      } else if (erros.length > 0) {
+        setMensagem({ tipo: 'erro', texto: `Nenhum concurso novo apurado. ${erros.join('; ')}` })
+      } else {
+        setMensagem({ tipo: 'sucesso', texto: 'Todos os concursos já estavam apurados.' })
+      }
+      await loadData(id)
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro ao apurar pendentes' })
     } finally {
       setApurando(false)
     }
@@ -344,6 +406,11 @@ export default function AdminEditarBolaoPage() {
                 >
                   <span className="text-sm font-semibold text-yellow-800">Concurso {res.concurso_numero}</span>
                   <div className="flex items-center gap-2">
+                    {res.premio_total !== undefined && res.premio_total > 0 && (
+                      <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-medium">
+                        R$ {res.premio_total.toFixed(2)}
+                      </span>
+                    )}
                     {[15, 14, 13].map((n) => res.resumo[n] > 0 && (
                       <span key={n} className="text-xs bg-yellow-200 text-yellow-800 px-1.5 py-0.5 rounded font-medium">
                         {res.resumo[n]}x {n}ac
@@ -487,26 +554,100 @@ export default function AdminEditarBolaoPage() {
           </h2>
 
           <div className="space-y-4">
-            {/* Botão automático */}
-            <button
-              onClick={handleApurarAutomatico}
-              disabled={apurando}
-              className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
-            >
-              <Zap className="w-4 h-4" />
-              {apurando
-                ? 'Buscando resultados...'
-                : isTeimosinha
-                  ? `Apurar Todos os Concursos (${bolao.concurso_numero} a ${bolao.concurso_fim})`
-                  : `Buscar Resultado Automático (Concurso ${bolao.concurso_numero})`
-              }
-            </button>
+            {/* Teimosinha: lista de concursos individuais */}
+            {isTeimosinha && statusConcursos.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-text-muted">Concursos Individuais</p>
 
+                {premioTotalGeral > 0 && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                    <span className="text-sm font-medium text-green-800">Prêmio Total Distribuído</span>
+                    <span className="text-lg font-bold text-green-700">R$ {premioTotalGeral.toFixed(2)}</span>
+                  </div>
+                )}
+
+                <div className="max-h-64 overflow-y-auto space-y-1 border border-border rounded-lg p-2">
+                  {statusConcursos.map((sc) => (
+                    <div
+                      key={sc.concurso_numero}
+                      className={`flex items-center justify-between p-2 rounded-lg text-sm ${
+                        sc.apurado ? 'bg-green-50' : 'bg-bg'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {sc.apurado ? (
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 text-text-muted" />
+                        )}
+                        <span className="font-medium">Concurso {sc.concurso_numero}</span>
+                        {sc.apurado && sc.premio_total !== undefined && sc.premio_total > 0 && (
+                          <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-medium">
+                            R$ {sc.premio_total.toFixed(2)}
+                          </span>
+                        )}
+                        {sc.apurado && (sc.premio_total === undefined || sc.premio_total === 0) && (
+                          <span className="text-xs text-text-muted">Sem prêmio</span>
+                        )}
+                      </div>
+                      {!sc.apurado && (
+                        <button
+                          onClick={() => handleApurarConcurso(sc.concurso_numero)}
+                          disabled={apurandoConcurso !== null || apurando}
+                          className="flex items-center gap-1 text-xs bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded-lg transition-colors border-0 cursor-pointer"
+                        >
+                          {apurandoConcurso === sc.concurso_numero ? (
+                            'Apurando...'
+                          ) : (
+                            <>
+                              <Zap className="w-3 h-3" />
+                              Apurar
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Botão apurar todos pendentes */}
+                <button
+                  onClick={handleApurarPendentes}
+                  disabled={apurando || apurandoConcurso !== null}
+                  className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
+                >
+                  <Zap className="w-4 h-4" />
+                  {apurando ? 'Apurando pendentes...' : 'Apurar Todos os Pendentes'}
+                </button>
+              </div>
+            )}
+
+            {/* Teimosinha sem status carregado: botão fallback */}
+            {isTeimosinha && statusConcursos.length === 0 && (
+              <button
+                onClick={handleApurarAutomatico}
+                disabled={apurando}
+                className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
+              >
+                <Zap className="w-4 h-4" />
+                {apurando ? 'Buscando resultados...' : `Apurar Todos os Concursos (${bolao.concurso_numero} a ${bolao.concurso_fim})`}
+              </button>
+            )}
+
+            {/* Concurso único */}
             {!isTeimosinha && (
               <>
+                <button
+                  onClick={handleApurarAutomatico}
+                  disabled={apurando}
+                  className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
+                >
+                  <Zap className="w-4 h-4" />
+                  {apurando ? 'Buscando resultados...' : `Buscar Resultado Automático (Concurso ${bolao.concurso_numero})`}
+                </button>
+
                 <div className="text-center text-text-muted text-xs">ou</div>
 
-                {/* Apuração manual (apenas concurso único) */}
                 {modoApuracao === 'manual' ? (
                   <div>
                     <p className="text-sm font-semibold text-text mb-3">Informe os 15 números sorteados</p>
