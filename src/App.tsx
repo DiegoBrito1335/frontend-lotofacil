@@ -11,6 +11,7 @@ import CarteiraPage from '@/pages/CarteiraPage'
 import DepositarPage from '@/pages/DepositarPage'
 import ComoJogarPage from '@/pages/ComoJogarPage'
 import RegrasPage from '@/pages/RegrasPage'
+import PerfilPage from '@/pages/PerfilPage'
 import AdminDashboard from '@/pages/admin/AdminDashboard'
 import AdminBoloesPage from '@/pages/admin/AdminBoloesPage'
 import AdminCriarBolaoPage from '@/pages/admin/AdminCriarBolaoPage'
@@ -58,6 +59,10 @@ function AppRoutes() {
         <Route
           path="/depositar"
           element={<ProtectedRoute><DepositarPage /></ProtectedRoute>}
+        />
+        <Route
+          path="/perfil"
+          element={<ProtectedRoute><PerfilPage /></ProtectedRoute>}
         />
         <Route
           path="/admin"

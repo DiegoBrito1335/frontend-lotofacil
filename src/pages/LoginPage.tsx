@@ -45,7 +45,7 @@ export default function LoginPage() {
       setLoading(true)
       setError('')
       const { data } = await api.post('/auth/login', { email: email.trim(), senha })
-      login(data.id, data.email, data.is_admin)
+      login(data.id, data.email, data.is_admin, data.nome)
       navigate('/boloes')
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
@@ -73,7 +73,7 @@ export default function LoginPage() {
       setSucesso(data.mensagem)
       // Auto-login após 1.5 segundos
       setTimeout(() => {
-        login(data.id, data.email, data.is_admin)
+        login(data.id, data.email, data.is_admin, data.nome)
         navigate('/boloes')
       }, 1500)
     } catch (err: unknown) {

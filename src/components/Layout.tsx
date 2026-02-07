@@ -31,12 +31,14 @@ const authNav = [
   { to: '/resultados', label: 'Resultados', icon: Trophy },
   { to: '/carteira', label: 'Carteira', icon: Wallet },
   { to: '/depositar', label: 'Depositar', icon: QrCode },
+  { to: '/como-jogar', label: 'Como Jogar', icon: BookOpen },
+  { to: '/regras', label: 'Regras', icon: FileText },
 ]
 
 const adminNav = { to: '/admin', label: 'Admin', icon: Shield }
 
 export default function Layout() {
-  const { isAuthenticated, isAdmin, userEmail, logout } = useAuth()
+  const { isAuthenticated, isAdmin, userName, logout } = useAuth()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [saldo, setSaldo] = useState<number>(0)
@@ -87,12 +89,15 @@ export default function Layout() {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <div className="hidden md:flex items-center gap-2">
-                <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg">
+                <Link
+                  to="/perfil"
+                  className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg no-underline hover:bg-white/20 transition-colors"
+                >
                   <User className="w-4 h-4 text-white/70" />
                   <span className="text-sm text-white/80">
-                    {userEmail || 'Usuário'}
+                    {userName || 'Usuário'}
                   </span>
-                </div>
+                </Link>
                 <Link
                   to="/carteira"
                   className="flex items-center gap-1.5 bg-yellow-400/90 text-green-900 px-3 py-1.5 rounded-lg text-sm font-bold no-underline hover:bg-yellow-300 transition-colors"
@@ -166,10 +171,14 @@ export default function Layout() {
                     <Wallet className="w-4 h-4" />
                     Saldo: R$ {saldo.toFixed(2).replace('.', ',')}
                   </Link>
-                  <div className="flex items-center gap-2 px-3 py-2 text-white/60 text-xs">
-                    <User className="w-3.5 h-3.5" />
-                    {userEmail || 'Usuário'}
-                  </div>
+                  <Link
+                    to="/perfil"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 no-underline"
+                  >
+                    <User className="w-4 h-4" />
+                    {userName || 'Meu Perfil'}
+                  </Link>
                   <button
                     onClick={() => { logout(); setMenuOpen(false) }}
                     className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white/80 hover:bg-white/10 w-full bg-transparent border-0 cursor-pointer"
@@ -209,23 +218,13 @@ export default function Layout() {
 
       {/* Footer */}
       <footer className="border-t border-border bg-card">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-text-muted">
-              <Clover className="w-5 h-5 text-primary" />
-              <span className="font-semibold text-text">Bolão Lotofácil</span>
+              <Clover className="w-4 h-4 text-primary" />
+              <span className="font-semibold text-sm text-text">Bolão Lotofácil</span>
             </div>
-            <div className="flex items-center gap-6 text-sm text-text-muted">
-              <Link to="/boloes" className="hover:text-primary no-underline text-text-muted transition-colors">Bolões</Link>
-              <Link to="/como-jogar" className="hover:text-primary no-underline text-text-muted transition-colors">Como Jogar</Link>
-              <Link to="/regras" className="hover:text-primary no-underline text-text-muted transition-colors">Regras</Link>
-              {isAuthenticated ? (
-                <Link to="/carteira" className="hover:text-primary no-underline text-text-muted transition-colors">Carteira</Link>
-              ) : (
-                <Link to="/login" className="hover:text-primary no-underline text-text-muted transition-colors">Entrar</Link>
-              )}
-            </div>
-            <p className="text-sm text-text-muted">
+            <p className="text-xs text-text-muted">
               &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade
             </p>
           </div>

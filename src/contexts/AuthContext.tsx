@@ -3,9 +3,10 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 interface AuthContextType {
   userId: string | null
   userEmail: string | null
+  userName: string | null
   isAuthenticated: boolean
   isAdmin: boolean
-  login: (userId: string, email?: string, isAdmin?: boolean) => void
+  login: (userId: string, email?: string, isAdmin?: boolean, nome?: string) => void
   logout: () => void
 }
 
@@ -18,16 +19,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(() =>
     localStorage.getItem('user_email')
   )
+  const [userName, setUserName] = useState<string | null>(() =>
+    localStorage.getItem('user_name')
+  )
   const [isAdmin, setIsAdmin] = useState<boolean>(() =>
     localStorage.getItem('is_admin') === 'true'
   )
 
-  const login = useCallback((id: string, email?: string, admin?: boolean) => {
+  const login = useCallback((id: string, email?: string, admin?: boolean, nome?: string) => {
     localStorage.setItem('user_id', id)
     setUserId(id)
     if (email) {
       localStorage.setItem('user_email', email)
       setUserEmail(email)
+    }
+    if (nome) {
+      localStorage.setItem('user_name', nome)
+      setUserName(nome)
     }
     localStorage.setItem('is_admin', admin ? 'true' : 'false')
     setIsAdmin(!!admin)
@@ -36,9 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     localStorage.removeItem('user_id')
     localStorage.removeItem('user_email')
+    localStorage.removeItem('user_name')
     localStorage.removeItem('is_admin')
     setUserId(null)
     setUserEmail(null)
+    setUserName(null)
     setIsAdmin(false)
   }, [])
 
@@ -54,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         userId,
         userEmail,
+        userName,
         isAuthenticated: !!userId,
         isAdmin,
         login,
