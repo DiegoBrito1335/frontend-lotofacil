@@ -113,8 +113,11 @@ export interface Transacao {
 }
 
 export interface TransacaoResumo {
-  credito: { total: number; quantidade: number }
-  debito: { total: number; quantidade: number }
+  total_depositos: number
+  total_premios: number
+  total_compras: number
+  total_credito: number
+  total_debito: number
   saldo_movimentado: number
 }
 
