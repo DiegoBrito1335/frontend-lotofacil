@@ -16,6 +16,7 @@ import {
   Trophy,
   CheckCircle,
   AlertCircle,
+  Upload,
 } from 'lucide-react'
 
 export default function AdminEditarBolaoPage() {
@@ -37,6 +38,8 @@ export default function AdminEditarBolaoPage() {
   const [statusConcursos, setStatusConcursos] = useState<StatusConcurso[]>([])
   const [apurandoConcurso, setApurandoConcurso] = useState<number | null>(null)
   const [premioTotalGeral, setPremioTotalGeral] = useState(0)
+  const [uploadingCSV, setUploadingCSV] = useState(false)
+  const [modoAddJogo, setModoAddJogo] = useState<'picker' | 'csv'>('picker')
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
 
   const [form, setForm] = useState({
@@ -154,6 +157,29 @@ export default function AdminEditarBolaoPage() {
       setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro ao remover jogo' })
     } finally {
       setRemovingJogo(null)
+    }
+  }
+
+  const handleUploadCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!id || !e.target.files?.[0]) return
+    const file = e.target.files[0]
+    try {
+      setUploadingCSV(true)
+      setMensagem(null)
+      const res = await adminService.uploadJogosCSV(id, file)
+      const jogosData = await bolaoService.getJogos(id)
+      setJogos(jogosData)
+      const errosMsg = res.erros.length > 0 ? ` | Erros: ${res.erros.join('; ')}` : ''
+      setMensagem({
+        tipo: res.total_importados > 0 ? 'sucesso' : 'erro',
+        texto: `${res.total_importados} jogo${res.total_importados !== 1 ? 's' : ''} importado${res.total_importados !== 1 ? 's' : ''}${errosMsg}`,
+      })
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro ao importar CSV' })
+    } finally {
+      setUploadingCSV(false)
+      e.target.value = ''
     }
   }
 
@@ -531,11 +557,61 @@ export default function AdminEditarBolaoPage() {
           </div>
         )}
 
-        {/* NumberPicker para adicionar jogos */}
+        {/* Adicionar jogos */}
         {canAddJogos && (
           <div className="border-t border-border pt-4">
-            <p className="text-sm font-semibold text-text mb-3">Adicionar novo jogo</p>
-            <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} />
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-semibold text-text">Adicionar jogos</p>
+              <div className="flex gap-1 bg-bg rounded-lg p-0.5">
+                <button
+                  onClick={() => setModoAddJogo('picker')}
+                  className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
+                    modoAddJogo === 'picker' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
+                  }`}
+                >
+                  Manual
+                </button>
+                <button
+                  onClick={() => setModoAddJogo('csv')}
+                  className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
+                    modoAddJogo === 'csv' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
+                  }`}
+                >
+                  Importar CSV
+                </button>
+              </div>
+            </div>
+
+            {modoAddJogo === 'picker' ? (
+              <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} />
+            ) : (
+              <div className="space-y-3">
+                <div className="bg-bg rounded-lg p-4 text-center border-2 border-dashed border-border">
+                  <Upload className="w-8 h-8 text-text-muted mx-auto mb-2" />
+                  <p className="text-sm text-text-muted mb-1">Selecione um arquivo CSV</p>
+                  <p className="text-xs text-text-muted mb-3">Um jogo por linha, 15 numeros separados por virgula ou ponto-e-virgula</p>
+                  <label className="inline-flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-medium text-sm px-4 py-2 rounded-lg cursor-pointer transition-colors">
+                    <Upload className="w-4 h-4" />
+                    {uploadingCSV ? 'Importando...' : 'Escolher Arquivo'}
+                    <input
+                      type="file"
+                      accept=".csv,.txt"
+                      onChange={handleUploadCSV}
+                      disabled={uploadingCSV}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+                <div className="bg-bg rounded-lg p-3">
+                  <p className="text-xs font-semibold text-text mb-1">Exemplo de CSV:</p>
+                  <pre className="text-xs text-text-muted font-mono whitespace-pre-wrap">
+{`01,03,05,07,09,10,12,14,16,18,20,21,23,24,25
+02,04,06,08,10,11,13,15,17,19,21,22,23,24,25
+03,05,07,09,11,12,14,16,18,20,22,23,24,25,01`}
+                  </pre>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -52,6 +52,15 @@ export const adminService = {
     await api.delete(`/admin/boloes/${bolaoId}/jogos/${jogoId}`)
   },
 
+  uploadJogosCSV: async (bolaoId: string, file: File): Promise<{ total_importados: number; erros: string[] }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/jogos/upload-csv`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return data
+  },
+
   // Apuração
   apurarManual: async (bolaoId: string, dezenas: number[]): Promise<ApuracaoResponse> => {
     const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar`, { dezenas })
