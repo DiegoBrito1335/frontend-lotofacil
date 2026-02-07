@@ -12,7 +12,7 @@ interface PerfilData {
 }
 
 export default function PerfilPage() {
-  const { userName, login, userId, userEmail, isAdmin } = useAuth()
+  const { login, userId, userEmail, isAdmin } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
