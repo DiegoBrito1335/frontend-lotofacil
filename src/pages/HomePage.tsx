@@ -108,7 +108,11 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-center gap-1 text-sm text-text-muted">
                       <Users className="w-4 h-4" />
-                      <span>{bolao.cotas_disponiveis} restantes</span>
+                      {bolao.cotas_disponiveis <= 0 ? (
+                        <span className="text-amber-600 font-medium">Cotas esgotadas</span>
+                      ) : (
+                        <span>{bolao.cotas_disponiveis} restantes</span>
+                      )}
                     </div>
                   </div>
                 </div>
