@@ -83,6 +83,7 @@ export interface Cota {
   bolao_status?: string
   concurso_numero?: number
   quantidade?: number
+  premio_ganho?: number
 }
 
 // ===================================

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { carteiraService } from '@/services/carteiraService'
 import type { CarteiraResumo, Transacao } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { Wallet, ArrowUpCircle, ArrowDownCircle, QrCode, Lock } from 'lucide-react'
+import { Wallet, ArrowUpCircle, ArrowDownCircle, QrCode, Lock, Trophy } from 'lucide-react'
 
 export default function CarteiraPage() {
   const [saldo, setSaldo] = useState<CarteiraResumo | null>(null)
@@ -129,7 +129,9 @@ export default function CarteiraPage() {
             {transacoes.map((t) => (
               <div key={t.id} className="flex items-center justify-between py-3 border-b border-border last:border-0">
                 <div className="flex items-center gap-3">
-                  {t.tipo === 'credito' ? (
+                  {t.origem === 'premio_bolao' ? (
+                    <Trophy className="w-5 h-5 text-yellow-500" />
+                  ) : t.tipo === 'credito' ? (
                     <ArrowUpCircle className="w-5 h-5 text-success" />
                   ) : (
                     <ArrowDownCircle className="w-5 h-5 text-danger" />

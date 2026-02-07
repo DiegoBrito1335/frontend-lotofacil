@@ -4,7 +4,7 @@ import { cotaService } from '@/services/cotaService'
 import type { Cota } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
-import { Ticket, ExternalLink } from 'lucide-react'
+import { Ticket, ExternalLink, Trophy } from 'lucide-react'
 
 export default function MinhasCotasPage() {
   const [cotas, setCotas] = useState<Cota[]>([])
@@ -81,7 +81,21 @@ export default function MinhasCotasPage() {
               <div className="flex items-center gap-4">
                 <div className="text-right">
                   <p className="font-semibold text-sm">{cota.quantidade && cota.quantidade > 1 ? `${cota.quantidade} cotas • ` : ''}R$ {Number(cota.valor_pago).toFixed(2)}</p>
-                  {cota.bolao_status && <StatusBadge status={cota.bolao_status} />}
+                  <div className="flex items-center gap-1 justify-end mt-0.5">
+                    {cota.bolao_status && <StatusBadge status={cota.bolao_status} />}
+                    {cota.bolao_status === 'apurado' && (
+                      cota.premio_ganho && cota.premio_ganho > 0 ? (
+                        <span className="inline-flex items-center gap-0.5 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-medium">
+                          <Trophy className="w-3 h-3" />
+                          R$ {cota.premio_ganho.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded">
+                          Sem premio
+                        </span>
+                      )
+                    )}
+                  </div>
                 </div>
                 <Link
                   to={`/bolao/${cota.bolao_id}`}
@@ -96,6 +110,9 @@ export default function MinhasCotasPage() {
           <div className="bg-bg rounded-lg p-4 text-center text-sm text-text-muted">
             Total: <strong>{cotas.reduce((acc, c) => acc + (c.quantidade || 1), 0)}</strong> cota{cotas.reduce((acc, c) => acc + (c.quantidade || 1), 0) > 1 ? 's' : ''} •
             Investido: <strong className="text-primary">R$ {cotas.reduce((acc, c) => acc + Number(c.valor_pago), 0).toFixed(2)}</strong>
+            {cotas.some(c => (c.premio_ganho || 0) > 0) && (
+              <> • Ganhos: <strong className="text-green-700">R$ {cotas.reduce((acc, c) => acc + (c.premio_ganho || 0), 0).toFixed(2)}</strong></>
+            )}
           </div>
         </div>
       )}
