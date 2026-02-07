@@ -25,6 +25,7 @@ export default function AdminBoloesPage() {
   const [loading, setLoading] = useState(true)
   const [filtro, setFiltro] = useState<string | undefined>(undefined)
   const [statusMenuOpen, setStatusMenuOpen] = useState<string | null>(null)
+  const [statusMenuPos, setStatusMenuPos] = useState<{ top: number; left: number } | null>(null)
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null)
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function AdminBoloesPage() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     setStatusMenuOpen(null)
+    setStatusMenuPos(null)
     const msg = STATUS_CONFIRM_MSG[newStatus] || `Deseja alterar o status para "${newStatus}"?`
     if (!confirm(msg)) return
     try {
@@ -154,22 +156,34 @@ export default function AdminBoloesPage() {
                         }
                       </td>
                       <td className="p-3">
-                        <div className="relative">
+                        <div>
                           <button
-                            onClick={() => setStatusMenuOpen(statusMenuOpen === b.id ? null : b.id)}
+                            onClick={(e) => {
+                              if (statusMenuOpen === b.id) {
+                                setStatusMenuOpen(null)
+                                setStatusMenuPos(null)
+                              } else {
+                                const rect = e.currentTarget.getBoundingClientRect()
+                                setStatusMenuPos({ top: rect.bottom + 4, left: rect.left })
+                                setStatusMenuOpen(b.id)
+                              }
+                            }}
                             disabled={updatingStatus === b.id}
                             className="flex items-center gap-1 bg-transparent border-0 cursor-pointer p-0"
                           >
                             <StatusBadge status={b.status} />
                             <ChevronDown className="w-3 h-3 text-text-muted" />
                           </button>
-                          {statusMenuOpen === b.id && (
+                          {statusMenuOpen === b.id && statusMenuPos && (
                             <>
                               <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setStatusMenuOpen(null)}
+                                className="fixed inset-0 z-40"
+                                onClick={() => { setStatusMenuOpen(null); setStatusMenuPos(null) }}
                               />
-                              <div className="absolute left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border py-1 z-20 min-w-35">
+                              <div
+                                className="fixed bg-white rounded-lg shadow-lg border border-border py-1 z-50 min-w-35"
+                                style={{ top: statusMenuPos.top, left: statusMenuPos.left }}
+                              >
                                 {STATUS_OPTIONS.filter((s) => s.value !== b.status).map((s) => (
                                   <button
                                     key={s.value}
