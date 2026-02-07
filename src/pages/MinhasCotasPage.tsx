@@ -80,7 +80,7 @@ export default function MinhasCotasPage() {
 
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="font-semibold text-sm">R$ {Number(cota.valor_pago).toFixed(2)}</p>
+                  <p className="font-semibold text-sm">{cota.quantidade && cota.quantidade > 1 ? `${cota.quantidade} cotas • ` : ''}R$ {Number(cota.valor_pago).toFixed(2)}</p>
                   {cota.bolao_status && <StatusBadge status={cota.bolao_status} />}
                 </div>
                 <Link
@@ -94,7 +94,7 @@ export default function MinhasCotasPage() {
           ))}
 
           <div className="bg-bg rounded-lg p-4 text-center text-sm text-text-muted">
-            Total: <strong>{cotas.length}</strong> cota{cotas.length > 1 ? 's' : ''} •
+            Total: <strong>{cotas.reduce((acc, c) => acc + (c.quantidade || 1), 0)}</strong> cota{cotas.reduce((acc, c) => acc + (c.quantidade || 1), 0) > 1 ? 's' : ''} •
             Investido: <strong className="text-primary">R$ {cotas.reduce((acc, c) => acc + Number(c.valor_pago), 0).toFixed(2)}</strong>
           </div>
         </div>

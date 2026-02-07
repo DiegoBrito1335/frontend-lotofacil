@@ -82,6 +82,7 @@ export interface Cota {
   bolao_nome?: string
   bolao_status?: string
   concurso_numero?: number
+  quantidade?: number
 }
 
 // ===================================
