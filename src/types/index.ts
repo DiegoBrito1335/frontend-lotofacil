@@ -240,6 +240,7 @@ export interface ResultadoConcursoUsuario {
   concurso_numero: number
   dezenas_sorteadas: number[]
   premio_total: number
+  resumo_acertos?: Record<number, number>
   jogos: ResultadoJogo[]
 }
 
