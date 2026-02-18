@@ -85,7 +85,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* Mini header */}
       <div className="p-4">
         <Link
@@ -101,7 +101,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-green-600 rounded-2xl mb-4 shadow-lg">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-primary to-green-600 rounded-2xl mb-4 shadow-lg">
               <Clover className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-extrabold text-text">Bolão Lotofácil</h1>
@@ -111,15 +111,15 @@ export default function LoginPage() {
           </div>
 
           {/* Card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden">
+          <div className="bg-card rounded-2xl border border-border overflow-hidden card-hover">
             {/* Tabs */}
             <div className="flex border-b border-border">
               <button
                 onClick={() => { setTab('login'); setError(''); setSucesso('') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'login'
-                    ? 'bg-white text-primary border-b-2 border-primary'
-                    : 'bg-gray-50 text-text-muted hover:text-text'
+                    ? 'bg-card text-primary border-b-2 border-primary'
+                    : 'bg-black/20 text-text-muted hover:text-text'
                 }`}
               >
                 <LogIn className="w-4 h-4" />
@@ -129,8 +129,8 @@ export default function LoginPage() {
                 onClick={() => { setTab('registro'); setError(''); setSucesso('') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'registro'
-                    ? 'bg-white text-primary border-b-2 border-primary'
-                    : 'bg-gray-50 text-text-muted hover:text-text'
+                    ? 'bg-card text-primary border-b-2 border-primary'
+                    : 'bg-black/20 text-text-muted hover:text-text'
                 }`}
               >
                 <UserPlus className="w-4 h-4" />
@@ -168,7 +168,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setError('') }}
                         placeholder="seu@email.com"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -185,7 +185,7 @@ export default function LoginPage() {
                         value={senha}
                         onChange={(e) => { setSenha(e.target.value); setError('') }}
                         placeholder="Sua senha"
-                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                       <button
                         type="button"
@@ -200,7 +200,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl transition-colors border-0 cursor-pointer text-sm shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 btn-gradient text-white font-bold py-3 px-4 rounded-xl border-0 cursor-pointer text-sm"
                   >
                     <LogIn className="w-4 h-4" />
                     {loading ? 'Entrando...' : 'Entrar'}
@@ -230,7 +230,7 @@ export default function LoginPage() {
                         value={nome}
                         onChange={(e) => { setNome(e.target.value); setError('') }}
                         placeholder="Seu nome"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -246,7 +246,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setError('') }}
                         placeholder="seu@email.com"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -262,7 +262,7 @@ export default function LoginPage() {
                         value={senha}
                         onChange={(e) => { setSenha(e.target.value); setError('') }}
                         placeholder="Mínimo 6 caracteres"
-                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                       <button
                         type="button"
@@ -277,7 +277,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl transition-colors border-0 cursor-pointer text-sm shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 btn-gradient text-white font-bold py-3 px-4 rounded-xl border-0 cursor-pointer text-sm"
                   >
                     <UserPlus className="w-4 h-4" />
                     {loading ? 'Criando conta...' : 'Criar Conta'}

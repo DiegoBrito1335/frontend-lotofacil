@@ -62,9 +62,9 @@ export default function MinhasCotasPage() {
       ) : (
         <div className="space-y-3">
           {cotas.map((cota) => (
-            <div key={cota.id} className="bg-card rounded-xl border border-border p-4 flex items-center justify-between">
+            <div key={cota.id} className="bg-card border border-border p-4 flex items-center justify-between card-hover">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
                   <Ticket className="w-5 h-5 text-primary" />
                 </div>
                 <div>

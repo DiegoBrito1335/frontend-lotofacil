@@ -29,15 +29,15 @@ function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuari
               key={faixa}
               className={`text-center rounded-lg p-2 ${
                 qtd > 0 && faixa >= 14
-                  ? 'bg-yellow-100 border border-yellow-300'
+                  ? 'bg-yellow-500/15 border border-yellow-500/30'
                   : qtd > 0 && hasPrize
-                  ? 'bg-green-50 border border-green-200'
-                  : 'bg-gray-50 border border-gray-200'
+                  ? 'bg-green-500/15 border border-green-500/30'
+                  : 'bg-black/20 border border-white/10'
               }`}
             >
               <div className={`text-lg font-bold ${
-                qtd > 0 && faixa >= 14 ? 'text-yellow-700' :
-                qtd > 0 ? 'text-green-700' : 'text-gray-400'
+                qtd > 0 && faixa >= 14 ? 'text-yellow-300' :
+                qtd > 0 ? 'text-green-300' : 'text-white/20'
               }`}>
                 {qtd}
               </div>
@@ -57,7 +57,7 @@ function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuari
 
 function DezenaSorteada({ numero }: { numero: number }) {
   return (
-    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 text-white font-bold text-sm shadow-md">
+    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-br from-yellow-400 to-yellow-600 text-white font-bold text-sm shadow-md">
       {String(numero).padStart(2, '0')}
     </span>
   )
@@ -83,14 +83,14 @@ function ConcursoResultado({
           {isTeimosinha ? `Concurso ${resultado.concurso_numero}` : 'Resultado do Concurso'}
         </h4>
         {resultado.premio_total > 0 && (
-          <span className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-bold">
+          <span className="text-xs bg-green-500/15 text-green-300 px-2.5 py-1 rounded-full font-bold ring-1 ring-green-500/30">
             Prêmio: {formatCurrency(resultado.premio_total)}
           </span>
         )}
       </div>
 
       {/* Dezenas sorteadas */}
-      <div className="bg-gradient-to-r from-purple-900 to-purple-700 rounded-xl p-4">
+      <div className="bg-linear-to-r from-purple-900 to-purple-700 rounded-xl p-4">
         <p className="text-purple-200 text-xs font-medium mb-3 uppercase tracking-wide">
           Dezenas Sorteadas
         </p>
@@ -107,7 +107,7 @@ function ConcursoResultado({
       {/* Botão para expandir jogos */}
       <button
         onClick={() => setJogosAbertos(!jogosAbertos)}
-        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-white/5 transition-colors"
       >
         <span className="text-sm font-medium text-text">
           Ver Jogos ({resultado.jogos.length})
@@ -131,10 +131,10 @@ function ConcursoResultado({
                     jogo.acertos >= 15
                       ? 'bg-yellow-400 text-yellow-900'
                       : jogo.acertos >= 14
-                      ? 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-yellow-500/20 text-yellow-300'
                       : jogo.acertos >= 11
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-gray-100 text-gray-600'
+                      ? 'bg-green-500/20 text-green-300'
+                      : 'bg-black/25 text-white/40'
                   }`}
                 >
                   {jogo.acertos} acertos
@@ -223,11 +223,11 @@ export default function ResultadosPage() {
 
       {/* Resumo geral */}
       {resultados.length > 0 && (
-        <div className="bg-gradient-to-r from-green-600 to-green-500 rounded-xl p-5 mb-5 text-white shadow-lg">
+        <div className="rounded-xl p-5 mb-5 text-white saldo-glow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100 text-sm">Total em Prêmios</p>
-              <p className="text-3xl font-bold mt-1">{formatCurrency(totalPremios)}</p>
+              <p className="text-4xl font-extrabold mt-1 tracking-tight">{formatCurrency(totalPremios)}</p>
             </div>
             <div className="text-right">
               <p className="text-green-100 text-sm">Bolões com resultado</p>
@@ -255,12 +255,12 @@ export default function ResultadosPage() {
             return (
               <div
                 key={bolao.bolao_id}
-                className="bg-card rounded-xl border border-border overflow-hidden shadow-sm"
+                className="bg-card border border-border overflow-hidden card-hover"
               >
                 {/* Header do bolão */}
                 <button
                   onClick={() => toggleExpandido(bolao.bolao_id)}
-                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-white/5 transition-colors"
                 >
                   <div>
                     <h3 className="font-bold text-lg text-text">{bolao.bolao_nome}</h3>
@@ -276,12 +276,12 @@ export default function ResultadosPage() {
                     {bolao.premio_usuario > 0 ? (
                       <div className="text-right">
                         <p className="text-xs text-text-muted">Seu prêmio</p>
-                        <p className="text-sm font-bold text-green-600">
+                        <p className="text-sm font-bold text-green-400">
                           {formatCurrency(bolao.premio_usuario)}
                         </p>
                       </div>
                     ) : (
-                      <span className="text-sm bg-gray-100 text-gray-500 px-3 py-1 rounded-lg">
+                      <span className="text-sm bg-black/25 text-white/40 px-3 py-1 rounded-lg">
                         Sem prêmio
                       </span>
                     )}

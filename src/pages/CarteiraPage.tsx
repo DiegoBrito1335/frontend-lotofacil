@@ -23,15 +23,15 @@ function formatCurrency(value: number) {
 function getOrigemInfo(origem: string, tipo: string) {
   switch (origem) {
     case 'premio_bolao':
-      return { label: 'Premio de Bolao', icon: Trophy, color: 'text-yellow-500', bg: 'bg-yellow-50' }
+      return { label: 'Premio de Bolao', icon: Trophy, color: 'text-yellow-400', bg: 'bg-yellow-500/10' }
     case 'pix':
-      return { label: 'Deposito via Pix', icon: QrCode, color: 'text-green-600', bg: 'bg-green-50' }
+      return { label: 'Deposito via Pix', icon: QrCode, color: 'text-green-400', bg: 'bg-green-500/10' }
     case 'compra_cota':
-      return { label: 'Compra de Cota', icon: Ticket, color: 'text-blue-500', bg: 'bg-blue-50' }
+      return { label: 'Compra de Cota', icon: Ticket, color: 'text-blue-400', bg: 'bg-blue-500/10' }
     default:
       return tipo === 'credito'
-        ? { label: origem || 'Credito', icon: ArrowUpCircle, color: 'text-green-500', bg: 'bg-green-50' }
-        : { label: origem || 'Debito', icon: ArrowDownCircle, color: 'text-red-500', bg: 'bg-red-50' }
+        ? { label: origem || 'Credito', icon: ArrowUpCircle, color: 'text-green-400', bg: 'bg-green-500/10' }
+        : { label: origem || 'Debito', icon: ArrowDownCircle, color: 'text-red-400', bg: 'bg-red-500/10' }
   }
 }
 
@@ -104,7 +104,7 @@ export default function CarteiraPage() {
         </div>
         <Link
           to="/depositar"
-          className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-4 py-2.5 rounded-lg no-underline transition-colors"
+          className="flex items-center gap-2 btn-gradient text-white font-semibold text-sm px-4 py-2.5 rounded-lg no-underline"
         >
           <QrCode className="w-4 h-4" />
           Depositar via Pix
@@ -112,11 +112,11 @@ export default function CarteiraPage() {
       </div>
 
       {/* Saldo Principal */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 text-white mb-6 shadow-lg">
+      <div className="rounded-2xl p-6 text-white mb-6 saldo-glow">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-green-100 text-sm font-medium mb-1">Saldo Disponivel</p>
-            <p className="text-4xl font-extrabold">
+            <p className="text-5xl font-extrabold tracking-tight valor-gold">
               R$ {saldo ? formatCurrency(Number(saldo.saldo_disponivel)) : '0,00'}
             </p>
           </div>
@@ -135,36 +135,36 @@ export default function CarteiraPage() {
       {/* Resumo Financeiro */}
       {resumo && (
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-card rounded-xl border border-border p-4">
+          <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-green-600" />
+              <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-green-400" />
               </div>
               <span className="text-xs text-text-muted font-medium">Depositos</span>
             </div>
-            <p className="text-lg font-bold text-green-600">
+            <p className="text-xl font-extrabold text-green-600">
               R$ {formatCurrency(resumo.total_depositos)}
             </p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
+          <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center">
-                <Trophy className="w-4 h-4 text-yellow-600" />
+              <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-yellow-400" />
               </div>
               <span className="text-xs text-text-muted font-medium">Premios</span>
             </div>
-            <p className="text-lg font-bold text-yellow-600">
+            <p className="text-xl font-extrabold text-yellow-600">
               R$ {formatCurrency(resumo.total_premios)}
             </p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
+          <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                <TrendingDown className="w-4 h-4 text-blue-400" />
               </div>
               <span className="text-xs text-text-muted font-medium">Gastos em Cotas</span>
             </div>
-            <p className="text-lg font-bold text-blue-600">
+            <p className="text-xl font-extrabold text-blue-600">
               R$ {formatCurrency(resumo.total_compras)}
             </p>
           </div>
@@ -172,7 +172,7 @@ export default function CarteiraPage() {
       )}
 
       {/* Extrato */}
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.06)]">
         <div className="flex items-center justify-between p-5 border-b border-border">
           <div className="flex items-center gap-2">
             <Receipt className="w-5 h-5 text-text-muted" />
@@ -190,7 +190,7 @@ export default function CarteiraPage() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg border-0 cursor-pointer transition-colors ${
                   filtro === f.value
                     ? 'bg-primary text-white'
-                    : 'bg-bg text-text-muted hover:bg-gray-200'
+                    : 'bg-black/20 text-text-muted hover:bg-white/10'
                 }`}
               >
                 {f.label}
@@ -218,7 +218,7 @@ export default function CarteiraPage() {
                   return (
                     <div
                       key={t.id}
-                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-bg/30 transition-colors"
+                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-white/5 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl ${info.bg} flex items-center justify-center shrink-0`}>
@@ -239,7 +239,7 @@ export default function CarteiraPage() {
                         </div>
                       </div>
                       <div className="text-right shrink-0 ml-3">
-                        <p className={`font-bold text-sm ${t.tipo === 'credito' ? 'text-green-600' : 'text-red-500'}`}>
+                        <p className={`font-bold text-sm ${t.tipo === 'credito' ? 'text-green-400' : 'text-red-400'}`}>
                           {t.tipo === 'credito' ? '+' : '-'} R$ {formatCurrency(Number(t.valor))}
                         </p>
                       </div>

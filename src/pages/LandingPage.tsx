@@ -50,7 +50,7 @@ export default function LandingPage() {
             {isAuthenticated ? (
               <Link
                 to="/boloes"
-                className="flex items-center gap-2 bg-white text-green-700 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 hover:text-green-800 transition-all"
+                className="flex items-center gap-2 bg-yellow-400 text-green-900 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 transition-all shadow-[0_0_15px_rgba(250,204,21,0.2)]"
               >
                 <Ticket className="w-4 h-4" />
                 Meus Bolões
@@ -66,7 +66,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 bg-white text-green-700 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 hover:text-green-800 transition-all"
+                  className="flex items-center gap-1.5 bg-yellow-400 text-green-900 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 transition-all shadow-[0_0_15px_rgba(250,204,21,0.2)]"
                 >
                   Criar Conta
                 </Link>
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
         {/* Mobile Dropdown */}
         {menuOpen && (
-          <div className="md:hidden bg-green-800/95 backdrop-blur-sm border-t border-white/10 px-4 py-4 space-y-2">
+          <div className="md:hidden bg-[#022c22]/97 backdrop-blur-md border-t border-white/10 px-4 py-4 space-y-2">
             <a href="#como-funciona" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-white/80 hover:text-white text-sm no-underline rounded-lg hover:bg-white/10">
               Como Funciona
             </a>
@@ -99,7 +99,7 @@ export default function LandingPage() {
               <Link to="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-white text-sm no-underline rounded-lg hover:bg-white/10">
                 Entrar
               </Link>
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-center text-green-800 bg-white font-bold text-sm no-underline rounded-lg">
+              <Link to="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-center text-green-900 bg-yellow-400 font-bold text-sm no-underline rounded-lg hover:bg-yellow-300 transition-colors">
                 Criar Conta Grátis
               </Link>
             </div>
@@ -175,7 +175,7 @@ export default function LandingPage() {
         {/* Wave */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 50L60 45C120 40 240 30 360 35C480 40 600 60 720 65C840 70 960 60 1080 50C1200 40 1320 30 1380 25L1440 20V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V50Z" fill="#f8fafc"/>
+            <path d="M0 50L60 45C120 40 240 30 360 35C480 40 600 60 720 65C840 70 960 60 1080 50C1200 40 1320 30 1380 25L1440 20V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V50Z" fill="#f0fdf4"/>
           </svg>
         </div>
       </section>
@@ -195,24 +195,24 @@ export default function LandingPage() {
                 icon: Wallet,
                 title: 'Deposite seu saldo',
                 desc: 'Adicione créditos à sua carteira via Pix de forma rápida e segura. O saldo é creditado instantaneamente.',
-                color: 'bg-blue-50 text-blue-600',
+                color: 'bg-blue-500/10 text-blue-400',
               },
               {
                 step: '2',
                 icon: Ticket,
                 title: 'Escolha seu bolão',
                 desc: 'Navegue pelos bolões disponíveis, veja os jogos e escolha quantas cotas quiser comprar.',
-                color: 'bg-green-50 text-green-600',
+                color: 'bg-green-500/10 text-green-400',
               },
               {
                 step: '3',
                 icon: TrendingUp,
                 title: 'Acompanhe e ganhe',
                 desc: 'Acompanhe seus bolões, confira os resultados e receba seus prêmios diretamente na carteira.',
-                color: 'bg-yellow-50 text-yellow-600',
+                color: 'bg-yellow-500/10 text-yellow-400',
               },
             ].map((item) => (
-              <div key={item.step} className="relative bg-card rounded-2xl border border-border p-8 text-center hover:shadow-lg transition-shadow">
+              <div key={item.step} className="relative bg-card border border-border p-8 text-center card-hover">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
                   {item.step}
                 </div>
@@ -241,28 +241,28 @@ export default function LandingPage() {
                 icon: Shield,
                 title: 'Segurança Total',
                 desc: 'Seus dados e transações protegidos. Infraestrutura robusta no Supabase.',
-                color: 'text-blue-600 bg-blue-50',
+                color: 'text-blue-400 bg-blue-500/10',
               },
               {
                 icon: QrCode,
                 title: 'Pix Instantâneo',
                 desc: 'Deposite e receba via Pix integrado ao Mercado Pago. Rápido e sem taxas.',
-                color: 'text-green-600 bg-green-50',
+                color: 'text-green-400 bg-green-500/10',
               },
               {
                 icon: Users,
                 title: 'Jogue em Grupo',
                 desc: 'Aumente suas chances jogando em grupo com mais dezenas por menos.',
-                color: 'text-purple-600 bg-purple-50',
+                color: 'text-purple-400 bg-purple-500/10',
               },
               {
                 icon: TrendingUp,
                 title: 'Transparência Total',
                 desc: 'Veja todos os jogos, dezenas e acompanhe cada centavo em tempo real.',
-                color: 'text-yellow-600 bg-yellow-50',
+                color: 'text-yellow-400 bg-yellow-500/10',
               },
             ].map((feat) => (
-              <div key={feat.title} className="bg-bg rounded-xl p-6 hover:shadow-md transition-shadow border border-border">
+              <div key={feat.title} className="bg-card border border-border p-6 card-hover">
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${feat.color} mb-4`}>
                   <feat.icon className="w-6 h-6" />
                 </div>

@@ -10,27 +10,20 @@ Built with React 19 + TypeScript + Vite 7 + Tailwind CSS v4. The UI and comments
 
 ## Commands
 
-### Run development server
+### Frontend (this repo)
 ```bash
-npm run dev
-```
-Starts on port 3000 with `/api` proxied to backend at `http://localhost:8000`.
-
-### Build for production
-```bash
-npm run build
-```
-Runs TypeScript check (`tsc -b`) then Vite build.
-
-### Lint
-```bash
+npm run dev      # Dev server on port 3000, /api proxied to http://localhost:8000
+npm run build    # TypeScript check (tsc -b) then Vite build
 npm run lint
-```
-
-### Preview production build
-```bash
 npm run preview
 ```
+
+### Backend (`../bolao-lotofacil-backend`)
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Backend is Python + FastAPI. Swagger UI available at `http://localhost:8000/docs` when running.
 
 ## Architecture
 
@@ -39,38 +32,30 @@ npm run preview
 ```
 src/
 ├── App.tsx                     # Router setup, ProtectedRoute wrapper
-├── main.tsx                    # React entry point
 ├── index.css                   # Tailwind v4 theme + custom classes
 ├── components/
 │   ├── Layout.tsx              # Header, footer, responsive navigation
-│   ├── NumberPicker.tsx         # Reusable 5x5 lottery number picker
+│   ├── NumberPicker.tsx        # Reusable 5x5 lottery number picker (15 of 25 numbers)
 │   └── ui/
-│       ├── LoadingSpinner.tsx   # Loading indicator with optional text
-│       └── StatusBadge.tsx      # Colored badge (aberto/fechado/apurado/cancelado)
+│       ├── LoadingSpinner.tsx
+│       └── StatusBadge.tsx     # aberto/fechado/apurado/cancelado → color mapping
 ├── contexts/
-│   └── AuthContext.tsx          # Auth state (userId, email, login/logout)
+│   └── AuthContext.tsx         # Auth state (userId, email, isAuthenticated, login/logout)
 ├── pages/
-│   ├── LandingPage.tsx          # Public landing page
-│   ├── LoginPage.tsx            # Login/Register tabs
-│   ├── HomePage.tsx             # Lists available bolões
-│   ├── BolaoDetalhesPage.tsx    # Pool details, games, buy quota, results
-│   ├── MinhasCotasPage.tsx      # User's purchased quotas
-│   ├── CarteiraPage.tsx         # Wallet balance + transaction history
-│   ├── DepositarPage.tsx        # Pix deposit with QR code
+│   ├── BolaoDetalhesPage.tsx   # Pool details, games, buy quota, results
+│   ├── CarteiraPage.tsx        # Wallet balance + transaction history
+│   ├── DepositarPage.tsx       # Pix deposit with QR code
 │   └── admin/
-│       ├── AdminDashboard.tsx   # Stats cards + activity feed
-│       ├── AdminBoloesPage.tsx  # Table of all bolões with CRUD
-│       ├── AdminCriarBolaoPage.tsx  # Create new bolão
-│       └── AdminEditarBolaoPage.tsx # Edit bolão, manage games, apuração
+│       └── AdminEditarBolaoPage.tsx  # Edit bolão, manage games, apuração
 ├── services/
-│   ├── api.ts                   # Axios instance + auth interceptor
-│   ├── bolaoService.ts          # Public pool endpoints
-│   ├── cotaService.ts           # Quota purchase/listing
-│   ├── carteiraService.ts       # Wallet + transactions
-│   ├── pagamentoService.ts      # Pix payment endpoints
-│   └── adminService.ts          # Admin endpoints (CRUD, games, stats, apuração)
+│   ├── api.ts                  # Axios instance + auth interceptor
+│   ├── bolaoService.ts
+│   ├── cotaService.ts
+│   ├── carteiraService.ts
+│   ├── pagamentoService.ts
+│   └── adminService.ts
 └── types/
-    └── index.ts                 # All TypeScript interfaces
+    └── index.ts                # All TypeScript interfaces
 ```
 
 ### Routing
@@ -80,13 +65,8 @@ Public routes (no layout): `/`, `/login`
 Routes with Layout (header + footer):
 - `/boloes` — browse pools (public)
 - `/bolao/:id` — pool details (public)
-- `/minhas-cotas` — user's quotas (protected)
-- `/carteira` — wallet (protected)
-- `/depositar` — Pix deposit (protected)
-- `/admin` — admin dashboard (protected)
-- `/admin/boloes` — manage bolões (protected)
-- `/admin/boloes/novo` — create bolão (protected)
-- `/admin/boloes/:id` — edit bolão (protected)
+- `/minhas-cotas`, `/carteira`, `/depositar` — protected user pages
+- `/admin`, `/admin/boloes`, `/admin/boloes/novo`, `/admin/boloes/:id` — protected admin pages
 
 `ProtectedRoute` checks `useAuth().isAuthenticated` and redirects to `/login`.
 
@@ -101,65 +81,46 @@ Each service module wraps specific endpoints (e.g., `bolaoService.getById(id)` c
 
 ### Authentication
 
-Simple Bearer token model — the user's Supabase UUID is stored in localStorage (`user_id`, `user_email`) and sent as the Bearer token. `AuthContext` provides `isAuthenticated`, `login()`, `logout()` to all components.
+The user's Supabase UUID is stored in localStorage (`user_id`, `user_email`) and sent as the Bearer token. Admin status is verified server-side via email check — there is no admin flag in the frontend. `AuthContext` provides `isAuthenticated`, `login()`, `logout()`.
+
+### Backend architecture (relevant for API work)
+
+The backend (`../bolao-lotofacil-backend`) uses:
+- **FastAPI** + **Supabase** (PostgreSQL) — no ORM; a custom chainable HTTP client in `app/core/supabase.py`
+- Two Supabase clients: `supabase` (anon key, respects RLS) and `supabase_admin` (service role, bypasses RLS)
+- Atomic quota purchase via Supabase RPC: `comprar_cota(p_usuario_id, p_bolao_id, p_quantidade)`
+- **Mercado Pago** for Pix payments; sandbox mode generates fake QR codes
+- Result appraisal: manual (admin provides numbers) or automatic (fetches from Lotofácil public API)
+
+Key backend env vars (in `../bolao-lotofacil-backend/.env`): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `MERCADOPAGO_ACCESS_TOKEN`, `MERCADOPAGO_ENV`.
 
 ### Styling
 
-Tailwind CSS v4 with custom theme variables in `src/index.css`:
-- Primary: green (`#16a34a`)
-- Uses `@theme` directive for custom colors: `primary`, `primary-dark`, `secondary`, `accent`, `danger`, `success`, `bg`, `card`, `border`, `text`, `text-muted`
+Tailwind CSS v4 with custom theme in `src/index.css` via `@theme`:
+- Primary: green (`#16a34a`), custom colors: `primary`, `primary-dark`, `secondary`, `accent`, `danger`, `success`, `bg`, `card`, `border`, `text`, `text-muted`
 
-Custom CSS classes for lottery number display:
-- `.numero-bolao` — green circle (normal lottery number)
-- `.numero-acerto` — green circle + yellow ring (correct number)
-- `.numero-erro` — gray circle (missed number)
+Custom CSS classes for lottery numbers:
+- `.numero-bolao` — green circle
+- `.numero-acerto` — green circle + yellow ring (hit)
+- `.numero-erro` — gray circle (miss)
 
 ### Key components
 
-**NumberPicker** (`src/components/NumberPicker.tsx`): Reusable 5x5 grid for selecting exactly 15 numbers (1-25). Used in both game creation and manual result input. Props: `onConfirm`, `disabled`, `buttonLabel`, `maxNumbers`.
+**NumberPicker** (`src/components/NumberPicker.tsx`): 5x5 grid for selecting exactly 15 numbers (1-25). Props: `onConfirm`, `disabled`, `buttonLabel`, `maxNumbers`.
 
-**StatusBadge** (`src/components/ui/StatusBadge.tsx`): Colored status badge. Maps pool statuses to colors (aberto=green, fechado=yellow, apurado=blue, cancelado=red).
+**StatusBadge** (`src/components/ui/StatusBadge.tsx`): Maps `aberto`→green, `fechado`→yellow, `apurado`→blue, `cancelado`→red.
 
 ### State management
 
-React hooks (`useState`, `useEffect`) for local state. `AuthContext` for global auth state. No external state management library.
-
-## Configuration
-
-### Vite (`vite.config.ts`)
-- Port: 3000
-- Proxy: `/api` → `http://localhost:8000`
-- Path alias: `@` → `./src/`
-- Plugins: React + Tailwind CSS v4
-
-### TypeScript
-- Target: ES2022
-- Module: ESNext
-- Path alias: `@/*` → `src/*`
-- Strict mode enabled
+React hooks (`useState`, `useEffect`) for local state. `AuthContext` for global auth. No external state library.
 
 ## Deployment
 
-**Production**: Vercel — domain `www.boloeslotofacil.com`
+**Frontend**: Vercel — `www.boloeslotofacil.com`
+- `vercel.json` — SPA rewrite (`/(.*) → /index.html`)
+- Env var: `VITE_API_URL` — full backend URL including `/api/v1` (e.g., `https://bolao-lotofacil-api.onrender.com/api/v1`). Not used in dev (Vite proxy handles it).
+- After changing env vars on Vercel: Deployments > 3 dots > Redeploy.
 
-Deployment config:
-- `vercel.json` — SPA rewrite rule (`/(.*) → /index.html`) so React Router works on all paths.
+**Backend**: Render.com (free tier) — cold start ~30s after 15 min inactivity.
 
-Environment variables on Vercel:
-- `VITE_API_URL` — full backend API base URL including `/api/v1` suffix (e.g., `https://bolao-lotofacil-api.onrender.com/api/v1`). In development, the Vite proxy handles this; in production, this env var is required.
-
-DNS (Hostinger):
-- A record `@` → `76.76.21.21` (Vercel)
-- CNAME `www` → `cname.vercel-dns.com`
-
-After changing environment variables on Vercel, a redeploy is required (Deployments > 3 dots > Redeploy).
-
-## Dependencies
-
-- **react** 19 + **react-dom** 19
-- **react-router-dom** 7 — client-side routing
-- **axios** — HTTP client with interceptors
-- **lucide-react** — icon library
-- **tailwindcss** 4 — utility-first CSS (via Vite plugin)
-- **vite** 7 — build tool
-- **typescript** 5.9
+DNS (Hostinger): A `@` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`

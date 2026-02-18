@@ -63,7 +63,7 @@ export default function HomePage() {
               <Link
                 key={bolao.id}
                 to={`/bolao/${bolao.id}`}
-                className="bg-card rounded-xl border border-border p-5 hover:shadow-md transition-shadow no-underline text-text block"
+                className="bg-card border border-border p-5 no-underline text-text block card-hover"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -89,9 +89,9 @@ export default function HomePage() {
                       <span>{cotasVendidas}/{bolao.total_cotas} cotas vendidas</span>
                       <span>{percentual.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="w-full bg-black/30 rounded-full h-2">
                       <div
-                        className="bg-primary h-2 rounded-full transition-all"
+                        className="bg-primary h-2 rounded-full progress-animated"
                         style={{ width: `${Math.min(percentual, 100)}%` }}
                       />
                     </div>

@@ -59,7 +59,7 @@ export default function DepositarPage() {
         Voltar
       </button>
 
-      <div className="bg-card rounded-xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6 shadow-[0_10px_25px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-2 mb-6">
           <QrCode className="w-6 h-6 text-primary" />
           <h1 className="text-xl font-bold">Depositar via Pix</h1>
@@ -91,7 +91,7 @@ export default function DepositarPage() {
                   key={v}
                   type="button"
                   onClick={() => setValor(String(v))}
-                  className="flex-1 py-2 text-sm font-medium bg-bg border border-border rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+                  className="flex-1 py-2 text-sm font-semibold bg-white border border-border rounded-xl hover:border-primary hover:text-primary cursor-pointer transition-colors shadow-sm"
                 >
                   R$ {v}
                 </button>
@@ -101,7 +101,7 @@ export default function DepositarPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-colors border-0 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 btn-gradient text-white font-semibold py-3 rounded-lg border-0 cursor-pointer"
             >
               <QrCode className="w-4 h-4" />
               {loading ? 'Gerando...' : 'Gerar QR Code Pix'}
@@ -109,7 +109,7 @@ export default function DepositarPage() {
           </form>
         ) : (
           <div className="space-y-4 text-center">
-            <div className="bg-green-50 text-green-800 p-3 rounded-lg text-sm">
+            <div className="bg-green-500/15 text-green-300 p-3 rounded-lg text-sm ring-1 ring-green-500/30">
               Pix gerado com sucesso! Escaneie o QR Code ou copie o código.
             </div>
 
