@@ -112,20 +112,20 @@ export default function CarteiraPage() {
       </div>
 
       {/* Saldo Principal */}
-      <div className="rounded-2xl p-6 mb-6 saldo-glow">
+      <div className="p-6 mb-6 saldo-glow">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-green-700 text-sm font-medium mb-1">Saldo Disponivel</p>
-            <p className="text-5xl font-extrabold tracking-tight valor-gold">
+            <p className="text-white/80 text-sm font-medium mb-1">Saldo Disponivel</p>
+            <p className="text-5xl font-extrabold tracking-tight text-white">
               R$ {saldo ? formatCurrency(Number(saldo.saldo_disponivel)) : '0,00'}
             </p>
           </div>
-          <Wallet className="w-12 h-12 text-green-400 opacity-60" />
+          <Wallet className="w-12 h-12 text-white/40" />
         </div>
         {saldo && Number(saldo.saldo_bloqueado) > 0 && (
-          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-green-200">
-            <Lock className="w-4 h-4 text-green-500" />
-            <span className="text-sm text-green-700">
+          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/20">
+            <Lock className="w-4 h-4 text-white/70" />
+            <span className="text-sm text-white/80">
               Saldo bloqueado: R$ {formatCurrency(Number(saldo.saldo_bloqueado))}
             </span>
           </div>
@@ -148,23 +148,23 @@ export default function CarteiraPage() {
           </div>
           <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center">
-                <Trophy className="w-4 h-4 text-yellow-600" />
+              <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-slate-500" />
               </div>
               <span className="text-xs text-text-muted font-medium">Premios</span>
             </div>
-            <p className="text-xl font-extrabold text-yellow-600">
+            <p className="text-xl font-extrabold text-green-600">
               R$ {formatCurrency(resumo.total_premios)}
             </p>
           </div>
           <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+                <TrendingDown className="w-4 h-4 text-slate-500" />
               </div>
               <span className="text-xs text-text-muted font-medium">Gastos em Cotas</span>
             </div>
-            <p className="text-xl font-extrabold text-blue-600">
+            <p className="text-xl font-extrabold text-red-500">
               R$ {formatCurrency(resumo.total_compras)}
             </p>
           </div>
@@ -190,7 +190,7 @@ export default function CarteiraPage() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg border-0 cursor-pointer transition-colors ${
                   filtro === f.value
                     ? 'bg-primary text-white'
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                 }`}
               >
                 {f.label}
@@ -218,7 +218,7 @@ export default function CarteiraPage() {
                   return (
                     <div
                       key={t.id}
-                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-green-50 transition-colors"
+                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-slate-50 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl ${info.bg} flex items-center justify-center shrink-0`}>

@@ -67,9 +67,9 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-green-900">
+      <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-slate-900">
             <Clover className="w-7 h-7 text-primary" />
             <span>Bolão Lotofácil</span>
           </Link>
@@ -82,8 +82,8 @@ export default function Layout() {
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
                   location.pathname === to
-                    ? 'bg-green-100 text-green-800'
-                    : 'text-gray-600 hover:bg-green-50 hover:text-green-800'
+                    ? 'bg-green-50 text-green-700'
+                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -98,10 +98,10 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/perfil"
-                  className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg no-underline hover:bg-gray-100 transition-colors border border-gray-200"
+                  className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg no-underline hover:bg-slate-100 transition-colors border border-slate-200"
                 >
-                  <User className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">
+                  <User className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm text-slate-700">
                     {userName || 'Usuário'}
                   </span>
                 </Link>
@@ -115,7 +115,7 @@ export default function Layout() {
                 <button
                   type="button"
                   onClick={logout}
-                  className="flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-gray-200"
+                  className="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-slate-200"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -125,7 +125,7 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 text-gray-600 hover:text-green-800 text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
+                  className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
                 >
                   <LogIn className="w-4 h-4" />
                   Entrar
@@ -152,7 +152,7 @@ export default function Layout() {
 
         {/* Mobile Nav */}
         {menuOpen && (
-          <nav className="md:hidden border-t border-green-100 bg-white px-4 py-3 space-y-1">
+          <nav className="md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-1">
             {navItems.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
@@ -160,8 +160,8 @@ export default function Layout() {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium no-underline ${
                   location.pathname === to
-                    ? 'bg-green-100 text-green-800'
-                    : 'text-gray-600 hover:bg-green-50'
+                    ? 'bg-green-50 text-green-700'
+                    : 'text-slate-600 hover:bg-slate-50'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -169,7 +169,7 @@ export default function Layout() {
               </Link>
             ))}
 
-            <div className="border-t border-green-100 mt-2 pt-2">
+            <div className="border-t border-slate-100 mt-2 pt-2">
               {isAuthenticated ? (
                 <>
                   <Link
@@ -183,7 +183,7 @@ export default function Layout() {
                   <Link
                     to="/perfil"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-50 no-underline"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 no-underline"
                   >
                     <User className="w-4 h-4" />
                     {userName || 'Meu Perfil'}
@@ -191,7 +191,7 @@ export default function Layout() {
                   <button
                     type="button"
                     onClick={() => { logout(); setMenuOpen(false) }}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-50 w-full bg-transparent border-0 cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 w-full bg-transparent border-0 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     Sair
@@ -202,7 +202,7 @@ export default function Layout() {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 no-underline hover:bg-green-50"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 no-underline hover:bg-slate-50"
                   >
                     <LogIn className="w-4 h-4" />
                     Entrar
@@ -228,13 +228,13 @@ export default function Layout() {
 
       {/* Mobile Bottom Navbar */}
       {isAuthenticated && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-green-200 flex">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl flex">
           {bottomTabs.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
-              className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs no-underline transition-colors ${
-                location.pathname === to ? 'text-primary bg-green-50' : 'text-gray-400 hover:text-primary'
+              className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 text-xs no-underline transition-colors ${
+                location.pathname === to ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:text-green-600'
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -250,9 +250,9 @@ export default function Layout() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clover className="w-4 h-4 text-primary" />
-              <span className="font-semibold text-sm text-green-900">Bolão Lotofácil</span>
+              <span className="font-semibold text-sm text-slate-700">Bolão Lotofácil</span>
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-slate-400">
               &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade
             </p>
           </div>

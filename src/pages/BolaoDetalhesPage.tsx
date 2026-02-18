@@ -248,7 +248,7 @@ export default function BolaoDetalhesPage() {
               </h2>
               <div className="flex flex-wrap gap-2 mb-3">
                 {bolao.resultado_dezenas.sort((a, b) => a - b).map((d) => (
-                  <span key={d} className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-yellow-500 text-white font-bold text-sm shadow-sm">
+                  <span key={d} className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 text-amber-800 font-bold text-sm">
                     {String(d).padStart(2, '0')}
                   </span>
                 ))}
@@ -296,7 +296,7 @@ export default function BolaoDetalhesPage() {
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {res.dezenas.sort((a, b) => a - b).map((d) => (
-                        <span key={d} className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-yellow-500 text-white font-bold text-[11px] shadow-sm">
+                        <span key={d} className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-100 text-amber-800 font-bold text-[11px]">
                           {String(d).padStart(2, '0')}
                         </span>
                       ))}

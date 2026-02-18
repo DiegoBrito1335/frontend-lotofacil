@@ -107,7 +107,7 @@ function ConcursoResultado({
       {/* Botão para expandir jogos */}
       <button
         onClick={() => setJogosAbertos(!jogosAbertos)}
-        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-green-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-slate-50 transition-colors"
       >
         <span className="text-sm font-medium text-text">
           Ver Jogos ({resultado.jogos.length})
@@ -223,15 +223,15 @@ export default function ResultadosPage() {
 
       {/* Resumo geral */}
       {resultados.length > 0 && (
-        <div className="rounded-xl p-5 mb-5 saldo-glow">
+        <div className="p-5 mb-5 saldo-glow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-700 text-sm">Total em Prêmios</p>
-              <p className="text-4xl font-extrabold mt-1 tracking-tight">{formatCurrency(totalPremios)}</p>
+              <p className="text-white/80 text-sm">Total em Prêmios</p>
+              <p className="text-4xl font-extrabold mt-1 tracking-tight text-white">{formatCurrency(totalPremios)}</p>
             </div>
             <div className="text-right">
-              <p className="text-green-700 text-sm">Bolões com resultado</p>
-              <p className="text-2xl font-bold mt-1">{resultados.length}</p>
+              <p className="text-white/80 text-sm">Bolões com resultado</p>
+              <p className="text-2xl font-bold mt-1 text-white">{resultados.length}</p>
             </div>
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function ResultadosPage() {
                 {/* Header do bolão */}
                 <button
                   onClick={() => toggleExpandido(bolao.bolao_id)}
-                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-green-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-slate-50 transition-colors"
                 >
                   <div>
                     <h3 className="font-bold text-lg text-text">{bolao.bolao_nome}</h3>
