@@ -15,10 +15,10 @@
   --color-text-muted: #64748b;
 }
 
-/* ── Body: fundo slate neutro fintech ── */
+/* ── Body: fundo fintech com toque verde sutil ── */
 body {
   margin: 0;
-  background: #f8fafc;
+  background: linear-gradient(180deg, #86efac 0%, #f0fdf4 40%);
   min-height: 100vh;
   color: var(--color-text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;

@@ -11,7 +11,16 @@ function formatCurrency(value: number) {
 }
 
 function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuario }) {
-  const resumo = resultado.resumo_acertos || {}
+  // Usa resumo_acertos do backend se disponível; caso contrário, calcula dos jogos
+  const resumo: Record<number, number> =
+    resultado.resumo_acertos && Object.keys(resultado.resumo_acertos).length > 0
+      ? resultado.resumo_acertos
+      : resultado.jogos.reduce<Record<number, number>>((acc, jogo) => {
+          if (jogo.acertos >= 11) {
+            acc[jogo.acertos] = (acc[jogo.acertos] || 0) + 1
+          }
+          return acc
+        }, {})
   const totalJogos = resultado.jogos.length
 
   return (
