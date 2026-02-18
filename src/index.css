@@ -117,6 +117,7 @@ body {
 }
 
 .progress-animated {
+  width: var(--progress, 0%);
   transform-origin: left;
   animation: progressLoad 1s ease-out;
 }

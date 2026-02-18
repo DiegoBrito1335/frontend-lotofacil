@@ -139,6 +139,8 @@ export default function DepositarPage() {
                 <input
                   readOnly
                   value={pix.qr_code}
+                  title="Código Pix"
+                  aria-label="Código Pix copia e cola"
                   className="flex-1 px-3 py-2 text-xs bg-white border border-border rounded font-mono truncate"
                 />
                 <button

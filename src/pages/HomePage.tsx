@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { bolaoService } from '@/services/bolaoService'
 import type { Bolao } from '@/types'
@@ -92,7 +92,7 @@ export default function HomePage() {
                     <div className="w-full bg-black/30 rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full progress-animated"
-                        style={{ width: `${Math.min(percentual, 100)}%` }}
+                        style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
                       />
                     </div>
                   </div>

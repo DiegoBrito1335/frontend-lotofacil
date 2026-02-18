@@ -60,7 +60,7 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-[#031a0d]/95 backdrop-blur-md border-b border-emerald-900/40 text-white sticky top-0 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+      <header className="bg-bg/95 backdrop-blur-md border-b border-emerald-900/40 text-white sticky top-0 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-white">
             <Clover className="w-7 h-7 text-primary" />
@@ -107,7 +107,7 @@ export default function Layout() {
                 </Link>
                 <button
                   onClick={logout}
-                  className="flex items-center gap-1.5 bg-white/8 hover:bg-white/15 text-white text-sm px-3 py-2 rounded-lg transition-colors border-0 cursor-pointer font-medium border border-white/10"
+                  className="flex items-center gap-1.5 bg-white/8 hover:bg-white/15 text-white text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-white/10"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -217,7 +217,7 @@ export default function Layout() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-emerald-900/40 bg-[#031a0d]/80 backdrop-blur-sm">
+      <footer className="border-t border-emerald-900/40 bg-bg/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

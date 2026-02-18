@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { bolaoService } from '@/services/bolaoService'
 import { cotaService } from '@/services/cotaService'
@@ -140,7 +140,7 @@ export default function BolaoDetalhesPage() {
           <div className="w-full bg-black/30 rounded-full h-3">
             <div
               className="bg-primary h-3 rounded-full progress-animated"
-              style={{ width: `${Math.min(percentual, 100)}%` }}
+              style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
             />
           </div>
         </div>
@@ -185,6 +185,7 @@ export default function BolaoDetalhesPage() {
                   <label className="text-sm text-text-muted block mb-1">Quantidade</label>
                   <div className="flex items-center gap-2">
                     <button
+                      aria-label="Diminuir quantidade"
                       onClick={() => setQuantidade(Math.max(1, quantidade - 1))}
                       className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-white/10 transition-colors cursor-pointer"
                     >
@@ -195,10 +196,13 @@ export default function BolaoDetalhesPage() {
                       min={1}
                       max={bolao.cotas_disponiveis}
                       value={quantidade}
+                      title="Quantidade de cotas"
+                      aria-label="Quantidade de cotas"
                       onChange={(e) => setQuantidade(Math.max(1, Math.min(bolao.cotas_disponiveis, parseInt(e.target.value) || 1)))}
                       className="w-16 h-10 text-center border border-border rounded-lg bg-bg text-lg font-semibold"
                     />
                     <button
+                      aria-label="Aumentar quantidade"
                       onClick={() => setQuantidade(Math.min(bolao.cotas_disponiveis, quantidade + 1))}
                       className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-white/10 transition-colors cursor-pointer"
                     >
