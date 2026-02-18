@@ -60,9 +60,9 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-bg/95 backdrop-blur-md border-b border-emerald-900/40 text-white sticky top-0 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+      <header className="bg-white/95 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-white">
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-green-900">
             <Clover className="w-7 h-7 text-primary" />
             <span>Bolão Lotofácil</span>
           </Link>
@@ -75,8 +75,8 @@ export default function Layout() {
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
                   location.pathname === to
-                    ? 'bg-white/15 text-white'
-                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    ? 'bg-green-100 text-green-800'
+                    : 'text-gray-600 hover:bg-green-50 hover:text-green-800'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -91,23 +91,23 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/perfil"
-                  className="flex items-center gap-2 bg-white/8 px-3 py-1.5 rounded-lg no-underline hover:bg-white/15 transition-colors border border-white/10"
+                  className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg no-underline hover:bg-gray-100 transition-colors border border-gray-200"
                 >
-                  <User className="w-4 h-4 text-white/60" />
-                  <span className="text-sm text-white/75">
+                  <User className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">
                     {userName || 'Usuário'}
                   </span>
                 </Link>
                 <Link
                   to="/carteira"
-                  className="flex items-center gap-1.5 bg-yellow-400 text-green-900 px-3 py-1.5 rounded-lg text-sm font-bold no-underline hover:bg-yellow-300 transition-colors shadow-[0_0_15px_rgba(250,204,21,0.25)]"
+                  className="flex items-center gap-1.5 bg-primary text-white px-3 py-1.5 rounded-lg text-sm font-bold no-underline hover:bg-primary-dark transition-colors shadow-sm"
                 >
                   <Wallet className="w-4 h-4" />
                   R$ {saldo.toFixed(2).replace('.', ',')}
                 </Link>
                 <button
                   onClick={logout}
-                  className="flex items-center gap-1.5 bg-white/8 hover:bg-white/15 text-white text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-white/10"
+                  className="flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-gray-200"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -117,14 +117,14 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
+                  className="flex items-center gap-1.5 text-gray-600 hover:text-green-800 text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
                 >
                   <LogIn className="w-4 h-4" />
                   Entrar
                 </Link>
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 bg-yellow-400 text-green-900 font-bold text-sm px-5 py-2 rounded-lg no-underline hover:bg-yellow-300 transition-colors shadow-[0_0_15px_rgba(250,204,21,0.2)]"
+                  className="flex items-center gap-1.5 btn-gradient text-white font-bold text-sm px-5 py-2 rounded-lg no-underline"
                 >
                   Criar Conta
                 </Link>
@@ -134,7 +134,7 @@ export default function Layout() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden bg-transparent border-0 text-white cursor-pointer p-1"
+              className="md:hidden bg-transparent border-0 text-gray-700 cursor-pointer p-1"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -143,7 +143,7 @@ export default function Layout() {
 
         {/* Mobile Nav */}
         {menuOpen && (
-          <nav className="md:hidden border-t border-white/10 bg-[#022c22]/98 px-4 py-3 space-y-1">
+          <nav className="md:hidden border-t border-green-100 bg-white px-4 py-3 space-y-1">
             {navItems.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
@@ -151,8 +151,8 @@ export default function Layout() {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium no-underline ${
                   location.pathname === to
-                    ? 'bg-white/15 text-white'
-                    : 'text-white/70 hover:bg-white/10'
+                    ? 'bg-green-100 text-green-800'
+                    : 'text-gray-600 hover:bg-green-50'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -160,13 +160,13 @@ export default function Layout() {
               </Link>
             ))}
 
-            <div className="border-t border-white/10 mt-2 pt-2">
+            <div className="border-t border-green-100 mt-2 pt-2">
               {isAuthenticated ? (
                 <>
                   <Link
                     to="/carteira"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 mx-3 mb-2 px-3 py-2 bg-yellow-400 text-green-900 rounded-lg text-sm font-bold no-underline hover:bg-yellow-300 transition-colors"
+                    className="flex items-center gap-2 mx-3 mb-2 px-3 py-2 bg-primary text-white rounded-lg text-sm font-bold no-underline hover:bg-primary-dark transition-colors"
                   >
                     <Wallet className="w-4 h-4" />
                     Saldo: R$ {saldo.toFixed(2).replace('.', ',')}
@@ -174,14 +174,14 @@ export default function Layout() {
                   <Link
                     to="/perfil"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:bg-white/10 no-underline"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-50 no-underline"
                   >
                     <User className="w-4 h-4" />
                     {userName || 'Meu Perfil'}
                   </Link>
                   <button
                     onClick={() => { logout(); setMenuOpen(false) }}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white/70 hover:bg-white/10 w-full bg-transparent border-0 cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-50 w-full bg-transparent border-0 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     Sair
@@ -192,7 +192,7 @@ export default function Layout() {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-white no-underline hover:bg-white/10"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 no-underline hover:bg-green-50"
                   >
                     <LogIn className="w-4 h-4" />
                     Entrar
@@ -200,7 +200,7 @@ export default function Layout() {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 mx-3 mt-2 py-2.5 rounded-lg text-sm font-bold bg-yellow-400 text-green-900 no-underline hover:bg-yellow-300 transition-colors"
+                    className="flex items-center justify-center gap-2 mx-3 mt-2 py-2.5 rounded-lg text-sm font-bold btn-gradient text-white no-underline"
                   >
                     Criar Conta Grátis
                   </Link>
@@ -217,14 +217,14 @@ export default function Layout() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-emerald-900/40 bg-bg/80 backdrop-blur-sm">
+      <footer className="border-t border-green-200 bg-bg/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Clover className="w-4 h-4 text-primary" />
-              <span className="font-semibold text-sm text-white/80">Bolão Lotofácil</span>
+              <span className="font-semibold text-sm text-green-900">Bolão Lotofácil</span>
             </div>
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-gray-400">
               &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade
             </p>
           </div>

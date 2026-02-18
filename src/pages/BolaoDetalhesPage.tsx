@@ -137,7 +137,7 @@ export default function BolaoDetalhesPage() {
             <span>{cotasVendidas}/{bolao.total_cotas} cotas vendidas</span>
             <span>{percentual.toFixed(0)}%</span>
           </div>
-          <div className="w-full bg-black/30 rounded-full h-3">
+          <div className="w-full bg-gray-200 rounded-full h-3">
             <div
               className="bg-primary h-3 rounded-full progress-animated"
               style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
@@ -187,7 +187,7 @@ export default function BolaoDetalhesPage() {
                     <button
                       aria-label="Diminuir quantidade"
                       onClick={() => setQuantidade(Math.max(1, quantidade - 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-white/10 transition-colors cursor-pointer"
+                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-green-50 transition-colors cursor-pointer"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
@@ -204,7 +204,7 @@ export default function BolaoDetalhesPage() {
                     <button
                       aria-label="Aumentar quantidade"
                       onClick={() => setQuantidade(Math.min(bolao.cotas_disponiveis, quantidade + 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-white/10 transition-colors cursor-pointer"
+                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-green-50 transition-colors cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -228,7 +228,7 @@ export default function BolaoDetalhesPage() {
                 </button>
 
                 {mensagem && (
-                  <div className={`p-3 rounded-lg text-sm ${mensagem.tipo === 'sucesso' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
+                  <div className={`p-3 rounded-lg text-sm ${mensagem.tipo === 'sucesso' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>
                     {mensagem.texto}
                   </div>
                 )}
@@ -254,12 +254,12 @@ export default function BolaoDetalhesPage() {
                 ))}
               </div>
               {premioUnico > 0 && (
-                <div className="bg-green-500/10 border border-green-500/25 rounded-lg p-3 flex items-center justify-between">
-                  <span className="text-sm font-medium text-green-300 flex items-center gap-1">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
+                  <span className="text-sm font-medium text-green-700 flex items-center gap-1">
                     <DollarSign className="w-4 h-4" />
                     Prêmio Distribuído
                   </span>
-                  <span className="text-lg font-bold text-green-400">R$ {premioUnico.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-green-800">R$ {premioUnico.toFixed(2)}</span>
                 </div>
               )}
             </div>
@@ -275,11 +275,11 @@ export default function BolaoDetalhesPage() {
 
               {premioTotalGeral > 0 && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-green-300 flex items-center gap-1">
+                  <span className="text-sm font-medium text-green-700 flex items-center gap-1">
                     <DollarSign className="w-4 h-4" />
                     Prêmio Total
                   </span>
-                  <span className="text-lg font-bold text-green-400">R$ {premioTotalGeral.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-green-800">R$ {premioTotalGeral.toFixed(2)}</span>
                 </div>
               )}
 
@@ -289,7 +289,7 @@ export default function BolaoDetalhesPage() {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-semibold">Concurso {res.concurso_numero}</span>
                       {res.premio_total > 0 && (
-                        <span className="text-xs bg-green-500/15 text-green-300 px-2 py-0.5 rounded font-medium">
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-medium">
                           R$ {res.premio_total.toFixed(2)}
                         </span>
                       )}
@@ -326,9 +326,9 @@ export default function BolaoDetalhesPage() {
                         <p className="text-xs text-text-muted font-medium">Jogo {index + 1}</p>
                         {acertos !== null && (
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                            acertos >= 14 ? 'bg-yellow-500/20 text-yellow-300' :
-                            acertos >= 11 ? 'bg-green-500/20 text-green-300' :
-                            'bg-black/25 text-white/40'
+                            acertos >= 14 ? 'bg-yellow-100 text-yellow-800' :
+                            acertos >= 11 ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-400'
                           }`}>
                             {acertos} acertos
                           </span>

@@ -109,7 +109,7 @@ export default function DepositarPage() {
           </form>
         ) : (
           <div className="space-y-4 text-center">
-            <div className="bg-green-500/15 text-green-300 p-3 rounded-lg text-sm ring-1 ring-green-500/30">
+            <div className="bg-green-100 text-green-800 p-3 rounded-lg text-sm ring-1 ring-green-200">
               Pix gerado com sucesso! Escaneie o QR Code ou copie o código.
             </div>
 

@@ -119,7 +119,7 @@ export default function LoginPage() {
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'login'
                     ? 'bg-card text-primary border-b-2 border-primary'
-                    : 'bg-black/20 text-text-muted hover:text-text'
+                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
                 }`}
               >
                 <LogIn className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function LoginPage() {
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'registro'
                     ? 'bg-card text-primary border-b-2 border-primary'
-                    : 'bg-black/20 text-text-muted hover:text-text'
+                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
                 }`}
               >
                 <UserPlus className="w-4 h-4" />
@@ -168,7 +168,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setError('') }}
                         placeholder="seu@email.com"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -185,7 +185,7 @@ export default function LoginPage() {
                         value={senha}
                         onChange={(e) => { setSenha(e.target.value); setError('') }}
                         placeholder="Sua senha"
-                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                       <button
                         type="button"
@@ -230,7 +230,7 @@ export default function LoginPage() {
                         value={nome}
                         onChange={(e) => { setNome(e.target.value); setError('') }}
                         placeholder="Seu nome"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -246,7 +246,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setError('') }}
                         placeholder="seu@email.com"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -262,7 +262,7 @@ export default function LoginPage() {
                         value={senha}
                         onChange={(e) => { setSenha(e.target.value); setError('') }}
                         placeholder="Mínimo 6 caracteres"
-                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-black/20 text-text placeholder:text-text-muted/50 focus:bg-black/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                       <button
                         type="button"

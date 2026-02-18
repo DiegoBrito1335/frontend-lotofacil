@@ -23,15 +23,15 @@ function formatCurrency(value: number) {
 function getOrigemInfo(origem: string, tipo: string) {
   switch (origem) {
     case 'premio_bolao':
-      return { label: 'Premio de Bolao', icon: Trophy, color: 'text-yellow-400', bg: 'bg-yellow-500/10' }
+      return { label: 'Premio de Bolao', icon: Trophy, color: 'text-yellow-600', bg: 'bg-yellow-100' }
     case 'pix':
-      return { label: 'Deposito via Pix', icon: QrCode, color: 'text-green-400', bg: 'bg-green-500/10' }
+      return { label: 'Deposito via Pix', icon: QrCode, color: 'text-green-600', bg: 'bg-green-100' }
     case 'compra_cota':
-      return { label: 'Compra de Cota', icon: Ticket, color: 'text-blue-400', bg: 'bg-blue-500/10' }
+      return { label: 'Compra de Cota', icon: Ticket, color: 'text-blue-600', bg: 'bg-blue-100' }
     default:
       return tipo === 'credito'
-        ? { label: origem || 'Credito', icon: ArrowUpCircle, color: 'text-green-400', bg: 'bg-green-500/10' }
-        : { label: origem || 'Debito', icon: ArrowDownCircle, color: 'text-red-400', bg: 'bg-red-500/10' }
+        ? { label: origem || 'Credito', icon: ArrowUpCircle, color: 'text-green-600', bg: 'bg-green-100' }
+        : { label: origem || 'Debito', icon: ArrowDownCircle, color: 'text-red-500', bg: 'bg-red-100' }
   }
 }
 
@@ -112,20 +112,20 @@ export default function CarteiraPage() {
       </div>
 
       {/* Saldo Principal */}
-      <div className="rounded-2xl p-6 text-white mb-6 saldo-glow">
+      <div className="rounded-2xl p-6 mb-6 saldo-glow">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-green-100 text-sm font-medium mb-1">Saldo Disponivel</p>
+            <p className="text-green-700 text-sm font-medium mb-1">Saldo Disponivel</p>
             <p className="text-5xl font-extrabold tracking-tight valor-gold">
               R$ {saldo ? formatCurrency(Number(saldo.saldo_disponivel)) : '0,00'}
             </p>
           </div>
-          <Wallet className="w-12 h-12 text-green-200 opacity-50" />
+          <Wallet className="w-12 h-12 text-green-400 opacity-60" />
         </div>
         {saldo && Number(saldo.saldo_bloqueado) > 0 && (
-          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/20">
-            <Lock className="w-4 h-4 text-green-200" />
-            <span className="text-sm text-green-100">
+          <div className="flex items-center gap-2 mt-4 pt-4 border-t border-green-200">
+            <Lock className="w-4 h-4 text-green-500" />
+            <span className="text-sm text-green-700">
               Saldo bloqueado: R$ {formatCurrency(Number(saldo.saldo_bloqueado))}
             </span>
           </div>
@@ -137,8 +137,8 @@ export default function CarteiraPage() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-green-400" />
+              <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-green-600" />
               </div>
               <span className="text-xs text-text-muted font-medium">Depositos</span>
             </div>
@@ -148,8 +148,8 @@ export default function CarteiraPage() {
           </div>
           <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-                <Trophy className="w-4 h-4 text-yellow-400" />
+              <div className="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-yellow-600" />
               </div>
               <span className="text-xs text-text-muted font-medium">Premios</span>
             </div>
@@ -159,8 +159,8 @@ export default function CarteiraPage() {
           </div>
           <div className="bg-card border border-border p-4 card-hover">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <TrendingDown className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                <TrendingDown className="w-4 h-4 text-blue-600" />
               </div>
               <span className="text-xs text-text-muted font-medium">Gastos em Cotas</span>
             </div>
@@ -190,7 +190,7 @@ export default function CarteiraPage() {
                 className={`px-3 py-1.5 text-xs font-medium rounded-lg border-0 cursor-pointer transition-colors ${
                   filtro === f.value
                     ? 'bg-primary text-white'
-                    : 'bg-black/20 text-text-muted hover:bg-white/10'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                 }`}
               >
                 {f.label}
@@ -218,7 +218,7 @@ export default function CarteiraPage() {
                   return (
                     <div
                       key={t.id}
-                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-white/5 transition-colors"
+                      className="flex items-center justify-between px-5 py-3.5 border-b border-border last:border-0 hover:bg-green-50 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl ${info.bg} flex items-center justify-center shrink-0`}>
@@ -239,7 +239,7 @@ export default function CarteiraPage() {
                         </div>
                       </div>
                       <div className="text-right shrink-0 ml-3">
-                        <p className={`font-bold text-sm ${t.tipo === 'credito' ? 'text-green-400' : 'text-red-400'}`}>
+                        <p className={`font-bold text-sm ${t.tipo === 'credito' ? 'text-green-600' : 'text-red-500'}`}>
                           {t.tipo === 'credito' ? '+' : '-'} R$ {formatCurrency(Number(t.valor))}
                         </p>
                       </div>

@@ -89,7 +89,7 @@ export default function HomePage() {
                       <span>{cotasVendidas}/{bolao.total_cotas} cotas vendidas</span>
                       <span>{percentual.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full bg-black/30 rounded-full h-2">
+                    <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full progress-animated"
                         style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
