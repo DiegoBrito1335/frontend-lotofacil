@@ -35,6 +35,13 @@ const authNav = [
   { to: '/regras', label: 'Regras', icon: FileText },
 ]
 
+const bottomTabs = [
+  { to: '/boloes', label: 'Início', icon: Home },
+  { to: '/minhas-cotas', label: 'Cotas', icon: Ticket },
+  { to: '/resultados', label: 'Resultados', icon: Trophy },
+  { to: '/carteira', label: 'Carteira', icon: Wallet },
+]
+
 const adminNav = { to: '/admin', label: 'Admin', icon: Shield }
 
 export default function Layout() {
@@ -106,6 +113,7 @@ export default function Layout() {
                   R$ {saldo.toFixed(2).replace('.', ',')}
                 </Link>
                 <button
+                  type="button"
                   onClick={logout}
                   className="flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-gray-200"
                 >
@@ -133,6 +141,7 @@ export default function Layout() {
 
             {/* Mobile menu button */}
             <button
+              type="button"
               onClick={() => setMenuOpen(!menuOpen)}
               className="md:hidden bg-transparent border-0 text-gray-700 cursor-pointer p-1"
             >
@@ -180,6 +189,7 @@ export default function Layout() {
                     {userName || 'Meu Perfil'}
                   </Link>
                   <button
+                    type="button"
                     onClick={() => { logout(); setMenuOpen(false) }}
                     className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-50 w-full bg-transparent border-0 cursor-pointer"
                   >
@@ -212,9 +222,27 @@ export default function Layout() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+      <main className={`flex-1 max-w-7xl w-full mx-auto px-4 py-6 ${isAuthenticated ? 'pb-24 md:pb-6' : ''}`}>
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Navbar */}
+      {isAuthenticated && (
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-green-200 flex">
+          {bottomTabs.map(({ to, label, icon: Icon }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs no-underline transition-colors ${
+                location.pathname === to ? 'text-primary bg-green-50' : 'text-gray-400 hover:text-primary'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span>{label}</span>
+            </Link>
+          ))}
+        </nav>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-green-200 bg-bg/80 backdrop-blur-sm">

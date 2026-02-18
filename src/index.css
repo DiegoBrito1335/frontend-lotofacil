@@ -48,10 +48,10 @@ body {
 }
 
 .card-hover:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px);
   box-shadow:
-    0 8px 32px rgba(22, 163, 74, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.06);
+    0 12px 40px rgba(22, 163, 74, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 /* ── Botão gradiente verde vibrante + brilho deslizante ── */
@@ -80,6 +80,10 @@ body {
 
 .btn-gradient:hover::after {
   left: 150%;
+}
+
+.btn-gradient:active {
+  transform: scale(0.95);
 }
 
 .btn-gradient:disabled {

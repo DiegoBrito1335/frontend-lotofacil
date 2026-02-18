@@ -92,7 +92,7 @@ export default function CarteiraPage() {
   if (loading) return <LoadingSpinner text="Carregando carteira..." />
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto fade-in">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>

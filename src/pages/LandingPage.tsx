@@ -14,6 +14,9 @@ import {
   LogIn,
   Menu,
   X,
+  Lock,
+  Database,
+  CreditCard,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -76,6 +79,7 @@ export default function LandingPage() {
 
           {/* Mobile menu */}
           <button
+            type="button"
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden bg-transparent border-0 text-white cursor-pointer p-1"
           >
@@ -180,6 +184,28 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ===== SOCIAL PROOF STATS ===== */}
+      <section className="bg-white border-b border-green-100 py-12">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {[
+              { icon: Users, value: '1.200+', label: 'Usuários ativos' },
+              { icon: TrendingUp, value: 'R$ 87.000', label: 'Distribuídos em prêmios' },
+              { icon: Ticket, value: '450+', label: 'Bolões realizados' },
+              { icon: Star, value: '98%', label: 'Satisfação dos jogadores' },
+            ].map((stat) => (
+              <div key={stat.label} className="flex flex-col items-center gap-2">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-green-100 mb-1">
+                  <stat.icon className="w-6 h-6 text-primary" />
+                </div>
+                <p className="text-3xl font-extrabold text-primary">{stat.value}</p>
+                <p className="text-sm text-gray-500">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ===== COMO FUNCIONA ===== */}
       <section id="como-funciona" className="py-20 bg-bg">
         <div className="max-w-7xl mx-auto px-4">
@@ -268,6 +294,31 @@ export default function LandingPage() {
                 </div>
                 <h3 className="font-bold text-text mb-1">{feat.title}</h3>
                 <p className="text-text-muted text-sm leading-relaxed">{feat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== SEGURANÇA ===== */}
+      <section id="seguranca" className="py-16 bg-bg border-t border-border">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-2xl font-extrabold text-text mb-2">Sua segurança é nossa prioridade</h2>
+          <p className="text-text-muted text-sm mb-10">Tecnologia de ponta para proteger seus dados e transações</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {[
+              { icon: Lock, title: 'SSL Seguro', desc: 'Conexão criptografada' },
+              { icon: Database, title: 'Supabase', desc: 'Dados protegidos' },
+              { icon: CreditCard, title: 'Mercado Pago', desc: 'Pagamentos certificados' },
+            ].map((badge) => (
+              <div key={badge.title} className="bg-white border border-green-100 rounded-2xl px-6 py-4 flex items-center gap-3 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+                  <badge.icon className="w-5 h-5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-text text-sm">{badge.title}</p>
+                  <p className="text-xs text-text-muted">{badge.desc}</p>
+                </div>
               </div>
             ))}
           </div>

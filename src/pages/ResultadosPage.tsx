@@ -209,7 +209,7 @@ export default function ResultadosPage() {
   const totalPremios = resultados.reduce((sum, r) => sum + r.premio_usuario, 0)
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto fade-in">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-text flex items-center gap-2">

@@ -105,7 +105,7 @@ export default function BolaoDetalhesPage() {
   const valorTotal = quantidade * Number(bolao.valor_cota)
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className={`max-w-4xl mx-auto ${bolao.status === 'aberto' && bolao.cotas_disponiveis > 0 ? 'pb-24 md:pb-0' : ''}`}>
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-1 text-text-muted hover:text-text mb-4 bg-transparent border-0 cursor-pointer text-sm"
@@ -355,6 +355,25 @@ export default function BolaoDetalhesPage() {
           </div>
         </div>
       </div>
+
+      {/* Sticky CTA — mobile only */}
+      {bolao.status === 'aberto' && bolao.cotas_disponiveis > 0 && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-green-200 p-4 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-gray-500">{quantidade} cota{quantidade > 1 ? 's' : ''}</p>
+            <p className="font-bold text-primary text-lg">R$ {valorTotal.toFixed(2)}</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleComprar}
+            disabled={comprando}
+            className="flex items-center justify-center gap-2 btn-gradient text-white font-bold py-3 px-6 rounded-xl border-0 cursor-pointer text-sm whitespace-nowrap"
+          >
+            <Ticket className="w-4 h-4" />
+            {comprando ? 'Comprando...' : 'Comprar'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

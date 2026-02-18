@@ -41,7 +41,7 @@ export default function HomePage() {
   }
 
   return (
-    <div>
+    <div className="fade-in">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-text">Bolões Disponíveis</h1>
         <p className="text-text-muted text-sm mt-1">Escolha um bolão e compre suas cotas</p>
@@ -58,6 +58,7 @@ export default function HomePage() {
           {boloes.map((bolao) => {
             const cotasVendidas = bolao.total_cotas - bolao.cotas_disponiveis
             const percentual = bolao.total_cotas > 0 ? (cotasVendidas / bolao.total_cotas) * 100 : 0
+            const isUrgente = bolao.cotas_disponiveis > 0 && bolao.total_cotas > 0 && bolao.cotas_disponiveis / bolao.total_cotas < 0.2
 
             return (
               <Link
@@ -65,7 +66,7 @@ export default function HomePage() {
                 to={`/bolao/${bolao.id}`}
                 className="bg-card border border-border p-5 no-underline text-text block card-hover"
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between flex-wrap gap-2 mb-3">
                   <div>
                     <h3 className="font-semibold text-lg">{bolao.nome}</h3>
                     <p className="text-text-muted text-sm">
@@ -75,7 +76,14 @@ export default function HomePage() {
                       }
                     </p>
                   </div>
-                  <StatusBadge status={bolao.status} />
+                  <div className="flex items-center gap-2">
+                    {isUrgente && (
+                      <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full font-bold animate-pulse">
+                        Últimas cotas!
+                      </span>
+                    )}
+                    <StatusBadge status={bolao.status} />
+                  </div>
                 </div>
 
                 {bolao.descricao && (
