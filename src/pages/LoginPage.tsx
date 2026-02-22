@@ -20,8 +20,10 @@ type Tab = 'login' | 'registro'
 export default function LoginPage() {
   const [tab, setTab] = useState<Tab>('login')
   const [email, setEmail] = useState('')
+  const [confirmarEmail, setConfirmarEmail] = useState('')
   const [nome, setNome] = useState('')
   const [senha, setSenha] = useState('')
+  const [confirmarSenha, setConfirmarSenha] = useState('')
   const [showSenha, setShowSenha] = useState(false)
   const [error, setError] = useState('')
   const [sucesso, setSucesso] = useState('')
@@ -48,8 +50,12 @@ export default function LoginPage() {
       login(data.id, data.email, data.is_admin, data.nome)
       navigate('/boloes')
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { detail?: string } } }
-      setError(error.response?.data?.detail || 'Erro ao fazer login')
+      const error = err as { response?: { status?: number; data?: { detail?: string } } }
+      if (error.response?.status === 403 && error.response?.data?.detail === 'EMAIL_NOT_CONFIRMED') {
+        setError('Confirme seu email antes de fazer login. Verifique sua caixa de entrada.')
+      } else {
+        setError(error.response?.data?.detail || 'Erro ao fazer login')
+      }
     } finally {
       setLoading(false)
     }
@@ -57,12 +63,20 @@ export default function LoginPage() {
 
   const handleRegistro = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!nome || !email || !senha) {
+    if (!nome || !email || !confirmarEmail || !senha || !confirmarSenha) {
       setError('Preencha todos os campos')
+      return
+    }
+    if (email.trim() !== confirmarEmail.trim()) {
+      setError('Os e-mails não coincidem')
       return
     }
     if (senha.length < 6) {
       setError('Senha deve ter no mínimo 6 caracteres')
+      return
+    }
+    if (senha !== confirmarSenha) {
+      setError('As senhas não coincidem')
       return
     }
 
@@ -71,11 +85,6 @@ export default function LoginPage() {
       setError('')
       const { data } = await api.post('/auth/register', { nome, email, senha })
       setSucesso(data.mensagem)
-      // Auto-login após 1.5 segundos
-      setTimeout(() => {
-        login(data.id, data.email, data.is_admin, data.nome)
-        navigate('/boloes')
-      }, 1500)
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
       setError(error.response?.data?.detail || 'Erro ao criar conta')
@@ -115,7 +124,7 @@ export default function LoginPage() {
             {/* Tabs */}
             <div className="flex border-b border-border">
               <button
-                onClick={() => { setTab('login'); setError(''); setSucesso('') }}
+                onClick={() => { setTab('login'); setError(''); setSucesso(''); setConfirmarEmail(''); setConfirmarSenha('') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'login'
                     ? 'bg-card text-primary border-b-2 border-primary'
@@ -126,7 +135,7 @@ export default function LoginPage() {
                 Entrar
               </button>
               <button
-                onClick={() => { setTab('registro'); setError(''); setSucesso('') }}
+                onClick={() => { setTab('registro'); setError(''); setSucesso(''); setConfirmarEmail(''); setConfirmarSenha('') }}
                 className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
                   tab === 'registro'
                     ? 'bg-card text-primary border-b-2 border-primary'
@@ -206,6 +215,15 @@ export default function LoginPage() {
                     {loading ? 'Entrando...' : 'Entrar'}
                   </button>
 
+                  <p className="text-center text-sm">
+                    <Link
+                      to="/esqueceu-senha"
+                      className="text-text-muted hover:text-primary transition-colors"
+                    >
+                      Esqueci minha senha
+                    </Link>
+                  </p>
+
                   <p className="text-center text-sm text-text-muted">
                     Não tem conta?{' '}
                     <button
@@ -253,6 +271,22 @@ export default function LoginPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-text mb-1.5">
+                      Confirmar e-mail
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                      <input
+                        type="email"
+                        value={confirmarEmail}
+                        onChange={(e) => { setConfirmarEmail(e.target.value); setError('') }}
+                        placeholder="Repita seu e-mail"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-text mb-1.5">
                       Senha
                     </label>
                     <div className="relative">
@@ -271,6 +305,22 @@ export default function LoginPage() {
                       >
                         {showSenha ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-text mb-1.5">
+                      Confirmar senha
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+                      <input
+                        type={showSenha ? 'text' : 'password'}
+                        value={confirmarSenha}
+                        onChange={(e) => { setConfirmarSenha(e.target.value); setError('') }}
+                        placeholder="Repita sua senha"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                      />
                     </div>
                   </div>
 

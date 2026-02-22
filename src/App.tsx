@@ -16,6 +16,9 @@ import AdminDashboard from '@/pages/admin/AdminDashboard'
 import AdminBoloesPage from '@/pages/admin/AdminBoloesPage'
 import AdminCriarBolaoPage from '@/pages/admin/AdminCriarBolaoPage'
 import AdminEditarBolaoPage from '@/pages/admin/AdminEditarBolaoPage'
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
+import ResetPasswordPage from '@/pages/ResetPasswordPage'
+import ConfirmarEmailPage from '@/pages/ConfirmarEmailPage'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -37,6 +40,9 @@ function AppRoutes() {
       {/* Páginas standalone (sem Layout) */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/esqueceu-senha" element={<ForgotPasswordPage />} />
+      <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+      <Route path="/confirmar-email" element={<ConfirmarEmailPage />} />
 
       {/* Páginas com Layout (header + footer) */}
       <Route element={<Layout />}>
