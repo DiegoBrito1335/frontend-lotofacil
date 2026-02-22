@@ -83,8 +83,15 @@ export default function LoginPage() {
     try {
       setLoading(true)
       setError('')
-      const { data } = await api.post('/auth/register', { nome, email, senha })
-      setSucesso(data.mensagem)
+      await api.post('/auth/register', { nome, email, senha })
+      // Limpar campos e ir para aba de login com mensagem de sucesso
+      setNome('')
+      setEmail('')
+      setConfirmarEmail('')
+      setSenha('')
+      setConfirmarSenha('')
+      setTab('login')
+      setSucesso('Cadastro realizado! Verifique seu email para confirmar a conta antes de fazer login.')
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
       setError(error.response?.data?.detail || 'Erro ao criar conta')
