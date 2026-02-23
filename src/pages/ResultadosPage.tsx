@@ -110,8 +110,8 @@ function ConcursoResultado({
         </div>
       </div>
 
-      {/* Resumo de acertos por faixa */}
-      <ResumoAcertosFaixas resultado={resultado} />
+      {/* Resumo de acertos por faixa — só mostra se há jogos */}
+      {resultado.jogos.length > 0 && <ResumoAcertosFaixas resultado={resultado} />}
 
       {/* Botão para expandir jogos */}
       <button

@@ -60,15 +60,17 @@ src/
 
 ### Routing
 
-Public routes (no layout): `/`, `/login`
+Public routes (no layout): `/`, `/login`, `/esqueceu-senha`, `/redefinir-senha`, `/confirmar-email`
 
 Routes with Layout (header + footer):
 - `/boloes` — browse pools (public)
 - `/bolao/:id` — pool details (public)
-- `/minhas-cotas`, `/carteira`, `/depositar` — protected user pages
+- `/como-jogar`, `/regras` — static pages (public)
+- `/minhas-cotas`, `/carteira`, `/depositar`, `/resultados`, `/perfil` — protected user pages
 - `/admin`, `/admin/boloes`, `/admin/boloes/novo`, `/admin/boloes/:id` — protected admin pages
 
 `ProtectedRoute` checks `useAuth().isAuthenticated` and redirects to `/login`.
+`AdminRoute` additionally checks `isAdmin` and redirects to `/boloes` if not admin.
 
 ### API communication
 
@@ -81,7 +83,9 @@ Each service module wraps specific endpoints (e.g., `bolaoService.getById(id)` c
 
 ### Authentication
 
-The user's Supabase UUID is stored in localStorage (`user_id`, `user_email`) and sent as the Bearer token. Admin status is verified server-side via email check — there is no admin flag in the frontend. `AuthContext` provides `isAuthenticated`, `login()`, `logout()`.
+The user's Supabase UUID is stored in localStorage (`user_id`, `user_email`, `user_nome`, `is_admin`) and sent as the Bearer token. Admin status comes from the login response `is_admin` flag (server validates by email whitelist). `AuthContext` provides `isAuthenticated`, `isAdmin`, `userId`, `userEmail`, `login()`, `logout()`.
+
+**Email confirmation flow**: After registration, user receives a confirmation email. Login returns 403 with `"EMAIL_NOT_CONFIRMED"` if not confirmed — frontend shows specific error message. Pages involved: `ConfirmarEmailPage` (redirect target from email link), `ForgotPasswordPage`, `ResetPasswordPage` (reads `access_token` from URL hash `#access_token=...&type=recovery`).
 
 ### Backend architecture (relevant for API work)
 
@@ -98,11 +102,23 @@ Key backend env vars (in `../bolao-lotofacil-backend/.env`): `SUPABASE_URL`, `SU
 
 Tailwind CSS v4 with custom theme in `src/index.css` via `@theme`:
 - Primary: green (`#16a34a`), custom colors: `primary`, `primary-dark`, `secondary`, `accent`, `danger`, `success`, `bg`, `card`, `border`, `text`, `text-muted`
+- Theme is fintech/Nubank-inspired: slate palette (`--color-bg: #f8fafc`, `--color-border: #e2e8f0`, `--color-text: #0f172a`, `--color-text-muted: #64748b`)
+- Body background: `linear-gradient(180deg, #86efac 0%, #f0fdf4 40%)` — subtle green top fade
 
-Custom CSS classes for lottery numbers:
-- `.numero-bolao` — green circle
+Custom CSS classes:
+- `.numero-bolao` — green circle (bg-green-100 text-green-700)
 - `.numero-acerto` — green circle + yellow ring (hit)
 - `.numero-erro` — gray circle (miss)
+- `.saldo-glow` — banking card style: dark green gradient `linear-gradient(135deg, #16a34a 0%, #10b981 100%)` with glow shadow; use with white text (`text-white`, `text-white/80`)
+- `.card-hover` — 20px radius card with green shadow; `active:scale(0.98)` on tap; `hover:translateY(-4px)`
+- `.btn-gradient` — green gradient button with shine animation on hover; `hover:scale(1.02)`, `active:scale(0.95)`
+- `.fade-in` — fadeIn 0.4s ease-out entrance animation
+- `.valor-gold` — dark green bold text with prizeReveal bounce animation
+- `.progress-animated` — width via `--progress` CSS var, scaleX animation
+
+Layout notes:
+- Bottom nav (`md:hidden fixed bottom-0`): premium style with `rounded-t-2xl shadow` — only visible on mobile when authenticated
+- Main padding: `pb-24 md:pb-6` when authenticated (space for bottom nav)
 
 ### Key components
 
@@ -122,5 +138,24 @@ React hooks (`useState`, `useEffect`) for local state. `AuthContext` for global 
 - After changing env vars on Vercel: Deployments > 3 dots > Redeploy.
 
 **Backend**: Render.com (free tier) — cold start ~30s after 15 min inactivity.
+- To prevent cold starts causing cron failures: set up a keep-alive cron at `GET https://bolao-lotofacil-api.onrender.com/` every 14 minutes (endpoint returns `{"status":"ok"}`)
+
+**Backend cron endpoints** (protected by `X-Cron-Secret` header OR `?secret=` query param = `SECRET_KEY` env var):
+- `POST /api/v1/cron/fechar-boloes` — closes all open pools; scheduled daily at 20:55 (America/Sao_Paulo)
+- `POST /api/v1/cron/apurar-resultados` — fetches Lotofácil results and distributes prizes; schedule `*/15 21,22 * * *` (every 15 min 21h-22h)
+
+**Lotofácil API**: Primary = official Caixa API (`servicebus2.caixa.gov.br`), fallback = Heroku mirror. Timeout 30s.
 
 DNS (Hostinger): A `@` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`
+
+## Known Issues & Fixes
+
+### ResultadosPage — resumo de acertos
+- Backend may return `resumo_acertos: {}` (empty) but `jogos[]` with `acertos` field populated
+- Frontend calculates resumo from `jogos` as fallback when `resumo_acertos` is empty
+- If `jogos[]` is empty (bolão has no games in `jogos_bolao` table), the "Resumo de Acertos" section is hidden entirely
+- Prize (prêmio) can still appear even with 0 jogos — it comes from `premiacoes_bolao` table separately
+
+### Render free tier 503 on cron
+- Server sleeps after 15 min inactivity → cron hits 503
+- Fix: keep-alive cron at `GET /` every 14 min on cron-job.org
