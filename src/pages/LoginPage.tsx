@@ -47,7 +47,7 @@ export default function LoginPage() {
       setLoading(true)
       setError('')
       const { data } = await api.post('/auth/login', { email: email.trim(), senha })
-      login(data.id, data.email, data.is_admin, data.nome)
+      login(data.access_token, data.nome)
       navigate('/boloes')
     } catch (err: unknown) {
       const error = err as { response?: { status?: number; data?: { detail?: string } } }
