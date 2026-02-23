@@ -23,8 +23,8 @@ export default function AdminDashboard() {
       ])
       setStats(statsData)
       setAtividades(atividadesData)
-    } catch {
-      // silently handle
+    } catch (err) {
+      console.error('Erro ao carregar dashboard:', err)
     } finally {
       setLoading(false)
     }

@@ -7,6 +7,7 @@ import type { Bolao, Jogo } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
 import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign } from 'lucide-react'
+import { formatBRL } from '@/utils/format'
 
 interface ResultadoPublico {
   concurso_numero: number
@@ -77,7 +78,7 @@ export default function BolaoDetalhesPage() {
       const resultado = await cotaService.comprar({ bolao_id: id, quantidade })
       setMensagem({
         tipo: 'sucesso',
-        texto: `${resultado.mensagem} Valor: R$ ${resultado.valor_total.toFixed(2)} | Saldo restante: R$ ${resultado.saldo_restante.toFixed(2)}`,
+        texto: `${resultado.mensagem} Valor: ${formatBRL(resultado.valor_total)} | Saldo restante: ${formatBRL(resultado.saldo_restante)}`,
       })
       // Recarrega dados do bolão
       await loadBolao(id)
@@ -149,7 +150,7 @@ export default function BolaoDetalhesPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="bg-bg rounded-lg p-3 text-center">
             <p className="text-xs text-text-muted">Valor/Cota</p>
-            <p className="text-lg font-bold text-primary">R$ {Number(bolao.valor_cota).toFixed(2)}</p>
+            <p className="text-lg font-bold text-primary">{formatBRL(Number(bolao.valor_cota))}</p>
           </div>
           <div className="bg-bg rounded-lg p-3 text-center">
             <p className="text-xs text-text-muted">Total de Cotas</p>
@@ -213,8 +214,8 @@ export default function BolaoDetalhesPage() {
 
                 <div className="bg-bg rounded-lg p-3">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-text-muted">{quantidade}x R$ {Number(bolao.valor_cota).toFixed(2)}</span>
-                    <span className="font-semibold">R$ {valorTotal.toFixed(2)}</span>
+                    <span className="text-text-muted">{quantidade}x {formatBRL(Number(bolao.valor_cota))}</span>
+                    <span className="font-semibold">{formatBRL(valorTotal)}</span>
                   </div>
                 </div>
 
@@ -259,7 +260,7 @@ export default function BolaoDetalhesPage() {
                     <DollarSign className="w-4 h-4" />
                     Prêmio Distribuído
                   </span>
-                  <span className="text-lg font-bold text-green-800">R$ {premioUnico.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-green-800">{formatBRL(premioUnico)}</span>
                 </div>
               )}
             </div>
@@ -279,7 +280,7 @@ export default function BolaoDetalhesPage() {
                     <DollarSign className="w-4 h-4" />
                     Prêmio Total
                   </span>
-                  <span className="text-lg font-bold text-green-800">R$ {premioTotalGeral.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-green-800">{formatBRL(premioTotalGeral)}</span>
                 </div>
               )}
 
@@ -290,7 +291,7 @@ export default function BolaoDetalhesPage() {
                       <span className="text-sm font-semibold">Concurso {res.concurso_numero}</span>
                       {res.premio_total > 0 && (
                         <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded font-medium">
-                          R$ {res.premio_total.toFixed(2)}
+                          {formatBRL(res.premio_total)}
                         </span>
                       )}
                     </div>
@@ -361,7 +362,7 @@ export default function BolaoDetalhesPage() {
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-green-200 p-4 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <div className="flex-1 min-w-0">
             <p className="text-xs text-gray-500">{quantidade} cota{quantidade > 1 ? 's' : ''}</p>
-            <p className="font-bold text-primary text-lg">R$ {valorTotal.toFixed(2)}</p>
+            <p className="font-bold text-primary text-lg">{formatBRL(valorTotal)}</p>
           </div>
           <button
             type="button"

@@ -15,10 +15,7 @@ import {
   TrendingDown,
   Receipt,
 } from 'lucide-react'
-
-function formatCurrency(value: number) {
-  return value.toFixed(2).replace('.', ',')
-}
+import { formatBRL } from '@/utils/format'
 
 function getOrigemInfo(origem: string, tipo: string) {
   switch (origem) {
@@ -117,7 +114,7 @@ export default function CarteiraPage() {
           <div>
             <p className="text-white/80 text-sm font-medium mb-1">Saldo Disponivel</p>
             <p className="text-5xl font-extrabold tracking-tight text-white">
-              R$ {saldo ? formatCurrency(Number(saldo.saldo_disponivel)) : '0,00'}
+              {saldo ? formatBRL(Number(saldo.saldo_disponivel)) : formatBRL(0)}
             </p>
           </div>
           <Wallet className="w-12 h-12 text-white/40" />
@@ -126,7 +123,7 @@ export default function CarteiraPage() {
           <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/20">
             <Lock className="w-4 h-4 text-white/70" />
             <span className="text-sm text-white/80">
-              Saldo bloqueado: R$ {formatCurrency(Number(saldo.saldo_bloqueado))}
+              Saldo bloqueado: {formatBRL(Number(saldo.saldo_bloqueado))}
             </span>
           </div>
         )}
@@ -143,7 +140,7 @@ export default function CarteiraPage() {
               <span className="text-xs text-text-muted font-medium">Depositos</span>
             </div>
             <p className="text-xl font-extrabold text-green-600">
-              R$ {formatCurrency(resumo.total_depositos)}
+              {formatBRL(resumo.total_depositos)}
             </p>
           </div>
           <div className="bg-card border border-border p-4 card-hover">
@@ -154,7 +151,7 @@ export default function CarteiraPage() {
               <span className="text-xs text-text-muted font-medium">Premios</span>
             </div>
             <p className="text-xl font-extrabold text-green-600">
-              R$ {formatCurrency(resumo.total_premios)}
+              {formatBRL(resumo.total_premios)}
             </p>
           </div>
           <div className="bg-card border border-border p-4 card-hover">
@@ -165,7 +162,7 @@ export default function CarteiraPage() {
               <span className="text-xs text-text-muted font-medium">Gastos em Cotas</span>
             </div>
             <p className="text-xl font-extrabold text-red-500">
-              R$ {formatCurrency(resumo.total_compras)}
+              {formatBRL(resumo.total_compras)}
             </p>
           </div>
         </div>
@@ -234,13 +231,13 @@ export default function CarteiraPage() {
                               minute: '2-digit',
                             })}
                             {' · '}
-                            Saldo: R$ {formatCurrency(Number(t.saldo_anterior))} → R$ {formatCurrency(Number(t.saldo_posterior))}
+                            Saldo: {formatBRL(Number(t.saldo_anterior))} → {formatBRL(Number(t.saldo_posterior))}
                           </p>
                         </div>
                       </div>
                       <div className="text-right shrink-0 ml-3">
                         <p className={`font-bold text-sm ${t.tipo === 'credito' ? 'text-green-600' : 'text-red-500'}`}>
-                          {t.tipo === 'credito' ? '+' : '-'} R$ {formatCurrency(Number(t.valor))}
+                          {t.tipo === 'credito' ? '+' : '-'} {formatBRL(Number(t.valor))}
                         </p>
                       </div>
                     </div>

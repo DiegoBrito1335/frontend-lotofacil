@@ -37,8 +37,8 @@ export default function AdminBoloesPage() {
       setLoading(true)
       const data = await adminService.listarBoloes(filtro)
       setBoloes(data)
-    } catch {
-      // silently handle
+    } catch (err) {
+      console.error('Erro ao carregar bolões:', err)
     } finally {
       setLoading(false)
     }

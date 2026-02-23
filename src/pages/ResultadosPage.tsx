@@ -3,12 +3,9 @@ import { cotaService } from '@/services/cotaService'
 import type { ResultadoBolaoUsuario, ResultadoConcursoUsuario } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { Trophy, ChevronDown, ChevronUp, Star } from 'lucide-react'
+import { formatBRL } from '@/utils/format'
 
 const FAIXAS = [15, 14, 13, 12, 11] as const
-
-function formatCurrency(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-}
 
 function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuario }) {
   // Usa resumo_acertos do backend se disponível; caso contrário, calcula dos jogos
@@ -93,7 +90,7 @@ function ConcursoResultado({
         </h4>
         {resultado.premio_total > 0 && (
           <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-bold ring-1 ring-green-200">
-            Prêmio: {formatCurrency(resultado.premio_total)}
+            Prêmio: {formatBRL(resultado.premio_total)}
           </span>
         )}
       </div>
@@ -236,7 +233,7 @@ export default function ResultadosPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white/80 text-sm">Total em Prêmios</p>
-              <p className="text-4xl font-extrabold mt-1 tracking-tight text-white">{formatCurrency(totalPremios)}</p>
+              <p className="text-4xl font-extrabold mt-1 tracking-tight text-white">{formatBRL(totalPremios)}</p>
             </div>
             <div className="text-right">
               <p className="text-white/80 text-sm">Bolões com resultado</p>
@@ -286,7 +283,7 @@ export default function ResultadosPage() {
                       <div className="text-right">
                         <p className="text-xs text-text-muted">Seu prêmio</p>
                         <p className="text-sm font-bold text-green-700">
-                          {formatCurrency(bolao.premio_usuario)}
+                          {formatBRL(bolao.premio_usuario)}
                         </p>
                       </div>
                     ) : (

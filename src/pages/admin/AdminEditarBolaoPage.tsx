@@ -82,8 +82,8 @@ export default function AdminEditarBolaoPage() {
           } else {
             setResultado(res)
           }
-        } catch {
-          // Pode não ter resultado ainda
+        } catch (err) {
+          console.debug('Resultado ainda não disponível:', err)
         }
       }
 
@@ -95,8 +95,8 @@ export default function AdminEditarBolaoPage() {
             setStatusConcursos(statusData.concursos)
             setPremioTotalGeral(statusData.premio_total_geral || 0)
           }
-        } catch {
-          // Ignora erro
+        } catch (err) {
+          console.debug('Status de concursos não disponível:', err)
         }
       }
     } catch {
