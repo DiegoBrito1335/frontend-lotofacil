@@ -8,6 +8,7 @@ interface AuthContextType {
   isAdmin: boolean
   login: (token: string, nome?: string) => void
   logout: () => void
+  updateUserName: (nome: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -77,6 +78,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false)
   }, [])
 
+  const updateUserName = useCallback((nome: string) => {
+    localStorage.setItem('user_name', nome)
+    setUserName(nome)
+  }, [])
+
   return (
     <AuthContext.Provider
       value={{
@@ -87,6 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAdmin,
         login,
         logout,
+        updateUserName,
       }}
     >
       {children}

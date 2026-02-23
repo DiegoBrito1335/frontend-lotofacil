@@ -12,7 +12,7 @@ interface PerfilData {
 }
 
 export default function PerfilPage() {
-  const { login, userId, userEmail, isAdmin } = useAuth()
+  const { updateUserName } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -62,10 +62,7 @@ export default function PerfilPage() {
         chave_pix: perfil.chave_pix.trim(),
       })
       setSucesso('Perfil atualizado com sucesso!')
-      // Atualizar nome no contexto
-      if (userId && userEmail) {
-        login(userId, userEmail, isAdmin, perfil.nome.trim())
-      }
+      updateUserName(perfil.nome.trim())
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
       setError(error.response?.data?.detail || 'Erro ao salvar perfil')
