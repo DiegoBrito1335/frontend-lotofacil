@@ -6,6 +6,7 @@ interface NumberPickerProps {
   disabled?: boolean
   buttonLabel?: string
   maxNumbers?: number
+  minNumbers?: number
 }
 
 export default function NumberPicker({
@@ -13,6 +14,7 @@ export default function NumberPicker({
   disabled = false,
   buttonLabel = 'Adicionar Jogo',
   maxNumbers = 15,
+  minNumbers = maxNumbers,
 }: NumberPickerProps) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
 
@@ -30,7 +32,7 @@ export default function NumberPicker({
   }
 
   const handleConfirm = () => {
-    if (selected.size !== maxNumbers) return
+    if (selected.size < minNumbers) return
     const sorted = Array.from(selected).sort((a, b) => a - b)
     onConfirm(sorted)
     setSelected(new Set())
@@ -69,7 +71,7 @@ export default function NumberPicker({
 
       {/* Contador + ações */}
       <div className="flex items-center justify-between gap-2">
-        <span className={`text-sm font-medium ${selected.size === maxNumbers ? 'text-primary' : 'text-text-muted'}`}>
+        <span className={`text-sm font-medium ${selected.size >= minNumbers ? 'text-primary' : 'text-text-muted'}`}>
           {selected.size}/{maxNumbers} selecionadas
         </span>
 
@@ -88,7 +90,7 @@ export default function NumberPicker({
           <button
             type="button"
             onClick={handleConfirm}
-            disabled={disabled || selected.size !== maxNumbers}
+            disabled={disabled || selected.size < minNumbers}
             className="flex items-center gap-1 px-4 py-1.5 text-xs rounded-lg bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold transition-colors border-0 cursor-pointer"
           >
             <Plus className="w-3 h-3" />

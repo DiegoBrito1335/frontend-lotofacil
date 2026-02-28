@@ -583,7 +583,7 @@ export default function AdminEditarBolaoPage() {
             </div>
 
             {modoAddJogo === 'picker' ? (
-              <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} />
+              <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} maxNumbers={18} minNumbers={15} />
             ) : (
               <div className="space-y-3">
                 <div className="bg-bg rounded-lg p-4 text-center border-2 border-dashed border-border">
