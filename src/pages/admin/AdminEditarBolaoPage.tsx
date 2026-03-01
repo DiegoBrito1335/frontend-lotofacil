@@ -363,6 +363,7 @@ export default function AdminEditarBolaoPage() {
               <input
                 value={form.nome}
                 onChange={(e) => setForm({ ...form, nome: e.target.value })}
+                aria-label="Nome do bolão"
                 className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
@@ -373,6 +374,7 @@ export default function AdminEditarBolaoPage() {
                 value={form.descricao}
                 onChange={(e) => setForm({ ...form, descricao: e.target.value })}
                 rows={2}
+                aria-label="Descrição do bolão"
                 className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               />
             </div>
@@ -384,6 +386,7 @@ export default function AdminEditarBolaoPage() {
                   type="number"
                   value={form.concurso_numero}
                   onChange={(e) => setForm({ ...form, concurso_numero: e.target.value })}
+                  aria-label="Número do concurso"
                   className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -393,6 +396,7 @@ export default function AdminEditarBolaoPage() {
                   type="number"
                   value={form.total_cotas}
                   onChange={(e) => setForm({ ...form, total_cotas: e.target.value })}
+                  aria-label="Total de cotas"
                   className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
@@ -403,12 +407,14 @@ export default function AdminEditarBolaoPage() {
                   step="0.01"
                   value={form.valor_cota}
                   onChange={(e) => setForm({ ...form, valor_cota: e.target.value })}
+                  aria-label="Valor por cota"
                   className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
 
             <button
+              type="button"
               onClick={handleSave}
               disabled={saving}
               className="flex items-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors border-0 cursor-pointer"
@@ -448,6 +454,7 @@ export default function AdminEditarBolaoPage() {
             {resultadosTeimosinha.map((res) => (
               <div key={res.concurso_numero} className="bg-yellow-50 border border-yellow-200 rounded-lg overflow-hidden">
                 <button
+                  type="button"
                   onClick={() => setConcursoExpandido(concursoExpandido === res.concurso_numero ? null : res.concurso_numero)}
                   className="w-full flex items-center justify-between p-3 bg-transparent border-0 cursor-pointer text-left"
                 >
@@ -528,6 +535,7 @@ export default function AdminEditarBolaoPage() {
                       )}
                       {canAddJogos && (
                         <button
+                          type="button"
                           onClick={() => handleRemoveJogo(jogo.id)}
                           disabled={removingJogo === jogo.id}
                           className="p-1 rounded hover:bg-red-50 text-danger bg-transparent border-0 cursor-pointer"
@@ -585,6 +593,7 @@ export default function AdminEditarBolaoPage() {
               <p className="text-sm font-semibold text-text">Adicionar jogos</p>
               <div className="flex gap-1 bg-bg rounded-lg p-0.5">
                 <button
+                  type="button"
                   onClick={() => setModoAddJogo('picker')}
                   className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
                     modoAddJogo === 'picker' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
@@ -593,6 +602,7 @@ export default function AdminEditarBolaoPage() {
                   Manual
                 </button>
                 <button
+                  type="button"
                   onClick={() => setModoAddJogo('csv')}
                   className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
                     modoAddJogo === 'csv' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
@@ -748,6 +758,7 @@ export default function AdminEditarBolaoPage() {
 
                 {/* Botão apurar todos pendentes */}
                 <button
+                  type="button"
                   onClick={handleApurarPendentes}
                   disabled={apurando || apurandoConcurso !== null}
                   className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
@@ -761,6 +772,7 @@ export default function AdminEditarBolaoPage() {
             {/* Teimosinha sem status carregado: botão fallback */}
             {isTeimosinha && statusConcursos.length === 0 && (
               <button
+                type="button"
                 onClick={handleApurarAutomatico}
                 disabled={apurando}
                 className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
@@ -774,6 +786,7 @@ export default function AdminEditarBolaoPage() {
             {!isTeimosinha && (
               <>
                 <button
+                  type="button"
                   onClick={handleApurarAutomatico}
                   disabled={apurando}
                   className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
@@ -793,6 +806,7 @@ export default function AdminEditarBolaoPage() {
                       buttonLabel="Apurar Resultado"
                     />
                     <button
+                      type="button"
                       onClick={() => setModoApuracao(null)}
                       className="mt-2 text-xs text-text-muted hover:text-text bg-transparent border-0 cursor-pointer"
                     >
@@ -801,6 +815,7 @@ export default function AdminEditarBolaoPage() {
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => setModoApuracao('manual')}
                     className="w-full flex items-center justify-center gap-2 bg-bg hover:bg-gray-200 text-text font-medium py-3 px-4 rounded-lg transition-colors border border-border cursor-pointer text-sm"
                   >

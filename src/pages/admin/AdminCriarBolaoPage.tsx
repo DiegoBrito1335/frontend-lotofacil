@@ -112,6 +112,7 @@ export default function AdminCriarBolaoPage() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
+                aria-label="Status do bolão"
                 className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="aberto">Aberto</option>
@@ -128,6 +129,7 @@ export default function AdminCriarBolaoPage() {
                   type="checkbox"
                   checked={form.teimosinha}
                   onChange={(e) => setForm({ ...form, teimosinha: e.target.checked, quantidade_concursos: '' })}
+                  aria-label="Ativar teimosinha"
                   className="w-4 h-4 accent-primary cursor-pointer"
                 />
               </label>
