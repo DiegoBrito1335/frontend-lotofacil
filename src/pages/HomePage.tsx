@@ -9,6 +9,7 @@ import { Ticket, Users, TrendingUp } from 'lucide-react'
 export default function HomePage() {
   const [boloes, setBoloes] = useState<Bolao[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingText, setLoadingText] = useState('Carregando bolões...')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -16,24 +17,35 @@ export default function HomePage() {
   }, [])
 
   const loadBoloes = async () => {
-    try {
-      setLoading(true)
-      const data = await bolaoService.listar(true)
-      setBoloes(data)
-    } catch {
-      setError('Erro ao carregar bolões')
-    } finally {
-      setLoading(false)
+    setLoading(true)
+    setError('')
+    setLoadingText('Carregando bolões...')
+
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const data = await bolaoService.listar(true)
+        setBoloes(data)
+        setLoading(false)
+        return
+      } catch {
+        if (attempt < 3) {
+          setLoadingText('Aguardando servidor... pode levar alguns segundos')
+          await new Promise((r) => setTimeout(r, 3000))
+        }
+      }
     }
+
+    setError('Erro ao carregar bolões')
+    setLoading(false)
   }
 
-  if (loading) return <LoadingSpinner text="Carregando bolões..." />
+  if (loading) return <LoadingSpinner text={loadingText} />
 
   if (error) {
     return (
       <div className="text-center py-12">
         <p className="text-danger">{error}</p>
-        <button onClick={loadBoloes} className="mt-3 text-primary hover:underline bg-transparent border-0 cursor-pointer">
+        <button type="button" onClick={loadBoloes} className="mt-3 text-primary hover:underline bg-transparent border-0 cursor-pointer">
           Tentar novamente
         </button>
       </div>
