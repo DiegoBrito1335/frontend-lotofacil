@@ -62,8 +62,10 @@ export const adminService = {
   },
 
   // Apuração
-  apurarManual: async (bolaoId: string, dezenas: number[]): Promise<ApuracaoResponse> => {
-    const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar`, { dezenas })
+  apurarManual: async (bolaoId: string, dezenas: number[], concurso_numero?: number): Promise<ApuracaoResponse> => {
+    const body: { dezenas: number[]; concurso_numero?: number } = { dezenas }
+    if (concurso_numero !== undefined) body.concurso_numero = concurso_numero
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/apurar`, body)
     return data
   },
 

@@ -41,6 +41,7 @@ export default function AdminEditarBolaoPage() {
   const [uploadingCSV, setUploadingCSV] = useState(false)
   const [modoAddJogo, setModoAddJogo] = useState<'picker' | 'csv'>('picker')
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
+  const [manualConcurso, setManualConcurso] = useState<number | null>(null)
 
   const [form, setForm] = useState({
     nome: '',
@@ -242,6 +243,26 @@ export default function AdminEditarBolaoPage() {
         tipo: 'sucesso',
         texto: `Concurso ${concursoNumero} apurado! Prêmio: R$ ${(res.premio_total || 0).toFixed(2)}`,
       })
+      await loadData(id)
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || `Erro ao apurar concurso ${concursoNumero}` })
+    } finally {
+      setApurandoConcurso(null)
+    }
+  }
+
+  const handleApurarConcursoManual = async (concursoNumero: number, dezenas: number[]) => {
+    if (!id) return
+    try {
+      setApurandoConcurso(concursoNumero)
+      setMensagem(null)
+      const res = await adminService.apurarManual(id, dezenas, concursoNumero)
+      setMensagem({
+        tipo: 'sucesso',
+        texto: `Concurso ${concursoNumero} apurado! Prêmio: R$ ${(res.premio_total || 0).toFixed(2)}`,
+      })
+      setManualConcurso(null)
       await loadData(id)
     } catch (err: unknown) {
       const error = err as { response?: { data?: { detail?: string } } }
@@ -667,24 +688,63 @@ export default function AdminEditarBolaoPage() {
                         )}
                       </div>
                       {!sc.apurado && (
-                        <button
-                          onClick={() => handleApurarConcurso(sc.concurso_numero)}
-                          disabled={apurandoConcurso !== null || apurando}
-                          className="flex items-center gap-1 text-xs bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded-lg transition-colors border-0 cursor-pointer"
-                        >
-                          {apurandoConcurso === sc.concurso_numero ? (
-                            'Apurando...'
-                          ) : (
-                            <>
-                              <Zap className="w-3 h-3" />
-                              Apurar
-                            </>
-                          )}
-                        </button>
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleApurarConcurso(sc.concurso_numero)}
+                            disabled={apurandoConcurso !== null || apurando}
+                            className="flex items-center gap-1 text-xs bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-medium px-3 py-1.5 rounded-lg transition-colors border-0 cursor-pointer"
+                          >
+                            {apurandoConcurso === sc.concurso_numero ? (
+                              'Apurando...'
+                            ) : (
+                              <>
+                                <Zap className="w-3 h-3" />
+                                Apurar
+                              </>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setManualConcurso(manualConcurso === sc.concurso_numero ? null : sc.concurso_numero)}
+                            disabled={apurandoConcurso !== null || apurando}
+                            className={`flex items-center gap-1 text-xs font-medium px-2 py-1.5 rounded-lg transition-colors border cursor-pointer disabled:opacity-50 ${
+                              manualConcurso === sc.concurso_numero
+                                ? 'bg-text text-white border-text'
+                                : 'bg-white border-border text-text-muted hover:text-text hover:border-text-muted'
+                            }`}
+                          >
+                            <PenLine className="w-3 h-3" />
+                            Manual
+                          </button>
+                        </div>
                       )}
                     </div>
                   ))}
                 </div>
+
+                {/* NumberPicker para apuração manual de concurso específico */}
+                {manualConcurso !== null && (
+                  <div className="border border-border rounded-lg p-3 space-y-2 bg-bg">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-semibold text-text">
+                        Apuração Manual — Concurso {manualConcurso}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setManualConcurso(null)}
+                        className="text-xs text-text-muted hover:text-text transition-colors border-0 bg-transparent cursor-pointer"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                    <NumberPicker
+                      onConfirm={(dezenas) => handleApurarConcursoManual(manualConcurso, dezenas)}
+                      disabled={apurandoConcurso !== null}
+                      buttonLabel={`Apurar Concurso ${manualConcurso}`}
+                    />
+                  </div>
+                )}
 
                 {/* Botão apurar todos pendentes */}
                 <button

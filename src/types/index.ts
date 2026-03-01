@@ -46,6 +46,7 @@ export interface ApuracaoResponse {
   resultado_dezenas: number[]
   jogos_resultado: { jogo_id: string; dezenas: number[]; acertos: number }[]
   resumo: Record<number, number>
+  premio_total?: number
 }
 
 export interface BolaoDisponibilidade {
