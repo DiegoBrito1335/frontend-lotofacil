@@ -16,6 +16,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard'
 import AdminBoloesPage from '@/pages/admin/AdminBoloesPage'
 import AdminCriarBolaoPage from '@/pages/admin/AdminCriarBolaoPage'
 import AdminEditarBolaoPage from '@/pages/admin/AdminEditarBolaoPage'
+import AdminUsuariosPage from '@/pages/admin/AdminUsuariosPage'
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 import ResetPasswordPage from '@/pages/ResetPasswordPage'
 import ConfirmarEmailPage from '@/pages/ConfirmarEmailPage'
@@ -85,6 +86,10 @@ function AppRoutes() {
         <Route
           path="/admin/boloes/:id"
           element={<AdminRoute><AdminEditarBolaoPage /></AdminRoute>}
+        />
+        <Route
+          path="/admin/usuarios"
+          element={<AdminRoute><AdminUsuariosPage /></AdminRoute>}
         />
       </Route>
 

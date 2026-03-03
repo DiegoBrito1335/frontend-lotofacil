@@ -12,6 +12,7 @@ import type {
   QuickStats,
   RevenueData,
   Atividade,
+  UsuarioAdmin,
 } from '@/types'
 
 export const adminService = {
@@ -112,6 +113,27 @@ export const adminService = {
 
   getActivity: async (): Promise<Atividade[]> => {
     const { data } = await api.get('/admin/activity')
+    return data
+  },
+
+  // Usuários
+  listarUsuarios: async (): Promise<UsuarioAdmin[]> => {
+    const { data } = await api.get('/admin/usuarios')
+    return data
+  },
+
+  promoverAdmin: async (id: string): Promise<{ mensagem: string }> => {
+    const { data } = await api.post(`/admin/usuarios/${id}/promover`)
+    return data
+  },
+
+  rebaixarAdmin: async (id: string): Promise<{ mensagem: string }> => {
+    const { data } = await api.delete(`/admin/usuarios/${id}/rebaixar`)
+    return data
+  },
+
+  removerUsuario: async (id: string): Promise<{ mensagem: string }> => {
+    const { data } = await api.delete(`/admin/usuarios/${id}`)
     return data
   },
 }

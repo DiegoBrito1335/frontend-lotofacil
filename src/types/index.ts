@@ -232,6 +232,21 @@ export interface StatusApuracao {
 }
 
 // ===================================
+// ADMIN - USUÁRIOS
+// ===================================
+
+export interface UsuarioAdmin {
+  id: string
+  nome: string | null
+  email: string
+  telefone: string | null
+  saldo_disponivel: number
+  saldo_bloqueado: number
+  is_admin: boolean
+  created_at: string
+}
+
+// ===================================
 // RESULTADOS DO USUÁRIO
 // ===================================
 

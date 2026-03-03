@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { adminService } from '@/services/adminService'
 import type { QuickStats, Atividade } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { BarChart3, Users, Ticket, DollarSign, Clock, Plus, List } from 'lucide-react'
+import { BarChart3, Users, Ticket, DollarSign, Clock, Plus, List, UserCog } from 'lucide-react'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<QuickStats | null>(null)
@@ -40,6 +40,13 @@ export default function AdminDashboard() {
           <p className="text-text-muted text-sm mt-1">Visão geral do sistema</p>
         </div>
         <div className="flex gap-2">
+          <Link
+            to="/admin/usuarios"
+            className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-gray-100 transition-colors"
+          >
+            <UserCog className="w-4 h-4" />
+            Usuários
+          </Link>
           <Link
             to="/admin/boloes"
             className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-gray-100 transition-colors"
