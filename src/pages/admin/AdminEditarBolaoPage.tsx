@@ -319,8 +319,8 @@ export default function AdminEditarBolaoPage() {
   const pickerMaxNumbers = isMegaSena ? 20 : 18
   const pickerMinNumbers = isMegaSena ? 6 : 15
   const resultadoMaxNumbers = isMegaSena ? 6 : 15
-  const acertosKeys = isMegaSena ? [6, 5, 4] : [15, 14, 13, 12, 11]
-  const acertosGridCols = isMegaSena ? 'grid-cols-3' : 'grid-cols-5'
+  const acertosKeys = isMegaSena ? [6, 5, 4, 3, 2, 1, 0] : [15, 14, 13, 12, 11]
+  const acertosGridCols = isMegaSena ? 'grid-cols-7' : 'grid-cols-5'
 
   return (
     <div className="max-w-4xl mx-auto">
