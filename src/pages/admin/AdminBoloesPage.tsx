@@ -169,6 +169,7 @@ export default function AdminBoloesPage() {
                               }
                             }}
                             disabled={updatingStatus === b.id}
+                            aria-label={`Alterar status: ${b.status}`}
                             className="flex items-center gap-1 bg-transparent border-0 cursor-pointer p-0"
                           >
                             <StatusBadge status={b.status} />
@@ -188,6 +189,7 @@ export default function AdminBoloesPage() {
                                   <button
                                     key={s.value}
                                     onClick={() => handleStatusChange(b.id, s.value)}
+                                    aria-label={`Mudar para ${s.value}`}
                                     className="w-full text-left px-3 py-2 text-sm hover:bg-bg cursor-pointer bg-transparent border-0 flex items-center gap-2"
                                   >
                                     <StatusBadge status={s.value} />

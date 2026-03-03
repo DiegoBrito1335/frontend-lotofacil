@@ -113,10 +113,11 @@ export default function PerfilPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-text mb-1.5">E-mail</label>
+            <label htmlFor="perfil-email" className="block text-sm font-semibold text-text mb-1.5">E-mail</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input
+                id="perfil-email"
                 type="email"
                 value={perfil.email}
                 disabled
