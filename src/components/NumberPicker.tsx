@@ -7,6 +7,7 @@ interface NumberPickerProps {
   buttonLabel?: string
   maxNumbers?: number
   minNumbers?: number
+  maxNumber?: number   // Maior número do grid (25 = Lotofácil, 60 = Mega-Sena)
 }
 
 export default function NumberPicker({
@@ -15,6 +16,7 @@ export default function NumberPicker({
   buttonLabel = 'Adicionar Jogo',
   maxNumbers = 15,
   minNumbers = maxNumbers,
+  maxNumber = 25,
 }: NumberPickerProps) {
   const [selected, setSelected] = useState<Set<number>>(new Set())
 
@@ -40,11 +42,13 @@ export default function NumberPicker({
 
   const handleClear = () => setSelected(new Set())
 
+  const gridCols = maxNumber <= 25 ? 'grid-cols-5' : 'grid-cols-6'
+
   return (
     <div>
-      {/* Grid 5x5 */}
-      <div className="grid grid-cols-5 gap-2 mb-3">
-        {Array.from({ length: 25 }, (_, i) => i + 1).map((num) => {
+      {/* Grid dinâmico: 5 colunas para Lotofácil (25 nums), 6 colunas para Mega-Sena (60 nums) */}
+      <div className={`grid ${gridCols} gap-2 mb-3`}>
+        {Array.from({ length: maxNumber }, (_, i) => i + 1).map((num) => {
           const isSelected = selected.has(num)
           return (
             <button

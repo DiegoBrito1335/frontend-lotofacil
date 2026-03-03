@@ -14,6 +14,7 @@ export default function AdminCriarBolaoPage() {
     total_cotas: '',
     valor_cota: '',
     status: 'aberto',
+    tipo: 'lotofacil' as 'lotofacil' | 'megasena',
     teimosinha: false,
     quantidade_concursos: '',
   })
@@ -46,6 +47,7 @@ export default function AdminCriarBolaoPage() {
         total_cotas: parseInt(form.total_cotas),
         valor_cota: parseFloat(form.valor_cota),
         status: form.status,
+        tipo: form.tipo,
       })
       navigate(`/admin/boloes/${novoBolao.id}`)
     } catch (err: unknown) {
@@ -70,13 +72,39 @@ export default function AdminCriarBolaoPage() {
         <h1 className="text-xl font-bold mb-6">Criar Novo Bolão</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Seletor de tipo de loteria */}
+          <div>
+            <label className="block text-sm font-medium text-text mb-2">Tipo de Loteria *</label>
+            <div className="grid grid-cols-2 gap-3">
+              {(['lotofacil', 'megasena'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setForm({ ...form, tipo: t })}
+                  className={`py-3 px-4 rounded-lg border-2 text-sm font-semibold transition-colors cursor-pointer ${
+                    form.tipo === t
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border bg-bg text-text-muted hover:border-primary/50'
+                  }`}
+                >
+                  {t === 'lotofacil' ? '🍀 Lotofácil' : '🟢 Mega-Sena'}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-text-muted mt-1">
+              {form.tipo === 'megasena'
+                ? 'Mega-Sena: 6 a 20 números de 1 a 60 por jogo'
+                : 'Lotofácil: 15 a 18 números de 1 a 25 por jogo'}
+            </p>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-text mb-1">Nome *</label>
             <input
               name="nome"
               value={form.nome}
               onChange={handleChange}
-              placeholder="Ex: Lotofácil Concurso 3250"
+              placeholder={form.tipo === 'megasena' ? 'Ex: Mega-Sena Concurso 2800' : 'Ex: Lotofácil Concurso 3250'}
               className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>

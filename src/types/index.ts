@@ -13,6 +13,7 @@ export interface Bolao {
   concurso_fim?: number | null
   concursos_apurados?: number
   status: 'aberto' | 'fechado' | 'apurado' | 'cancelado'
+  tipo?: 'lotofacil' | 'megasena'
   data_fechamento: string | null
   created_at: string
   updated_at?: string
@@ -176,6 +177,7 @@ export interface BolaoCreateAdmin {
   total_cotas: number
   valor_cota: number
   status?: string
+  tipo?: 'lotofacil' | 'megasena'
   data_fechamento?: string
 }
 

@@ -310,9 +310,19 @@ export default function AdminEditarBolaoPage() {
   const resultadoDezenas = resultado?.resultado_dezenas || bolao.resultado_dezenas
   const resultadoSet = resultadoDezenas ? new Set(resultadoDezenas) : null
 
+  // Configurações baseadas no tipo do bolão
+  const isMegaSena = bolao.tipo === 'megasena'
+  const pickerMaxNumber = isMegaSena ? 60 : 25
+  const pickerMaxNumbers = isMegaSena ? 20 : 18
+  const pickerMinNumbers = isMegaSena ? 6 : 15
+  const resultadoMaxNumbers = isMegaSena ? 6 : 15
+  const acertosKeys = isMegaSena ? [6, 5, 4] : [15, 14, 13, 12, 11]
+  const acertosGridCols = isMegaSena ? 'grid-cols-3' : 'grid-cols-5'
+
   return (
     <div className="max-w-4xl mx-auto">
       <button
+        type="button"
         onClick={() => navigate('/admin/boloes')}
         className="flex items-center gap-1 text-text-muted hover:text-text mb-4 bg-transparent border-0 cursor-pointer text-sm"
       >
@@ -465,7 +475,7 @@ export default function AdminEditarBolaoPage() {
                         R$ {res.premio_total.toFixed(2)}
                       </span>
                     )}
-                    {[15, 14, 13].map((n) => res.resumo[n] > 0 && (
+                    {acertosKeys.slice(0, 3).map((n) => res.resumo[n] > 0 && (
                       <span key={n} className="text-xs bg-yellow-200 text-yellow-800 px-1.5 py-0.5 rounded font-medium">
                         {res.resumo[n]}x {n}ac
                       </span>
@@ -482,8 +492,8 @@ export default function AdminEditarBolaoPage() {
                         </span>
                       ))}
                     </div>
-                    <div className="grid grid-cols-5 gap-2 bg-white/50 rounded-lg p-2">
-                      {[15, 14, 13, 12, 11].map((n) => (
+                    <div className={`grid ${acertosGridCols} gap-2 bg-white/50 rounded-lg p-2`}>
+                      {acertosKeys.map((n) => (
                         <div key={n} className="text-center">
                           <p className="text-sm font-bold text-primary">{res.resumo[n] || 0}</p>
                           <p className="text-[10px] text-text-muted">{n} ac</p>
@@ -499,8 +509,8 @@ export default function AdminEditarBolaoPage() {
             {Object.values(resumoGeral).some((v) => v > 0) && (
               <div className="bg-primary/10 rounded-lg p-4">
                 <p className="text-xs font-semibold text-primary mb-2">Resumo Geral (todos os concursos)</p>
-                <div className="grid grid-cols-5 gap-2">
-                  {[15, 14, 13, 12, 11].map((n) => (
+                <div className={`grid ${acertosGridCols} gap-2`}>
+                  {acertosKeys.map((n) => (
                     <div key={n} className="text-center">
                       <p className="text-lg font-bold text-primary">{resumoGeral[n] || 0}</p>
                       <p className="text-xs text-text-muted">{n} acertos</p>
@@ -526,9 +536,13 @@ export default function AdminEditarBolaoPage() {
                     <div className="flex items-center gap-2">
                       {acertos !== null && (
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                          acertos >= 14 ? 'bg-yellow-100 text-yellow-800' :
-                          acertos >= 11 ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-600'
+                          isMegaSena
+                            ? acertos >= 6 ? 'bg-yellow-100 text-yellow-800' :
+                              acertos >= 4 ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-600'
+                            : acertos >= 14 ? 'bg-yellow-100 text-yellow-800' :
+                              acertos >= 11 ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-600'
                         }`}>
                           {acertos} acertos
                         </span>
@@ -575,8 +589,8 @@ export default function AdminEditarBolaoPage() {
         {resultado && (
           <div className="bg-bg rounded-lg p-4 mb-4">
             <p className="text-xs font-semibold text-text mb-2">Resumo da Apuração</p>
-            <div className="grid grid-cols-5 gap-2">
-              {[15, 14, 13, 12, 11].map((n) => (
+            <div className={`grid ${acertosGridCols} gap-2`}>
+              {acertosKeys.map((n) => (
                 <div key={n} className="text-center">
                   <p className="text-lg font-bold text-primary">{resultado.resumo[n] || 0}</p>
                   <p className="text-xs text-text-muted">{n} acertos</p>
@@ -614,7 +628,7 @@ export default function AdminEditarBolaoPage() {
             </div>
 
             {modoAddJogo === 'picker' ? (
-              <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} maxNumbers={18} minNumbers={15} />
+              <NumberPicker onConfirm={handleAddJogo} disabled={addingJogo} maxNumbers={pickerMaxNumbers} minNumbers={pickerMinNumbers} maxNumber={pickerMaxNumber} />
             ) : (
               <div className="space-y-3">
                 <div className="bg-bg rounded-lg p-4 text-center border-2 border-dashed border-border">
@@ -752,6 +766,9 @@ export default function AdminEditarBolaoPage() {
                       onConfirm={(dezenas) => handleApurarConcursoManual(manualConcurso, dezenas)}
                       disabled={apurandoConcurso !== null}
                       buttonLabel={`Apurar Concurso ${manualConcurso}`}
+                      maxNumbers={resultadoMaxNumbers}
+                      minNumbers={resultadoMaxNumbers}
+                      maxNumber={pickerMaxNumber}
                     />
                   </div>
                 )}
@@ -799,11 +816,16 @@ export default function AdminEditarBolaoPage() {
 
                 {modoApuracao === 'manual' ? (
                   <div>
-                    <p className="text-sm font-semibold text-text mb-3">Informe os 15 números sorteados</p>
+                    <p className="text-sm font-semibold text-text mb-3">
+                    Informe os {resultadoMaxNumbers} números sorteados
+                  </p>
                     <NumberPicker
                       onConfirm={handleApurarManual}
                       disabled={apurando}
                       buttonLabel="Apurar Resultado"
+                      maxNumbers={resultadoMaxNumbers}
+                      minNumbers={resultadoMaxNumbers}
+                      maxNumber={pickerMaxNumber}
                     />
                     <button
                       type="button"
