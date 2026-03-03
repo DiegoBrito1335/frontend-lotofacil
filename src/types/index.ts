@@ -190,6 +190,7 @@ export interface BolaoUpdateAdmin {
   valor_cota?: number
   status?: string
   data_fechamento?: string
+  tipo?: 'lotofacil' | 'megasena'
 }
 
 // Teimosinha

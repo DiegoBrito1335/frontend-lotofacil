@@ -49,6 +49,7 @@ export default function AdminEditarBolaoPage() {
     concurso_numero: '',
     total_cotas: '',
     valor_cota: '',
+    tipo: 'lotofacil' as 'lotofacil' | 'megasena',
   })
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export default function AdminEditarBolaoPage() {
         concurso_numero: String(bolaoData.concurso_numero),
         total_cotas: String(bolaoData.total_cotas),
         valor_cota: String(bolaoData.valor_cota),
+        tipo: (bolaoData.tipo || 'lotofacil') as 'lotofacil' | 'megasena',
       })
 
       // Carregar resultado se apurado (ou parcialmente apurado para teimosinha)
@@ -118,6 +120,7 @@ export default function AdminEditarBolaoPage() {
         concurso_numero: parseInt(form.concurso_numero),
         total_cotas: parseInt(form.total_cotas),
         valor_cota: parseFloat(form.valor_cota),
+        tipo: form.tipo,
       })
       setMensagem({ tipo: 'sucesso', texto: 'Bolão atualizado com sucesso!' })
       await loadData(id)
@@ -368,6 +371,26 @@ export default function AdminEditarBolaoPage() {
           </h2>
 
           <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-text mb-2">Tipo de Loteria</label>
+              <div className="grid grid-cols-2 gap-3">
+                {(['lotofacil', 'megasena'] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setForm({ ...form, tipo: t })}
+                    className={`py-2.5 px-4 rounded-lg border-2 text-sm font-semibold transition-colors cursor-pointer ${
+                      form.tipo === t
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border bg-bg text-text-muted hover:border-primary/50'
+                    }`}
+                  >
+                    {t === 'lotofacil' ? '🍀 Lotofácil' : '🟢 Mega-Sena'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-text mb-1">Nome</label>
               <input
