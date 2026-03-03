@@ -16,18 +16,14 @@ export const carteiraService = {
   },
 
   getTransacoes: async (tipo?: string): Promise<Transacao[]> => {
-    const userId = localStorage.getItem('user_id')
     const { data } = await api.get('/transacoes/', {
-      params: { usuario_id: userId, tipo },
+      params: tipo ? { tipo } : undefined,
     })
     return data
   },
 
   getResumoTransacoes: async (): Promise<TransacaoResumo> => {
-    const userId = localStorage.getItem('user_id')
-    const { data } = await api.get('/transacoes/resumo', {
-      params: { usuario_id: userId },
-    })
+    const { data } = await api.get('/transacoes/resumo')
     return data
   },
 }
