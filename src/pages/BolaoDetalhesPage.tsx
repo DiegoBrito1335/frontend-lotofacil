@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { bolaoService } from '@/services/bolaoService'
 import { cotaService } from '@/services/cotaService'
@@ -140,8 +140,7 @@ export default function BolaoDetalhesPage() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className="bg-primary h-3 rounded-full progress-animated"
-              style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
+              className={`bg-primary h-3 rounded-full progress-animated [--progress:${Math.min(percentual, 100)}%]`}
             />
           </div>
         </div>
