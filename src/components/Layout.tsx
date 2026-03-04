@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { carteiraService } from '@/services/carteiraService'
+import InstallPWA from '@/components/ui/InstallPWA'
 
 const publicNav = [
   { to: '/boloes', label: 'Bolões', icon: Ticket },
@@ -138,6 +139,8 @@ export default function Layout() {
                 </Link>
               </div>
             )}
+
+            <InstallPWA />
 
             {/* Mobile menu button */}
             <button

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Fundo branco arredondado (necessário para maskable) -->
+  <rect width="512" height="512" rx="96" fill="#ffffff"/>
+  <!-- Círculo verde principal -->
+  <circle cx="256" cy="256" r="200" fill="#16a34a"/>
+  <!-- Trevo de 4 folhas estilizado -->
+  <!-- Folha superior -->
+  <circle cx="256" cy="176" r="54" fill="#dcfce7"/>
+  <!-- Folha inferior -->
+  <circle cx="256" cy="336" r="54" fill="#dcfce7"/>
+  <!-- Folha esquerda -->
+  <circle cx="176" cy="256" r="54" fill="#dcfce7"/>
+  <!-- Folha direita -->
+  <circle cx="336" cy="256" r="54" fill="#dcfce7"/>
+  <!-- Centro do trevo -->
+  <circle cx="256" cy="256" r="36" fill="#16a34a"/>
+  <!-- Caule -->
+  <rect x="246" y="300" width="20" height="60" rx="10" fill="#dcfce7"/>
+  <!-- Letra B central (Bolão) -->
+  <text x="256" y="272" font-family="Arial, sans-serif" font-size="44" font-weight="900" fill="#15803d" text-anchor="middle">B</text>
+</svg>
