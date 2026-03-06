@@ -269,6 +269,7 @@ export interface ResultadoBolaoUsuario {
   concurso_numero: number
   concurso_fim?: number | null
   status: string
+  tipo?: string
   resultados: ResultadoConcursoUsuario[]
   premio_usuario: number
   quantidade_cotas: number

@@ -5,17 +5,16 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { Trophy, ChevronDown, ChevronUp, Star } from 'lucide-react'
 import { formatBRL } from '@/utils/format'
 
-const FAIXAS = [15, 14, 13, 12, 11] as const
+function ResumoAcertosFaixas({ resultado, tipo }: { resultado: ResultadoConcursoUsuario; tipo?: string }) {
+  const isMega = tipo === 'megasena'
+  const faixas = isMega ? [6, 5, 4, 3, 2, 1, 0] : [15, 14, 13, 12, 11]
 
-function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuario }) {
   // Usa resumo_acertos do backend se disponível; caso contrário, calcula dos jogos
   const resumo: Record<number, number> =
     resultado.resumo_acertos && Object.keys(resultado.resumo_acertos).length > 0
       ? resultado.resumo_acertos
       : resultado.jogos.reduce<Record<number, number>>((acc, jogo) => {
-          if (jogo.acertos >= 11) {
-            acc[jogo.acertos] = (acc[jogo.acertos] || 0) + 1
-          }
+          acc[jogo.acertos] = (acc[jogo.acertos] || 0) + 1
           return acc
         }, {})
   const totalJogos = resultado.jogos.length
@@ -26,15 +25,16 @@ function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuari
         <Star className="w-4 h-4 text-yellow-500" />
         Resumo de Acertos
       </h4>
-      <div className="grid grid-cols-5 gap-2">
-        {FAIXAS.map((faixa) => {
+      <div className={`grid gap-2 ${isMega ? 'grid-cols-7' : 'grid-cols-5'}`}>
+        {faixas.map((faixa) => {
           const qtd = resumo[faixa] || 0
-          const hasPrize = faixa >= 11
+          const hasPrize = isMega ? faixa >= 4 : faixa >= 11
+          const isTop = isMega ? faixa === 6 : faixa >= 14
           return (
             <div
               key={faixa}
               className={`text-center rounded-lg p-2 ${
-                qtd > 0 && faixa >= 14
+                qtd > 0 && isTop
                   ? 'bg-yellow-50 border border-yellow-200'
                   : qtd > 0 && hasPrize
                   ? 'bg-green-50 border border-green-200'
@@ -42,13 +42,13 @@ function ResumoAcertosFaixas({ resultado }: { resultado: ResultadoConcursoUsuari
               }`}
             >
               <div className={`text-lg font-bold ${
-                qtd > 0 && faixa >= 14 ? 'text-yellow-700' :
-                qtd > 0 ? 'text-green-700' : 'text-gray-400'
+                qtd > 0 && isTop ? 'text-yellow-700' :
+                qtd > 0 && hasPrize ? 'text-green-700' : 'text-gray-400'
               }`}>
                 {qtd}
               </div>
               <div className="text-[10px] text-text-muted font-medium">
-                {faixa} pts
+                {faixa} ac
               </div>
             </div>
           )
@@ -73,10 +73,12 @@ function ConcursoResultado({
   resultado,
   isTeimosinha,
   defaultOpen,
+  tipo,
 }: {
   resultado: ResultadoConcursoUsuario
   isTeimosinha: boolean
   defaultOpen: boolean
+  tipo?: string
 }) {
   const [jogosAbertos, setJogosAbertos] = useState(defaultOpen)
   const resultadoSet = new Set(resultado.dezenas_sorteadas)
@@ -108,7 +110,7 @@ function ConcursoResultado({
       </div>
 
       {/* Resumo de acertos por faixa — só mostra se há jogos */}
-      {resultado.jogos.length > 0 && <ResumoAcertosFaixas resultado={resultado} />}
+      {resultado.jogos.length > 0 && <ResumoAcertosFaixas resultado={resultado} tipo={tipo} />}
 
       {/* Botão para expandir jogos */}
       <button
@@ -308,6 +310,7 @@ export default function ResultadosPage() {
                           resultado={resultado}
                           isTeimosinha={isTeimosinha}
                           defaultOpen={idx === 0}
+                          tipo={bolao.tipo}
                         />
                         {isTeimosinha &&
                           idx < bolao.resultados.length - 1 && (
