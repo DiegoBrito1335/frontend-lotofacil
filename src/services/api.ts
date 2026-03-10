@@ -6,23 +6,19 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 60000,
-})
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
-  return config
+  withCredentials: true,
 })
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('user_name')
-      window.location.href = '/login'
+      const requestUrl = error.config?.url || ''
+      // /auth/me é usado para verificar sessão no carregamento — 401 é esperado se não autenticado
+      if (!requestUrl.includes('/auth/me')) {
+        localStorage.removeItem('user_name')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }
