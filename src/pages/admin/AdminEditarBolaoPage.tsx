@@ -684,6 +684,29 @@ export default function AdminEditarBolaoPage() {
         )}
       </div>
 
+      {/* Re-distribuição de Prêmio (bolão apurado sem prêmio) */}
+      {isApurado && !isTeimosinha && (!resultado?.premio_total || resultado.premio_total === 0) && (
+        <div className="bg-card rounded-xl border border-border p-6 mb-4">
+          <h2 className="font-semibold text-lg mb-2 flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-yellow-500" />
+            Distribuição de Prêmio
+          </h2>
+          <p className="text-sm text-text-muted mb-4">
+            O bolão foi apurado mas o prêmio ainda não foi distribuído.
+            Isso pode acontecer quando o resultado da Caixa ainda não estava disponível no momento da apuração.
+          </p>
+          <button
+            type="button"
+            onClick={handleApurarAutomatico}
+            disabled={apurando}
+            className="w-full flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
+          >
+            <Zap className="w-4 h-4" />
+            {apurando ? 'Buscando prêmio...' : `Buscar e Distribuir Prêmio (Concurso ${bolao.concurso_numero})`}
+          </button>
+        </div>
+      )}
+
       {/* Seção 3: Apuração */}
       {canApurar && (
         <div className="bg-card rounded-xl border border-border p-6 mb-4">
