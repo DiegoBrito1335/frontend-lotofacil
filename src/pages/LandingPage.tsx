@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
+import CookieBanner from '@/components/CookieBanner'
 import {
   Clover,
   Ticket,
@@ -372,6 +373,12 @@ export default function LandingPage() {
               <div className="space-y-2 text-sm">
                 <p>Pagamentos via Pix (Mercado Pago)</p>
                 <p>Suporte por e-mail</p>
+                <Link to="/politica-de-privacidade" className="block text-white/60 hover:text-white no-underline transition-colors">
+                  Política de Privacidade
+                </Link>
+                <Link to="/termos-de-uso" className="block text-white/60 hover:text-white no-underline transition-colors">
+                  Termos de Uso
+                </Link>
               </div>
             </div>
           </div>
@@ -380,6 +387,8 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      <CookieBanner />
     </div>
   )
 }

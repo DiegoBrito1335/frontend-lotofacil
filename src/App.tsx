@@ -20,6 +20,8 @@ import AdminUsuariosPage from '@/pages/admin/AdminUsuariosPage'
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 import ResetPasswordPage from '@/pages/ResetPasswordPage'
 import ConfirmarEmailPage from '@/pages/ConfirmarEmailPage'
+import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage'
+import TermosUsoPage from '@/pages/TermosUsoPage'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -53,6 +55,8 @@ function AppRoutes() {
         <Route path="/bolao/:id" element={<BolaoDetalhesPage />} />
         <Route path="/como-jogar" element={<ComoJogarPage />} />
         <Route path="/regras" element={<RegrasPage />} />
+        <Route path="/politica-de-privacidade" element={<PoliticaPrivacidadePage />} />
+        <Route path="/termos-de-uso" element={<TermosUsoPage />} />
         <Route
           path="/minhas-cotas"
           element={<ProtectedRoute><MinhasCotasPage /></ProtectedRoute>}

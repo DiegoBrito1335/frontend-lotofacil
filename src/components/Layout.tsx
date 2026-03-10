@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { carteiraService } from '@/services/carteiraService'
+import CookieBanner from '@/components/CookieBanner'
 import InstallPWA from '@/components/ui/InstallPWA'
 
 const publicNav = [
@@ -250,10 +251,18 @@ export default function Layout() {
       {/* Footer */}
       <footer className="border-t border-green-200 bg-bg/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <Clover className="w-4 h-4 text-primary" />
               <span className="font-semibold text-sm text-slate-700">Bolão Lotofácil</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs text-slate-400">
+              <Link to="/politica-de-privacidade" className="hover:text-slate-600 transition-colors no-underline">
+                Privacidade
+              </Link>
+              <Link to="/termos-de-uso" className="hover:text-slate-600 transition-colors no-underline">
+                Termos
+              </Link>
             </div>
             <p className="text-xs text-slate-400">
               &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade
@@ -261,6 +270,8 @@ export default function Layout() {
           </div>
         </div>
       </footer>
+
+      <CookieBanner />
     </div>
   )
 }
