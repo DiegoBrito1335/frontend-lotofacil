@@ -91,9 +91,16 @@ function ConcursoResultado({
           {isTeimosinha ? `Concurso ${resultado.concurso_numero}` : 'Resultado do Concurso'}
         </h4>
         {resultado.premio_total > 0 && (
-          <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-bold ring-1 ring-green-200">
-            Prêmio: {formatBRL(resultado.premio_total)}
-          </span>
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-bold ring-1 ring-green-200">
+              Prêmio total: {formatBRL(resultado.premio_total)}
+            </span>
+            {resultado.valor_por_cota != null && resultado.valor_por_cota > 0 && (
+              <span className="text-xs text-text-muted">
+                {formatBRL(resultado.valor_por_cota)} / cota
+              </span>
+            )}
+          </div>
         )}
       </div>
 

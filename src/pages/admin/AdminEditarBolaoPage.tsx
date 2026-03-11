@@ -684,6 +684,64 @@ export default function AdminEditarBolaoPage() {
         )}
       </div>
 
+      {/* Painel de Prêmio (bolão apurado com prêmio distribuído) */}
+      {isApurado && !isTeimosinha && resultado?.premio_total != null && resultado.premio_total > 0 && (
+        <div className="bg-card rounded-xl border border-border p-6 mb-4">
+          <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-yellow-500" />
+            Distribuição do Prêmio
+          </h2>
+
+          {/* Linha principal */}
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+              <p className="text-xs text-green-700 font-medium mb-0.5">Prêmio Total</p>
+              <p className="text-xl font-bold text-green-800">R$ {resultado.premio_total.toFixed(2)}</p>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+              <p className="text-xs text-blue-700 font-medium mb-0.5">Valor por Cota</p>
+              <p className="text-xl font-bold text-blue-800">
+                R$ {resultado.valor_por_cota != null ? resultado.valor_por_cota.toFixed(2) : (resultado.total_cotas && resultado.total_cotas > 0 ? (resultado.premio_total / resultado.total_cotas).toFixed(2) : '—')}
+              </p>
+            </div>
+          </div>
+
+          {/* Cotas */}
+          {resultado.total_cotas != null && (
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              <div className="bg-bg rounded-lg p-3 text-center border border-border">
+                <p className="text-xs text-text-muted mb-0.5">Total Cotas</p>
+                <p className="text-lg font-bold text-text">{resultado.total_cotas}</p>
+              </div>
+              <div className="bg-bg rounded-lg p-3 text-center border border-border">
+                <p className="text-xs text-text-muted mb-0.5">Vendidas</p>
+                <p className="text-lg font-bold text-primary">{resultado.cotas_vendidas ?? 0}</p>
+              </div>
+              <div className="bg-bg rounded-lg p-3 text-center border border-border">
+                <p className="text-xs text-text-muted mb-0.5">Restantes</p>
+                <p className="text-lg font-bold text-yellow-600">{resultado.cotas_restantes ?? 0}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Administrador */}
+          {resultado.cotas_admin_total != null && resultado.cotas_admin_total > 0 && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-yellow-900">Administrador (Criador)</p>
+                <p className="text-xs text-yellow-700 mt-0.5">
+                  {resultado.cotas_admin_total} cota{resultado.cotas_admin_total > 1 ? 's' : ''}
+                  {resultado.cotas_restantes != null && resultado.cotas_restantes > 0 && (
+                    <span className="ml-1">({resultado.cotas_restantes} não vendidas)</span>
+                  )}
+                </p>
+              </div>
+              <p className="text-lg font-bold text-yellow-800">R$ {resultado.valor_admin?.toFixed(2) ?? '—'}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Re-distribuição de Prêmio (bolão apurado sem prêmio) */}
       {isApurado && !isTeimosinha && (!resultado?.premio_total || resultado.premio_total === 0) && (
         <div className="bg-card rounded-xl border border-border p-6 mb-4">

@@ -48,6 +48,13 @@ export interface ApuracaoResponse {
   jogos_resultado: { jogo_id: string; dezenas: number[]; acertos: number }[]
   resumo: Record<number, number>
   premio_total?: number
+  // Breakdown completo (retornado por GET /resultado)
+  total_cotas?: number
+  cotas_vendidas?: number
+  cotas_restantes?: number
+  valor_por_cota?: number
+  cotas_admin_total?: number
+  valor_admin?: number
 }
 
 export interface BolaoDisponibilidade {
@@ -86,6 +93,7 @@ export interface Cota {
   concurso_numero?: number
   quantidade?: number
   premio_ganho?: number
+  valor_por_cota?: number
 }
 
 // ===================================
@@ -259,6 +267,7 @@ export interface ResultadoConcursoUsuario {
   concurso_numero: number
   dezenas_sorteadas: number[]
   premio_total: number
+  valor_por_cota?: number
   resumo_acertos?: Record<number, number>
   jogos: ResultadoJogo[]
 }
