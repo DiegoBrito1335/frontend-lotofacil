@@ -9,6 +9,15 @@ const api = axios.create({
   withCredentials: true,
 })
 
+// Envia JWT via Authorization header (funciona em mobile/Safari onde cookies cross-origin são bloqueados)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('auth_token')
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  return config
+})
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

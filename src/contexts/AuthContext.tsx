@@ -46,12 +46,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setIsLoading(false))
   }, [])
 
-  const login = useCallback((data: UserInfo) => {
+  const login = useCallback((data: UserInfo & { access_token?: string }) => {
     setUserId(data.id)
     setUserEmail(data.email)
     setIsAdmin(data.is_admin)
     setUserName(data.nome)
     localStorage.setItem('user_name', data.nome)
+    if (data.access_token) {
+      localStorage.setItem('auth_token', data.access_token)
+    }
   }, [])
 
   const logout = useCallback(async () => {
@@ -65,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false)
     setUserName(null)
     localStorage.removeItem('user_name')
+    localStorage.removeItem('auth_token')
   }, [])
 
   const updateUserName = useCallback((nome: string) => {
