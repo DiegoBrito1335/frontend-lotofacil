@@ -39,6 +39,7 @@ export default function AdminEditarBolaoPage() {
   const [apurandoConcurso, setApurandoConcurso] = useState<number | null>(null)
   const [premioTotalGeral, setPremioTotalGeral] = useState(0)
   const [uploadingCSV, setUploadingCSV] = useState(false)
+  const [redistribuindo, setRedistribuindo] = useState(false)
   const [modoAddJogo, setModoAddJogo] = useState<'picker' | 'csv'>('picker')
   const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
   const [manualConcurso, setManualConcurso] = useState<number | null>(null)
@@ -216,6 +217,22 @@ export default function AdminEditarBolaoPage() {
       setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro na apuração automática' })
     } finally {
       setApurando(false)
+    }
+  }
+
+  const handleRedistribuirPremio = async () => {
+    if (!id || !bolao) return
+    try {
+      setRedistribuindo(true)
+      setMensagem(null)
+      const res = await adminService.redistribuirPremio(id, bolao.concurso_numero)
+      setMensagem({ tipo: 'sucesso', texto: `Prêmio R$ ${res.premio_total?.toFixed(2) ?? '—'} creditado nas carteiras!` })
+      await loadData(id)
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setMensagem({ tipo: 'erro', texto: error.response?.data?.detail || 'Erro ao redistribuir prêmio' })
+    } finally {
+      setRedistribuindo(false)
     }
   }
 
@@ -726,7 +743,7 @@ export default function AdminEditarBolaoPage() {
 
           {/* Administrador */}
           {resultado.cotas_admin_total != null && resultado.cotas_admin_total > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between mb-4">
               <div>
                 <p className="text-sm font-semibold text-yellow-900">Administrador (Criador)</p>
                 <p className="text-xs text-yellow-700 mt-0.5">
@@ -739,6 +756,17 @@ export default function AdminEditarBolaoPage() {
               <p className="text-lg font-bold text-yellow-800">R$ {resultado.valor_admin?.toFixed(2) ?? '—'}</p>
             </div>
           )}
+
+          {/* Botão retentar créditos */}
+          <button
+            type="button"
+            onClick={handleRedistribuirPremio}
+            disabled={redistribuindo}
+            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-50 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors border-0 cursor-pointer text-sm"
+          >
+            <Zap className="w-4 h-4" />
+            {redistribuindo ? 'Creditando...' : 'Creditar Prêmio nas Carteiras'}
+          </button>
         </div>
       )}
 

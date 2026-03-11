@@ -80,6 +80,11 @@ export const adminService = {
     return data
   },
 
+  redistribuirPremio: async (bolaoId: string, concursoNumero: number) => {
+    const { data } = await api.post(`/admin/boloes/${bolaoId}/redistribuir-premio/${concursoNumero}`)
+    return data
+  },
+
   getStatusApuracao: async (bolaoId: string): Promise<StatusApuracao> => {
     const { data } = await api.get(`/admin/boloes/${bolaoId}/apuracao/status`)
     return data
