@@ -14,6 +14,7 @@ import {
   User,
   CheckCircle,
 } from 'lucide-react'
+import { GoogleLogin } from '@react-oauth/google'
 
 type Tab = 'login' | 'registro'
 
@@ -56,6 +57,22 @@ export default function LoginPage() {
       } else {
         setError(error.response?.data?.detail || 'Erro ao fazer login')
       }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleSuccess = async (response: any) => {
+    if (!response.credential) return
+    try {
+      setLoading(true)
+      setError('')
+      const { data } = await api.post('/auth/google', { credential: response.credential })
+      login(data)
+      navigate('/boloes')
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { detail?: string } } }
+      setError(error.response?.data?.detail || 'Erro ao fazer login com o Google')
     } finally {
       setLoading(false)
     }
@@ -171,9 +188,29 @@ export default function LoginPage() {
               )}
 
               {tab === 'login' ? (
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div>
-                    <label htmlFor="loginEmail" className="block text-sm font-semibold text-text mb-1.5">
+                <div className="space-y-4">
+                  <div className="flex justify-center -mx-1">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={() => setError('Falha ao autenticar com o Google')}
+                      theme="outline"
+                      size="large"
+                      width="350"
+                    />
+                  </div>
+
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-border"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-card text-text-muted">Ou entre com email</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleLogin} className="space-y-4">
+                    <div>
+                      <label htmlFor="loginEmail" className="block text-sm font-semibold text-text mb-1.5">
                       E-mail
                     </label>
                     <div className="relative">
@@ -242,6 +279,7 @@ export default function LoginPage() {
                     </button>
                   </p>
                 </form>
+                </div>
               ) : (
                 <form onSubmit={handleRegistro} className="space-y-4">
                   <div>

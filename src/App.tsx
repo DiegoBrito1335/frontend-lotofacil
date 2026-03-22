@@ -22,6 +22,7 @@ import ResetPasswordPage from '@/pages/ResetPasswordPage'
 import ConfirmarEmailPage from '@/pages/ConfirmarEmailPage'
 import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage'
 import TermosUsoPage from '@/pages/TermosUsoPage'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import type { ReactNode } from 'react'
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -105,11 +106,15 @@ function AppRoutes() {
 }
 
 export default function App() {
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={clientId}>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   )
 }
