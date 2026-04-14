@@ -1,22 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import Layout from '@/components/Layout'
 import LandingPage from '@/pages/LandingPage'
 import LoginPage from '@/pages/LoginPage'
 import HomePage from '@/pages/HomePage'
-import BolaoDetalhesPage from '@/pages/BolaoDetalhesPage'
-import MinhasCotasPage from '@/pages/MinhasCotasPage'
-import ResultadosPage from '@/pages/ResultadosPage'
-import CarteiraPage from '@/pages/CarteiraPage'
-import DepositarPage from '@/pages/DepositarPage'
 import ComoJogarPage from '@/pages/ComoJogarPage'
 import RegrasPage from '@/pages/RegrasPage'
-import PerfilPage from '@/pages/PerfilPage'
-import AdminDashboard from '@/pages/admin/AdminDashboard'
-import AdminBoloesPage from '@/pages/admin/AdminBoloesPage'
-import AdminCriarBolaoPage from '@/pages/admin/AdminCriarBolaoPage'
-import AdminEditarBolaoPage from '@/pages/admin/AdminEditarBolaoPage'
-import AdminUsuariosPage from '@/pages/admin/AdminUsuariosPage'
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 import ResetPasswordPage from '@/pages/ResetPasswordPage'
 import ConfirmarEmailPage from '@/pages/ConfirmarEmailPage'
@@ -24,6 +14,26 @@ import PoliticaPrivacidadePage from '@/pages/PoliticaPrivacidadePage'
 import TermosUsoPage from '@/pages/TermosUsoPage'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import type { ReactNode } from 'react'
+import { Suspense, lazy } from 'react'
+import { HelmetProvider } from 'react-helmet-async'
+import NotFoundPage from '@/pages/NotFoundPage'
+import { Loader2 } from 'lucide-react'
+import { Navigate } from 'react-router-dom'
+
+// Lazy Loading das rotas protegidas e pesadas
+const BolaoDetalhesPage = lazy(() => import('@/pages/BolaoDetalhesPage'))
+const MinhasCotasPage = lazy(() => import('@/pages/MinhasCotasPage'))
+const ResultadosPage = lazy(() => import('@/pages/ResultadosPage'))
+const CarteiraPage = lazy(() => import('@/pages/CarteiraPage'))
+const DepositarPage = lazy(() => import('@/pages/DepositarPage'))
+const PerfilPage = lazy(() => import('@/pages/PerfilPage'))
+
+// Rotas Administrativas
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'))
+const AdminBoloesPage = lazy(() => import('@/pages/admin/AdminBoloesPage'))
+const AdminCriarBolaoPage = lazy(() => import('@/pages/admin/AdminCriarBolaoPage'))
+const AdminEditarBolaoPage = lazy(() => import('@/pages/admin/AdminEditarBolaoPage'))
+const AdminUsuariosPage = lazy(() => import('@/pages/admin/AdminUsuariosPage'))
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth()
@@ -40,9 +50,18 @@ function AdminRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
+function PageLoader() {
+  return (
+    <div className="flex justify-center items-center h-[50vh]">
+      <Loader2 className="w-10 h-10 animate-spin text-green-600" />
+    </div>
+  )
+}
+
 function AppRoutes() {
   return (
-    <Routes>
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
       {/* Páginas standalone (sem Layout) */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
@@ -100,8 +119,9 @@ function AppRoutes() {
         />
       </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </Suspense>
   )
 }
 
@@ -109,12 +129,15 @@ export default function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
   return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <BrowserRouter>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </BrowserRouter>
-    </GoogleOAuthProvider>
+    <HelmetProvider>
+      <GoogleOAuthProvider clientId={clientId}>
+        <BrowserRouter>
+          <AuthProvider>
+            <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+            <AppRoutes />
+          </AuthProvider>
+        </BrowserRouter>
+      </GoogleOAuthProvider>
+    </HelmetProvider>
   )
 }

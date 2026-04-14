@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { cotaService } from '@/services/cotaService'
 import type { Cota } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import Skeleton from '@/components/ui/Skeleton'
 import StatusBadge from '@/components/ui/StatusBadge'
 import { Ticket, ExternalLink, Trophy } from 'lucide-react'
 
@@ -27,7 +27,36 @@ export default function MinhasCotasPage() {
     }
   }
 
-  if (loading) return <LoadingSpinner text="Carregando suas cotas..." />
+  if (loading) {
+    return (
+      <div className="fade-in">
+        <div className="mb-6">
+          <Skeleton className="w-48 h-8 mb-2" />
+          <Skeleton className="w-72 h-4" />
+        </div>
+        <div className="space-y-3">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-card border border-border p-4 flex items-center justify-between rounded-[20px]">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-10 h-10 rounded-lg" />
+                <div>
+                  <Skeleton className="w-32 h-5 mb-1.5" />
+                  <Skeleton className="w-40 h-3" />
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col items-end gap-1.5">
+                  <Skeleton className="w-24 h-5" />
+                  <Skeleton className="w-16 h-4" />
+                </div>
+                <Skeleton className="w-4 h-4 ml-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (error) {
     return (

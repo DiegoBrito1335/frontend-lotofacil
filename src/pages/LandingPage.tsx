@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import CookieBanner from '@/components/CookieBanner'
+import { useEffect, useState } from 'react'
+import { bolaoService } from '@/services/bolaoService'
+import type { Bolao } from '@/types'
 import {
   Clover,
   Ticket,
@@ -15,46 +18,113 @@ import {
   LogIn,
   Menu,
   X,
-  Lock,
   Database,
   CreditCard,
 } from 'lucide-react'
-import { useState } from 'react'
+
+import FAQItem from '@/components/ui/FAQItem'
+function LiveBolaoShowcase() {
+  const [boloes, setBoloes] = useState<Bolao[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    bolaoService.listar(true).then(data => {
+      setBoloes(data.slice(0, 3)) // Mostra os 3 primeiros
+    }).catch(() => {
+      // Falha silenciosa na landing page
+    }).finally(() => {
+      setLoading(false)
+    })
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 w-full max-w-5xl mx-auto">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="glass-panel p-6 rounded-2xl h-48 animate-pulse flex flex-col justify-between">
+            <div className="h-6 bg-white/20 rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-white/20 rounded w-1/2 mb-2"></div>
+            <div className="h-10 bg-white/30 rounded-lg w-full mt-auto"></div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (boloes.length === 0) return null
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-6xl mx-auto px-4 z-20 relative">
+      <div className="md:col-span-3 text-center mb-2">
+        <h3 className="text-white/90 font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          Bolões Disponíveis Agora
+        </h3>
+      </div>
+      {boloes.map((bolao) => (
+        <div key={bolao.id} className="glass-card hover:-translate-y-2 transition-all duration-300 rounded-[24px] p-6 text-left relative overflow-hidden group border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <div className="absolute top-0 right-0 bg-yellow-400 text-green-900 text-xs font-bold px-3 py-1 rounded-bl-lg">
+            Concurso {bolao.concurso_numero}
+          </div>
+          <h4 className="font-bold text-gray-900 text-xl mb-1 pr-16">{bolao.nome}</h4>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-1">{bolao.descricao || "Bolão oficial da plataforma"}</p>
+          
+          <div className="flex items-end justify-between mb-2">
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Valor da Cota</p>
+              <p className="text-2xl font-extrabold text-green-700">R$ {Number(bolao.valor_cota).toFixed(2)}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-gray-500 font-medium">Restam</p>
+              <p className="font-bold text-gray-800">{bolao.cotas_disponiveis} cotas</p>
+            </div>
+          </div>
+          
+          <Link 
+            to={`/bolao/${bolao.id}`}
+            className="mt-4 w-full block text-center bg-gray-900 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors"
+          >
+            Garantir Minha Cota
+          </Link>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function LandingPage() {
   const { isAuthenticated } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-sans">
       {/* ===== HEADER / NAVBAR ===== */}
       <header className="absolute top-0 left-0 right-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-white">
-            <Clover className="w-7 h-7" />
+        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 font-black text-2xl no-underline text-white drop-shadow-md">
+            <Clover className="w-8 h-8 text-yellow-300" />
             <span>Bolão Lotofácil</span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#como-funciona" className="text-white/80 hover:text-white text-sm font-medium no-underline transition-colors">
+          <nav className="hidden md:flex items-center gap-8 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
+            <a href="#como-funciona" className="text-white hover:text-yellow-300 text-sm font-semibold no-underline transition-colors">
               Como Funciona
             </a>
-            <a href="#vantagens" className="text-white/80 hover:text-white text-sm font-medium no-underline transition-colors">
+            <a href="#vantagens" className="text-white hover:text-yellow-300 text-sm font-semibold no-underline transition-colors">
               Vantagens
             </a>
-            <Link to="/boloes" className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium no-underline transition-colors">
-              <Ticket className="w-4 h-4" />
-              Bolões
-            </Link>
+            <a href="#faq" className="text-white hover:text-yellow-300 text-sm font-semibold no-underline transition-colors">
+              Dúvidas
+            </a>
           </nav>
 
           {/* Right side */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-4">
             {isAuthenticated ? (
               <Link
                 to="/boloes"
-                className="flex items-center gap-2 bg-yellow-400 text-green-900 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 transition-all shadow-[0_0_15px_rgba(250,204,21,0.2)]"
+                className="flex items-center gap-2 bg-yellow-400 text-green-900 font-bold text-sm px-6 py-3 rounded-xl no-underline hover:bg-yellow-300 transition-all glow-accent"
               >
                 <Ticket className="w-4 h-4" />
                 Meus Bolões
@@ -63,14 +133,14 @@ export default function LandingPage() {
               <>
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium no-underline transition-colors"
+                  className="flex items-center gap-1.5 text-white hover:text-yellow-300 text-sm font-bold no-underline transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   Entrar
                 </Link>
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 bg-yellow-400 text-green-900 font-bold text-sm px-5 py-2.5 rounded-lg no-underline hover:bg-yellow-300 transition-all shadow-[0_0_15px_rgba(250,204,21,0.2)]"
+                  className="flex items-center gap-1.5 bg-yellow-400 text-green-900 font-bold text-sm px-6 py-3 rounded-xl no-underline hover:bg-yellow-300 hover:scale-105 transition-all glow-accent"
                 >
                   Criar Conta
                 </Link>
@@ -82,7 +152,7 @@ export default function LandingPage() {
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden bg-transparent border-0 text-white cursor-pointer p-1"
+            className="md:hidden bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-lg p-2"
           >
             {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -90,164 +160,153 @@ export default function LandingPage() {
 
         {/* Mobile Dropdown */}
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-green-100 px-4 py-4 space-y-2 shadow-lg">
-            <a href="#como-funciona" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-green-800 text-sm no-underline rounded-lg hover:bg-green-50">
-              Como Funciona
-            </a>
-            <a href="#vantagens" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-green-800 text-sm no-underline rounded-lg hover:bg-green-50">
-              Vantagens
-            </a>
-            <Link to="/boloes" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-green-800 text-sm no-underline rounded-lg hover:bg-green-50">
-              Bolões
-            </Link>
-            <div className="border-t border-green-100 pt-2 mt-2 space-y-2">
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-gray-700 text-sm no-underline rounded-lg hover:bg-green-50">
-                Entrar
-              </Link>
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="block px-3 py-2.5 text-center btn-gradient text-white font-bold text-sm no-underline rounded-lg">
-                Criar Conta Grátis
-              </Link>
+          <div className="md:hidden bg-green-900/95 backdrop-blur-xl border-b border-white/10 px-4 py-6 shadow-2xl absolute w-full">
+            <div className="flex flex-col space-y-4">
+              <a href="#como-funciona" onClick={() => setMenuOpen(false)} className="text-white font-medium text-lg border-b border-white/10 pb-2">Como Funciona</a>
+              <a href="#vantagens" onClick={() => setMenuOpen(false)} className="text-white font-medium text-lg border-b border-white/10 pb-2">Vantagens</a>
+              <a href="#faq" onClick={() => setMenuOpen(false)} className="text-white font-medium text-lg border-b border-white/10 pb-2">FAQ</a>
+              
+              <div className="pt-4 flex flex-col gap-3">
+                {isAuthenticated ? (
+                  <Link to="/boloes" className="w-full text-center bg-yellow-400 text-green-900 font-bold py-4 rounded-xl">Meus Bolões</Link>
+                ) : (
+                  <>
+                    <Link to="/login" className="w-full text-center text-white border border-white/30 font-bold py-4 rounded-xl">Fazer Login</Link>
+                    <Link to="/login" className="w-full text-center bg-yellow-400 text-green-900 font-bold py-4 rounded-xl">Criar Conta Grátis</Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
       </header>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative bg-linear-to-br from-green-800 via-green-700 to-primary text-white overflow-hidden">
-        {/* Background circles */}
-        <div className="absolute inset-0 opacity-[0.07]">
-          <div className="absolute top-20 left-[10%] w-40 h-40 border-2 border-white rounded-full" />
-          <div className="absolute top-32 right-[15%] w-28 h-28 border-2 border-white rounded-full" />
-          <div className="absolute bottom-32 left-[30%] w-20 h-20 border-2 border-white rounded-full" />
-          <div className="absolute bottom-16 right-[25%] w-48 h-48 border-2 border-white rounded-full" />
-          <div className="absolute top-1/2 left-[5%] w-12 h-12 border-2 border-white rounded-full" />
+      <section className="relative bg-[#0f3b21] min-h-screen flex flex-col py-32 overflow-hidden">
+        {/* Background Gradients & Orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-green-500/20 blur-[120px]"></div>
+          <div className="absolute top-[30%] -right-[15%] w-[40%] h-[60%] rounded-full bg-emerald-400/20 blur-[100px]"></div>
+          <div className="absolute bottom-[10%] left-[20%] w-[30%] h-[40%] rounded-full bg-yellow-400/10 blur-[90px]"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 pt-32 pb-28 md:pt-40 md:pb-36 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-8">
-              <Star className="w-4 h-4 text-yellow-300" />
-              <span className="text-sm font-medium">Plataforma 100% Segura e Transparente</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-[1.1]">
-              Multiplique suas chances de{' '}
-              <span className="text-yellow-300">ganhar na Lotofácil</span>
-            </h1>
-
-            <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Participe de bolões compartilhados com dezenas selecionadas.
-              Aposte menos, ganhe mais!
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to={isAuthenticated ? '/boloes' : '/login'}
-                className="flex items-center gap-2 bg-yellow-400 text-green-900 font-bold text-lg px-8 py-4 rounded-xl no-underline hover:bg-yellow-300 transition-all shadow-lg hover:shadow-xl"
-              >
-                <Ticket className="w-5 h-5" />
-                {isAuthenticated ? 'Ver Bolões Disponíveis' : 'Começar Agora'}
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              {!isAuthenticated && (
-                <Link
-                  to="/boloes"
-                  className="flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white font-semibold text-lg px-8 py-4 rounded-xl no-underline hover:bg-white/20 transition-all border border-white/25"
-                >
-                  Ver Bolões
-                </Link>
-              )}
-            </div>
-
-            {/* Trust indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 mt-14 text-white/70 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-300" />
-                <span>100% Transparente</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-300" />
-                <span>Pagamento via Pix</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-300" />
-                <span>Compra Instantânea</span>
-              </div>
-            </div>
+        <div className="flex-grow flex flex-col items-center justify-center max-w-7xl mx-auto px-4 relative z-10 w-full text-center pt-8">
+          <div className="inline-flex items-center gap-2 glass-panel px-5 py-2.5 rounded-full mb-8 shadow-lg border border-white/20 hover:bg-white/10 transition-colors cursor-default">
+            <Star className="w-4 h-4 text-yellow-300" />
+            <span className="text-sm font-semibold text-white tracking-wide">A Plataforma de Bolões que mais cresce</span>
           </div>
-        </div>
 
-        {/* Wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 50L60 45C120 40 240 30 360 35C480 40 600 60 720 65C840 70 960 60 1080 50C1200 40 1320 30 1380 25L1440 20V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V50Z" fill="#f0fdf4"/>
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-white mb-6 leading-[1.05] tracking-tight">
+            Pare de jogar <br className="hidden md:block"/> dinheiro fora. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">
+              Jogue em Grupo!
+            </span>
+          </h1>
+
+          <p className="text-xl md:text-2xl text-green-50 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+            Compre cotas dos bolões mais bem elaborados. Pague com Pix, acompanhe ao vivo e receba seu prêmio instantâneo na carteira.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+            <Link
+              to={isAuthenticated ? '/boloes' : '/login'}
+              className="w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-green-950 font-black text-lg px-10 py-5 rounded-2xl no-underline hover:scale-105 transition-all shadow-[0_0_40px_rgba(250,204,21,0.4)]"
+            >
+              <Ticket className="w-6 h-6" />
+              {isAuthenticated ? 'Abrir Cockpit' : 'Quero Participar Agora'}
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-6 md:gap-10 mt-12 text-green-100/80 font-medium">
+            <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-400" /> 100% Seguro</div>
+            <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-400" /> Pagamento Instantâneo via Pix</div>
+            <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-green-400" /> Divisão Automática de Prêmios</div>
+          </div>
+          
+          {/* SHOWCASE AO VIVO! */}
+          <LiveBolaoShowcase />
+        </div>
+        
+        {/* Curva divisória suave inferior */}
+        <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-none">
+          <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-16 md:h-24" fill="#f8fafc">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#f8fafc"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,12.24,87.75,11.41C1115.11,92.51,1162.77,77.58,1200,52.47V0Z" opacity=".5" fill="#f8fafc"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#f8fafc"></path>
           </svg>
         </div>
       </section>
 
-      {/* ===== SOCIAL PROOF STATS ===== */}
-      <section className="bg-white border-b border-green-100 py-12">
+      {/* ===== SOCIAL PROOF / STATS ===== */}
+      <section className="bg-[#f8fafc] pb-20 pt-10">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: Users, value: '1.200+', label: 'Usuários ativos' },
-              { icon: TrendingUp, value: 'R$ 87.000', label: 'Distribuídos em prêmios' },
-              { icon: Ticket, value: '450+', label: 'Bolões realizados' },
-              { icon: Star, value: '98%', label: 'Satisfação dos jogadores' },
+              { icon: Users, value: '10k+', label: 'Jogadores Ativos' },
+              { icon: Wallet, value: 'R$ 2M+', label: 'Prêmios Pagos' },
+              { icon: Ticket, value: '500+', label: 'Bolões Vencedores' },
+              { icon: Shield, value: '100%', label: 'Garantia de Divisão' },
             ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center gap-2">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-green-100 mb-1">
-                  <stat.icon className="w-6 h-6 text-primary" />
+              <div key={stat.label} className="flex flex-col items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-50 mb-3 text-green-600">
+                  <stat.icon className="w-7 h-7" />
                 </div>
-                <p className="text-3xl font-extrabold text-primary">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-3xl font-black text-gray-900">{stat.value}</p>
+                <p className="text-sm font-semibold text-gray-500 mt-1 uppercase tracking-wider">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== COMO FUNCIONA ===== */}
-      <section id="como-funciona" className="py-20 bg-bg">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-text mb-3">Como Funciona?</h2>
-            <p className="text-text-muted text-lg max-w-xl mx-auto">Em apenas 3 passos simples você já está participando</p>
+      {/* ===== COMO FUNCIONA (Redesign Premium) ===== */}
+      <section id="como-funciona" className="py-24 bg-white relative">
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">O Fim das Filas de Lotérica</h2>
+            <p className="text-xl text-gray-500 max-w-2xl mx-auto">Um modelo testado para multiplicar chances investindo de forma inteligente.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
+            {/* Timeline Line */}
+            <div className="hidden md:block absolute top-[60px] left-[15%] right-[15%] h-1 bg-gradient-to-r from-green-100 via-green-300 to-yellow-100 z-0"></div>
+
             {[
               {
                 step: '1',
                 icon: Wallet,
-                title: 'Deposite seu saldo',
-                desc: 'Adicione créditos à sua carteira via Pix de forma rápida e segura. O saldo é creditado instantaneamente.',
-                color: 'bg-blue-100 text-blue-600',
+                title: 'Abasteça',
+                desc: 'Coloque saldo via Pix. É instantâneo, seguro, sem taxas e fica vinculado 100% ao seu CPF.',
+                bgColor: 'bg-emerald-50',
+                iconColor: 'text-emerald-500'
               },
               {
                 step: '2',
-                icon: Ticket,
-                title: 'Escolha seu bolão',
-                desc: 'Navegue pelos bolões disponíveis, veja os jogos e escolha quantas cotas quiser comprar.',
-                color: 'bg-green-100 text-green-600',
+                icon: Users,
+                title: 'Junte-se à Tropa',
+                desc: 'Adquira cotas dos nossos super bolões. Jogamos com muitas dezenas cercadas matematicamente.',
+                bgColor: 'bg-green-50',
+                iconColor: 'text-green-500'
               },
               {
                 step: '3',
                 icon: TrendingUp,
-                title: 'Acompanhe e ganhe',
-                desc: 'Acompanhe seus bolões, confira os resultados e receba seus prêmios diretamente na carteira.',
-                color: 'bg-yellow-100 text-yellow-600',
+                title: 'Comemore!',
+                desc: 'O rateio é automático. Caiu o prêmio, seu saldo infla na hora, pronto para novo saque Pix.',
+                bgColor: 'bg-yellow-50',
+                iconColor: 'text-yellow-500'
               },
             ].map((item) => (
-              <div key={item.step} className="relative bg-card border border-border p-8 text-center card-hover">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm shadow">
+              <div key={item.step} className="bg-white border text-center border-gray-100 p-8 rounded-[32px] shadow-xl shadow-green-900/5 relative z-10 hover:-translate-y-2 transition-transform duration-300">
+                <div className={`w-20 h-20 mx-auto rounded-full ${item.bgColor} ${item.iconColor} flex items-center justify-center mb-6 shadow-sm border border-white`}>
+                  <item.icon className="w-10 h-10" />
+                </div>
+                <div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center font-black text-xl shadow-lg border-4 border-white">
                   {item.step}
                 </div>
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${item.color} mb-5 mt-2`}>
-                  <item.icon className="w-8 h-8" />
-                </div>
-                <h3 className="text-xl font-bold text-text mb-2">{item.title}</h3>
-                <p className="text-text-muted leading-relaxed">{item.desc}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                <p className="text-gray-500 text-lg leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -255,135 +314,151 @@ export default function LandingPage() {
       </section>
 
       {/* ===== VANTAGENS ===== */}
-      <section id="vantagens" className="py-20 bg-card border-t border-border">
+      <section id="vantagens" className="py-24 bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-text mb-3">Por que usar nossa plataforma?</h2>
-            <p className="text-text-muted text-lg max-w-xl mx-auto">Tudo o que você precisa para jogar na Lotofácil em grupo</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: Shield,
-                title: 'Segurança Total',
-                desc: 'Seus dados e transações protegidos. Infraestrutura robusta no Supabase.',
-                color: 'text-blue-600 bg-blue-100',
-              },
-              {
-                icon: QrCode,
-                title: 'Pix Instantâneo',
-                desc: 'Deposite e receba via Pix integrado ao Mercado Pago. Rápido e sem taxas.',
-                color: 'text-green-600 bg-green-100',
-              },
-              {
-                icon: Users,
-                title: 'Jogue em Grupo',
-                desc: 'Aumente suas chances jogando em grupo com mais dezenas por menos.',
-                color: 'text-purple-600 bg-purple-100',
-              },
-              {
-                icon: TrendingUp,
-                title: 'Transparência Total',
-                desc: 'Veja todos os jogos, dezenas e acompanhe cada centavo em tempo real.',
-                color: 'text-yellow-600 bg-yellow-100',
-              },
-            ].map((feat) => (
-              <div key={feat.title} className="bg-card border border-border p-6 card-hover">
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${feat.color} mb-4`}>
-                  <feat.icon className="w-6 h-6" />
-                </div>
-                <h3 className="font-bold text-text mb-1">{feat.title}</h3>
-                <p className="text-text-muted text-sm leading-relaxed">{feat.desc}</p>
+          <div className="flex flex-col md:flex-row items-center gap-16">
+            <div className="flex-1">
+              <h2 className="text-4xl font-black text-gray-900 mb-6 leading-tight">Engenharia reversa na Sorte.</h2>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Nós criamos o sistema perfeito para você nunca mais jogar um bilhete de 15 dezenas simples sozinho.
+              </p>
+              
+              <div className="space-y-6">
+                {[
+                  { icon: QrCode, title: 'Carteira Pix 24/7', desc: 'Aporte de saldo e Saque integral dos lucros 24h por dia na velocidade do Pix Mercado Pago.' },
+                  { icon: Shield, title: 'Blindagem de Informações', desc: 'Ninguem acessa ou visualiza seus dados. Sombreamento via SSL e banco Supabase V2.' },
+                  { icon: Database, title: 'Transparência Auditável', desc: 'Antes mesmo do sorteio você tem comprovante digital de todos os cartões cadastrados e suas dezenas.' },
+                ].map((feat) => (
+                  <div key={feat.title} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white transition-colors border border-transparent hover:border-gray-200 hover:shadow-sm">
+                    <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center shrink-0">
+                      <feat.icon className="w-7 h-7 text-green-700" />
+                    </div>
+                    <div className="pt-1">
+                      <h3 className="font-bold text-xl text-gray-900 mb-1">{feat.title}</h3>
+                      <p className="text-gray-600 leading-relaxed">{feat.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            <div className="flex-1 w-full max-w-lg relative">
+              <div className="absolute inset-0 bg-gradient-to-tr from-green-400 to-yellow-300 transform rotate-6 rounded-[40px] opacity-20 blur-xl"></div>
+              <div className="relative bg-[#0f172a] rounded-[40px] p-8 border-[8px] border-white shadow-2xl skew-y-2 hover:skew-y-0 transition-transform duration-500">
+                <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+                  <div className="text-white">
+                    <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">Saldo Disponível</p>
+                    <p className="text-3xl font-black">R$ <span className="text-green-400">14.050,00</span></p>
+                  </div>
+                  <Clover className="w-10 h-10 text-yellow-400" />
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-green-400/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div className="relative z-10 w-full">
+                      <p className="text-white font-bold">Prêmio: Bolão Lotofácil 3004</p>
+                      <p className="text-green-400 font-semibold text-sm">+ R$ 4.250,00</p>
+                    </div>
+                  </div>
+                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-green-400/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <div className="relative z-10 w-full">
+                      <p className="text-white font-bold">Prêmio: Lotofácil da Independência</p>
+                      <p className="text-green-400 font-semibold text-sm">+ R$ 9.800,00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ===== SEGURANÇA ===== */}
-      <section id="seguranca" className="py-16 bg-bg border-t border-border">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-extrabold text-text mb-2">Sua segurança é nossa prioridade</h2>
-          <p className="text-text-muted text-sm mb-10">Tecnologia de ponta para proteger seus dados e transações</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { icon: Lock, title: 'SSL Seguro', desc: 'Conexão criptografada' },
-              { icon: Database, title: 'Supabase', desc: 'Dados protegidos' },
-              { icon: CreditCard, title: 'Mercado Pago', desc: 'Pagamentos certificados' },
-            ].map((badge) => (
-              <div key={badge.title} className="bg-white border border-green-100 rounded-2xl px-6 py-4 flex items-center gap-3 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
-                  <badge.icon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-text text-sm">{badge.title}</p>
-                  <p className="text-xs text-text-muted">{badge.desc}</p>
-                </div>
-              </div>
-            ))}
+      {/* ===== FAQ SECTION ===== */}
+      <section id="faq" className="py-24 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black text-gray-900 mb-4">Dúvidas Frequentes</h2>
+            <p className="text-xl text-gray-500">Respondemos o essencial para você jogar com confiança.</p>
+          </div>
+
+          <div className="bg-gray-50 rounded-3xl p-8 md:p-12 border border-gray-200">
+            <FAQItem 
+              question="Minhas cotas e prêmios são garantidos?" 
+              answer="100%. Quando o bolão atinge a meta e é registrado na CEF, enviamos o bilhete digitalizado do jogo. Se o nosso bolão ganhar, o rateio do prêmio (dividido pelo número total de cotas) entra instantaneamente como saldo líquido na sua carteira da plataforma para saque via Pix."
+            />
+            <FAQItem 
+              question="Como eu recebo meu dinheiro?" 
+              answer="Basta ir no menu Carteira, solicitar 'Sacar' e inserir a sua chave Pix. O pagamento será processado em minutos para a chave cadastrada."
+            />
+            <FAQItem 
+              question="Existe taxa de administração ou imposto embutido?" 
+              answer="O valor da cota mostrado no sistema já contém todos os custos previstos e embutidos. O lucro que você ganha na premiação é seu lucro limpo e não cobraremos nenhuma comissão sobre o saque dele."
+            />
+            <FAQItem 
+              question="O que acontece se o Bolão não atingir o 100% de venda?" 
+              answer="Depende do grupo! Se não fechar, devolveremos o valor total das cotas convertidos em saldo na sua carteira antes do sorteio. Porém nós assumimos até 10% dos bolões que não fecham para que não haja cancelamento desnecessário."
+            />
           </div>
         </div>
       </section>
 
       {/* ===== CTA FINAL ===== */}
-      <section className="py-20 bg-linear-to-r from-green-800 to-primary text-white">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <Clover className="w-14 h-14 mx-auto mb-5 text-yellow-300" />
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
-            Pronto para tentar a sorte?
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-green-900"></div>
+        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-green-600 rounded-full blur-[100px] opacity-60"></div>
+        <div className="absolute -left-20 -top-20 w-96 h-96 bg-yellow-500 rounded-full blur-[100px] opacity-30"></div>
+        
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <Clover className="w-20 h-20 mx-auto mb-6 text-yellow-400 drop-shadow-xl" />
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
+            A Sorte Favorece a Tática
           </h2>
-          <p className="text-lg text-white/80 mb-8 max-w-lg mx-auto">
-            Entre agora e participe dos melhores bolões da Lotofácil.
-            Sua próxima grande vitória pode estar a um clique de distância!
+          <p className="text-xl md:text-2xl text-green-100 mb-10 max-w-2xl mx-auto font-light">
+            O próximo sorteio pode ser histórico. Junte-se agora sem taxas absurdas, pague no PIX e aumente suas chances em até 40x.
           </p>
           <Link
             to={isAuthenticated ? '/boloes' : '/login'}
-            className="inline-flex items-center gap-2 bg-yellow-400 text-green-900 font-bold text-lg px-8 py-4 rounded-xl no-underline hover:bg-yellow-300 transition-all shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-3 bg-yellow-400 text-green-950 font-black text-xl px-12 py-5 rounded-2xl no-underline hover:scale-105 transition-all shadow-[0_0_50px_rgba(250,204,21,0.5)]"
           >
-            {isAuthenticated ? 'Ver Bolões' : 'Criar Conta Grátis'}
-            <ArrowRight className="w-5 h-5" />
+            {isAuthenticated ? 'Abrir Painel' : 'Quero Abrir Minha Conta e Jogar'}
+            <ArrowRight className="w-6 h-6" />
           </Link>
         </div>
       </section>
 
       {/* ===== FOOTER ===== */}
-      <footer className="bg-gray-900 text-white/60 py-10">
+      <footer className="bg-gray-950 text-gray-400 py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <div className="flex items-center gap-2 text-white font-bold text-lg mb-3">
-                <Clover className="w-6 h-6 text-green-400" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 text-white font-black text-2xl mb-4">
+                <Clover className="w-8 h-8 text-green-500" />
                 Bolão Lotofácil
               </div>
-              <p className="text-sm leading-relaxed">
-                A melhor plataforma para participar de bolões da Lotofácil.
-                Jogue em grupo e aumente suas chances!
+              <p className="text-base leading-relaxed max-w-md">
+                A infraestrutura mais robusta e segura do mercado para você jogar na loteria de forma estratégica e colaborativa.
               </p>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3">Links Rápidos</h4>
-              <div className="space-y-2 text-sm">
-                <Link to="/boloes" className="block text-white/60 hover:text-white no-underline transition-colors">Bolões Disponíveis</Link>
-                <Link to="/login" className="block text-white/60 hover:text-white no-underline transition-colors">Entrar / Cadastrar</Link>
+              <h4 className="text-white font-bold text-lg mb-4">Acesso Rápido</h4>
+              <div className="space-y-3 font-medium">
+                <Link to="/boloes" className="block hover:text-white transition-colors">Bolões Oficiais</Link>
+                <Link to="/login" className="block hover:text-white transition-colors">Entrar ou Cadastrar</Link>
+                <a href="#faq" className="block hover:text-white transition-colors">Perguntas Frequentes</a>
               </div>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3">Informações</h4>
-              <div className="space-y-2 text-sm">
-                <p>Pagamentos via Pix (Mercado Pago)</p>
-                <p>Suporte por e-mail</p>
-                <Link to="/politica-de-privacidade" className="block text-white/60 hover:text-white no-underline transition-colors">
-                  Política de Privacidade
-                </Link>
-                <Link to="/termos-de-uso" className="block text-white/60 hover:text-white no-underline transition-colors">
-                  Termos de Uso
-                </Link>
+              <h4 className="text-white font-bold text-lg mb-4">Transparência</h4>
+              <div className="space-y-3 font-medium">
+                <p className="flex items-center gap-2"><CreditCard className="w-4 h-4"/> Mercado Pago</p>
+                <Link to="/politica-de-privacidade" className="block hover:text-white transition-colors">Política de Privacidade</Link>
+                <Link to="/termos-de-uso" className="block hover:text-white transition-colors">Termos de Uso</Link>
               </div>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-6 text-center text-sm">
-            Bolão Lotofácil &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade.
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm">Bolão Lotofácil &copy; {new Date().getFullYear()}. Todos os direitos reservados.</p>
+            <p className="text-sm font-semibold text-gray-500">Jogue com absoluta responsabilidade. Para maiores de 18 anos.</p>
           </div>
         </div>
       </footer>

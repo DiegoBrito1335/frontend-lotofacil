@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { carteiraService } from '@/services/carteiraService'
 import type { CarteiraResumo, Transacao, TransacaoResumo } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import Skeleton from '@/components/ui/Skeleton'
 import {
   Wallet,
   ArrowUpCircle,
@@ -86,7 +86,72 @@ export default function CarteiraPage() {
     return acc
   }, {})
 
-  if (loading) return <LoadingSpinner text="Carregando carteira..." />
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto fade-in">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex gap-2">
+            <Skeleton className="w-6 h-6 rounded-md" />
+            <div>
+              <Skeleton className="w-32 h-6 mb-1" />
+              <Skeleton className="w-48 h-4" />
+            </div>
+          </div>
+          <Skeleton className="w-36 h-10 rounded-lg" />
+        </div>
+        
+        <div className="p-6 mb-6 rounded-[1.5rem] bg-gray-100 flex items-center justify-between relative overflow-hidden">
+          <div className="relative z-10 w-full flex justify-between items-center">
+            <div>
+              <Skeleton className="w-32 h-4 mb-2 bg-gray-200" />
+              <Skeleton className="w-48 h-12 bg-gray-200" />
+            </div>
+            <Skeleton className="w-12 h-12 rounded-lg bg-gray-200" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="bg-card border border-border p-4 rounded-[20px]">
+              <div className="flex items-center gap-2 mb-2">
+                <Skeleton className="w-8 h-8 rounded-lg" />
+                <Skeleton className="w-20 h-3" />
+              </div>
+              <Skeleton className="w-24 h-6" />
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
+          <div className="flex items-center justify-between p-5 border-b border-border">
+            <div className="flex items-center gap-2">
+               <Skeleton className="w-5 h-5 rounded" />
+               <Skeleton className="w-20 h-6" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="w-16 h-8 rounded-lg" />
+              <Skeleton className="w-16 h-8 rounded-lg" />
+              <Skeleton className="w-16 h-8 rounded-lg" />
+            </div>
+          </div>
+          <div>
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="flex items-center justify-between px-5 py-4 border-b border-border last:border-0">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="w-10 h-10 rounded-xl" />
+                  <div>
+                    <Skeleton className="w-32 h-4 mb-1.5" />
+                    <Skeleton className="w-48 h-3" />
+                  </div>
+                </div>
+                <Skeleton className="w-20 h-5" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto fade-in">

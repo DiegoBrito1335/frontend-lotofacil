@@ -2,14 +2,14 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { bolaoService } from '@/services/bolaoService'
 import type { Bolao } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StatusBadge from '@/components/ui/StatusBadge'
+import Skeleton from '@/components/ui/Skeleton'
+import FAQItem from '@/components/ui/FAQItem'
 import { Ticket, Users, TrendingUp } from 'lucide-react'
 
 export default function HomePage() {
   const [boloes, setBoloes] = useState<Bolao[]>([])
   const [loading, setLoading] = useState(true)
-  const [loadingText, setLoadingText] = useState('Carregando bolões...')
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -19,7 +19,6 @@ export default function HomePage() {
   const loadBoloes = async () => {
     setLoading(true)
     setError('')
-    setLoadingText('Carregando bolões...')
 
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
@@ -29,7 +28,6 @@ export default function HomePage() {
         return
       } catch {
         if (attempt < 3) {
-          setLoadingText('Aguardando servidor... pode levar alguns segundos')
           await new Promise((r) => setTimeout(r, 3000))
         }
       }
@@ -39,7 +37,42 @@ export default function HomePage() {
     setLoading(false)
   }
 
-  if (loading) return <LoadingSpinner text={loadingText} />
+  if (loading) {
+    return (
+      <div className="fade-in">
+        <div className="mb-6">
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-card border border-border p-5 rounded-[20px] shadow-sm">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <Skeleton className="h-6 w-32 mb-2" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-3/4 mb-4" />
+              <div className="space-y-2 mb-4">
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-3 w-8" />
+                </div>
+                <Skeleton className="h-2 w-full" />
+              </div>
+              <div className="flex justify-between items-center pt-3 border-t border-border">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-4 w-28" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   if (error) {
     return (
@@ -141,6 +174,35 @@ export default function HomePage() {
           })}
         </div>
       )}
+
+      {/* ===== FAQ SECTION ===== */}
+      <section className="mt-24 pt-16 border-t border-border">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-black text-text mb-4">Dúvidas Frequentes</h2>
+            <p className="text-lg text-text-muted">Respondemos o essencial para você jogar com confiança.</p>
+          </div>
+
+          <div className="bg-card rounded-[24px] p-6 md:p-10 border border-border shadow-sm">
+            <FAQItem 
+              question="Minhas cotas e prêmios são garantidos?" 
+              answer="100%. Quando o bolão atinge a meta e é registrado na lotérica, o rateio do prêmio (dividido pelo número total de cotas) entra instantaneamente como saldo líquido na sua carteira da plataforma para saque via Pix."
+            />
+            <FAQItem 
+              question="Como eu recebo meu dinheiro?" 
+              answer="Basta ir no menu Carteira, solicitar 'Sacar' e inserir a sua chave Pix. O pagamento será processado em minutos para a chave cadastrada."
+            />
+            <FAQItem 
+              question="Existe taxa de administração ou imposto embutido?" 
+              answer="O valor da cota mostrado no sistema já contém todos os custos previstos e embutidos. O lucro que você ganha na premiação é seu lucro e não cobraremos nenhuma taxa extra."
+            />
+            <FAQItem 
+              question="O que acontece se o Bolão não atingir o 100% de venda?" 
+              answer="Se não fechar, devolveremos o valor pago como saldo na sua carteira antes do sorteio. Porém nós assumimos riscos dos bolões quase fechados para que não haja cancelamento."
+            />
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

@@ -15,6 +15,7 @@ export default defineConfig({
         name: 'Bolões Lotofácil',
         short_name: 'Bolões',
         description: 'Plataforma de bolões da Lotofácil',
+        lang: 'pt-BR',
         theme_color: '#16a34a',
         background_color: '#ffffff',
         display: 'standalone',

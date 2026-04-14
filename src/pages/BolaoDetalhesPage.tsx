@@ -4,16 +4,19 @@ import { bolaoService } from '@/services/bolaoService'
 import { cotaService } from '@/services/cotaService'
 import { useAuth } from '@/contexts/AuthContext'
 import type { Bolao, Jogo } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import Skeleton from '@/components/ui/Skeleton'
 import StatusBadge from '@/components/ui/StatusBadge'
-import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign } from 'lucide-react'
+import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign, CheckCircle2 } from 'lucide-react'
 import { formatBRL } from '@/utils/format'
+import { fireConfetti } from '@/utils/confetti'
 
 interface ResultadoPublico {
   concurso_numero: number
   dezenas: number[]
   premio_total: number
 }
+
+import { toast } from 'react-hot-toast'
 
 export default function BolaoDetalhesPage() {
   const { id } = useParams<{ id: string }>()
@@ -28,7 +31,6 @@ export default function BolaoDetalhesPage() {
   const [resultadosTeimosinha, setResultadosTeimosinha] = useState<ResultadoPublico[]>([])
   const [premioTotalGeral, setPremioTotalGeral] = useState(0)
   const [premioUnico, setPremioUnico] = useState(0)
-  const [mensagem, setMensagem] = useState<{ tipo: 'sucesso' | 'erro'; texto: string } | null>(null)
 
   useEffect(() => {
     if (id) loadBolao(id)
@@ -60,7 +62,7 @@ export default function BolaoDetalhesPage() {
         }
       }
     } catch {
-      setMensagem({ tipo: 'erro', texto: 'Erro ao carregar bolão' })
+      toast.error('Erro ao carregar bolão')
     } finally {
       setLoading(false)
     }
@@ -74,12 +76,32 @@ export default function BolaoDetalhesPage() {
 
     try {
       setComprando(true)
-      setMensagem(null)
       const resultado = await cotaService.comprar({ bolao_id: id, quantidade })
-      setMensagem({
-        tipo: 'sucesso',
-        texto: `${resultado.mensagem} Valor: ${formatBRL(resultado.valor_total)} | Saldo restante: ${formatBRL(resultado.saldo_restante)}`,
-      })
+      fireConfetti()
+      toast.success(
+        <div className="flex items-start gap-3">
+           <CheckCircle2 className="w-6 h-6 text-green-600 mt-0.5 shrink-0" />
+           <div>
+             <p className="font-bold text-green-900 mb-1">{resultado.mensagem}</p>
+             <p className="text-sm font-medium text-green-800">
+               Total: <span className="font-extrabold">{formatBRL(resultado.valor_total)}</span>
+             </p>
+             <p className="text-xs mt-1 text-green-700">Saldo atualizado: {formatBRL(resultado.saldo_restante)}</p>
+           </div>
+        </div>,
+        { 
+          duration: 6000, 
+          style: { 
+            background: '#f0fdf4', 
+            color: '#166534', 
+            border: '2px solid #86efac',
+            borderRadius: '16px',
+            boxShadow: '0 10px 25px -5px rgba(34, 197, 94, 0.2), 0 8px 10px -6px rgba(34, 197, 94, 0.1)',
+            padding: '16px',
+            maxWidth: '400px'
+          } 
+        }
+      )
       // Recarrega dados do bolão
       await loadBolao(id)
     } catch (err: unknown) {
@@ -88,16 +110,65 @@ export default function BolaoDetalhesPage() {
       const textoAmigavel = detail.toLowerCase().includes('carteira')
         ? 'Saldo insuficiente. Deposite via Pix antes de comprar cotas.'
         : detail
-      setMensagem({
-        tipo: 'erro',
-        texto: textoAmigavel,
-      })
+      toast.error(textoAmigavel, { duration: 5000 })
     } finally {
       setComprando(false)
     }
   }
 
-  if (loading) return <LoadingSpinner text="Carregando bolão..." />
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto fade-in">
+        <Skeleton className="h-4 w-20 mb-4" />
+        <div className="bg-card rounded-xl border border-border p-6 mb-4">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <Skeleton className="h-8 w-64 mb-2" />
+              <Skeleton className="h-4 w-40" />
+            </div>
+            <Skeleton className="h-6 w-24 rounded-full" />
+          </div>
+          <Skeleton className="h-4 w-5/6 mb-4" />
+          <div className="mb-4">
+            <div className="flex justify-between mb-1">
+              <Skeleton className="h-3 w-32" />
+              <Skeleton className="h-3 w-10" />
+            </div>
+            <Skeleton className="h-3 w-full rounded-full" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-bg rounded-lg p-3 flex flex-col items-center">
+                <Skeleton className="h-3 w-16 mb-2" />
+                <Skeleton className="h-6 w-20" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-1 bg-card rounded-xl border border-border p-5 h-[280px]">
+            <Skeleton className="h-6 w-40 mb-6" />
+            <Skeleton className="h-4 w-24 mb-2" />
+            <Skeleton className="h-10 w-full mb-4" />
+            <Skeleton className="h-12 w-full rounded-lg" />
+          </div>
+          <div className="lg:col-span-2 bg-card rounded-xl border border-border p-5">
+            <Skeleton className="h-6 w-32 mb-6" />
+            <div className="space-y-3">
+              {[1, 2].map(i => (
+                <div key={i} className="bg-bg rounded-lg p-4">
+                  <Skeleton className="h-4 w-16 mb-3" />
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5, 6].map(j => <Skeleton key={j} className="h-9 w-9 rounded-full" />)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
   if (!bolao) return <div className="text-center py-12 text-danger">Bolão não encontrado</div>
 
   const isTeimosinha = !!(bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero)
@@ -227,11 +298,6 @@ export default function BolaoDetalhesPage() {
                   {comprando ? 'Comprando...' : `Comprar ${quantidade} cota${quantidade > 1 ? 's' : ''}`}
                 </button>
 
-                {mensagem && (
-                  <div className={`p-3 rounded-lg text-sm ${mensagem.tipo === 'sucesso' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-700'}`}>
-                    {mensagem.texto}
-                  </div>
-                )}
               </div>
             )}
           </div>
