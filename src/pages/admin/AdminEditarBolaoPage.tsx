@@ -298,6 +298,14 @@ export default function AdminEditarBolaoPage() {
       setApurando(true)
       setMensagem(null)
       const res = await adminService.apurarPendentes(id)
+
+      // Backend pode retornar mensagem informativa (bolão sem jogos, já apurado)
+      if (res.mensagem && (!res.resultados || res.resultados.length === 0)) {
+        setMensagem({ tipo: 'sucesso', texto: res.mensagem })
+        await loadData(id)
+        return
+      }
+
       const novos = res.resultados?.length || 0
       const erros: string[] = res.erros || []
       if (novos > 0) {
