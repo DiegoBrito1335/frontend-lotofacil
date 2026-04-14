@@ -212,13 +212,15 @@ export interface ResultadoConcurso {
 
 export interface ApuracaoTeimosinhaResponse {
   bolao_id: string
-  concurso_numero: number
-  concurso_fim: number
-  total_concursos: number
-  concursos_apurados: number
-  resultados: ResultadoConcurso[]
-  erros: string[]
+  concurso_numero?: number
+  concurso_fim?: number
+  total_concursos?: number
+  concursos_apurados?: number
+  resultados?: ResultadoConcurso[]
+  erros?: string[]
   premio_total_geral?: number
+  mensagem?: string
+  novos_apurados?: number
 }
 
 export interface StatusConcurso {
