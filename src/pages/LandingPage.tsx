@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import CookieBanner from '@/components/CookieBanner'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { bolaoService } from '@/services/bolaoService'
 import type { Bolao } from '@/types'
 import {
@@ -23,6 +23,59 @@ import {
 } from 'lucide-react'
 
 import FAQItem from '@/components/ui/FAQItem'
+
+function StatsSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.3 }
+    )
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  const stats = [
+    { icon: Users, value: '10k+', label: 'Jogadores Ativos' },
+    { icon: Wallet, value: 'R$ 2M+', label: 'Prêmios Pagos' },
+    { icon: Ticket, value: '500+', label: 'Bolões Vencedores' },
+    { icon: Shield, value: '100%', label: 'Garantia de Divisão' },
+  ]
+
+  return (
+    <section ref={sectionRef} className="bg-[#f8fafc] pb-20 pt-10">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${
+                visible ? `float-up float-up-delay-${i}` : 'opacity-0'
+              }`}
+            >
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-50 mb-3 text-green-600">
+                <stat.icon className="w-7 h-7" />
+              </div>
+              <p className={`text-3xl font-black text-gray-900 ${visible ? 'counter-reveal' : 'opacity-0'}`}
+                 style={{ animationDelay: `${0.2 + i * 0.15}s` }}>
+                {stat.value}
+              </p>
+              <p className="text-sm font-semibold text-gray-500 mt-1 uppercase tracking-wider">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function LiveBolaoShowcase() {
   const [boloes, setBoloes] = useState<Bolao[]>([])
   const [loading, setLoading] = useState(true)
@@ -57,7 +110,7 @@ function LiveBolaoShowcase() {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-6xl mx-auto px-4 z-20 relative">
       <div className="md:col-span-3 text-center mb-2">
         <h3 className="text-white/90 font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2">
-          <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+          <span className="w-2 h-2 bg-green-400 rounded-full live-pulse"></span>
           Bolões Disponíveis Agora
         </h3>
       </div>
@@ -210,10 +263,10 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <Link
               to={isAuthenticated ? '/boloes' : '/login'}
-              className="w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-green-950 font-black text-lg px-10 py-5 rounded-2xl no-underline hover:scale-105 transition-all shadow-[0_0_40px_rgba(250,204,21,0.4)]"
+              className="cta-shimmer w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-green-950 font-black text-lg px-10 py-5 rounded-2xl no-underline hover:scale-105 transition-all shadow-[0_0_40px_rgba(250,204,21,0.4)]"
             >
               <Ticket className="w-6 h-6" />
-              {isAuthenticated ? 'Abrir Cockpit' : 'Quero Participar Agora'}
+              {isAuthenticated ? 'Ver Bolões Disponíveis' : 'Quero Participar Agora'}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -239,26 +292,7 @@ export default function LandingPage() {
       </section>
 
       {/* ===== SOCIAL PROOF / STATS ===== */}
-      <section className="bg-[#f8fafc] pb-20 pt-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {[
-              { icon: Users, value: '10k+', label: 'Jogadores Ativos' },
-              { icon: Wallet, value: 'R$ 2M+', label: 'Prêmios Pagos' },
-              { icon: Ticket, value: '500+', label: 'Bolões Vencedores' },
-              { icon: Shield, value: '100%', label: 'Garantia de Divisão' },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-50 mb-3 text-green-600">
-                  <stat.icon className="w-7 h-7" />
-                </div>
-                <p className="text-3xl font-black text-gray-900">{stat.value}</p>
-                <p className="text-sm font-semibold text-gray-500 mt-1 uppercase tracking-wider">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <StatsSection />
 
       {/* ===== COMO FUNCIONA (Redesign Premium) ===== */}
       <section id="como-funciona" className="py-24 bg-white relative">
@@ -343,23 +377,23 @@ export default function LandingPage() {
             </div>
             <div className="flex-1 w-full max-w-lg relative">
               <div className="absolute inset-0 bg-gradient-to-tr from-green-400 to-yellow-300 transform rotate-6 rounded-[40px] opacity-20 blur-xl"></div>
-              <div className="relative bg-[#0f172a] rounded-[40px] p-8 border-[8px] border-white shadow-2xl skew-y-2 hover:skew-y-0 transition-transform duration-500">
+              <div className="relative glass-wallet p-8 border-[8px] border-white/10 skew-y-2">
                 <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
                   <div className="text-white">
                     <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">Saldo Disponível</p>
                     <p className="text-3xl font-black">R$ <span className="text-green-400">14.050,00</span></p>
                   </div>
-                  <Clover className="w-10 h-10 text-yellow-400" />
+                  <Clover className="w-10 h-10 text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]" />
                 </div>
                 <div className="space-y-4">
-                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group">
+                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group border border-green-500/10">
                     <div className="absolute inset-0 bg-green-400/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
                     <div className="relative z-10 w-full">
                       <p className="text-white font-bold">Prêmio: Bolão Lotofácil 3004</p>
                       <p className="text-green-400 font-semibold text-sm">+ R$ 4.250,00</p>
                     </div>
                   </div>
-                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group">
+                  <div className="bg-white/5 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden group border border-green-500/10">
                     <div className="absolute inset-0 bg-green-400/10 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
                     <div className="relative z-10 w-full">
                       <p className="text-white font-bold">Prêmio: Lotofácil da Independência</p>
