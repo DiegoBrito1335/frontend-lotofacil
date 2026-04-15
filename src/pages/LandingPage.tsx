@@ -50,24 +50,24 @@ function StatsSection() {
   ]
 
   return (
-    <section ref={sectionRef} className="bg-[#f8fafc] pb-20 pt-10">
+    <section ref={sectionRef} className="bg-bg-muted/50 pb-20 pt-10">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {stats.map((stat, i) => (
+          {stats.map((stat, i) => ( stat &&
             <div
               key={stat.label}
-              className={`flex flex-col items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${
+              className={`flex flex-col items-center bg-card p-6 rounded-3xl shadow-sm border border-border hover:shadow-md transition-shadow ${
                 visible ? `float-up float-up-delay-${i}` : 'opacity-0'
               }`}
             >
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-50 mb-3 text-green-600">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-3 text-primary">
                 <stat.icon className="w-7 h-7" />
               </div>
-              <p className={`text-3xl font-black text-gray-900 ${visible ? 'counter-reveal' : 'opacity-0'}`}
+              <p className={`text-3xl font-black text-text ${visible ? 'counter-reveal' : 'opacity-0'}`}
                  style={{ animationDelay: `${0.2 + i * 0.15}s` }}>
                 {stat.value}
               </p>
-              <p className="text-sm font-semibold text-gray-500 mt-1 uppercase tracking-wider">{stat.label}</p>
+              <p className="text-sm font-semibold text-text-muted mt-1 uppercase tracking-wider">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -115,27 +115,27 @@ function LiveBolaoShowcase() {
         </h3>
       </div>
       {boloes.map((bolao) => (
-        <div key={bolao.id} className="glass-card hover:-translate-y-2 transition-all duration-300 rounded-[24px] p-6 text-left relative overflow-hidden group border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-          <div className="absolute top-0 right-0 bg-yellow-400 text-green-900 text-xs font-bold px-3 py-1 rounded-bl-lg">
+        <div key={bolao.id} className="glass-card hover:-translate-y-2 transition-all duration-300 rounded-[24px] p-6 text-left relative overflow-hidden group border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-card/60 backdrop-blur-xl">
+          <div className="absolute top-0 right-0 bg-secondary text-green-950 text-xs font-bold px-3 py-1 rounded-bl-lg">
             Concurso {bolao.concurso_numero}
           </div>
-          <h4 className="font-bold text-gray-900 text-xl mb-1 pr-16">{bolao.nome}</h4>
-          <p className="text-gray-600 text-sm mb-4 line-clamp-1">{bolao.descricao || "Bolão oficial da plataforma"}</p>
+          <h4 className="font-bold text-text text-xl mb-1 pr-16">{bolao.nome}</h4>
+          <p className="text-text-muted text-sm mb-4 line-clamp-1">{bolao.descricao || "Bolão oficial da plataforma"}</p>
           
           <div className="flex items-end justify-between mb-2">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">Valor da Cota</p>
-              <p className="text-2xl font-extrabold text-green-700">R$ {Number(bolao.valor_cota).toFixed(2)}</p>
+              <p className="text-xs text-text-muted uppercase tracking-wide font-semibold mb-1">Valor da Cota</p>
+              <p className="text-2xl font-extrabold text-primary">R$ {Number(bolao.valor_cota).toFixed(2)}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-500 font-medium">Restam</p>
-              <p className="font-bold text-gray-800">{bolao.cotas_disponiveis} cotas</p>
+              <p className="text-xs text-text-muted font-medium">Restam</p>
+              <p className="font-bold text-text">{bolao.cotas_disponiveis} cotas</p>
             </div>
           </div>
           
           <Link 
             to={`/bolao/${bolao.id}`}
-            className="mt-4 w-full block text-center bg-gray-900 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition-colors"
+            className="mt-4 w-full block text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all shadow-lg hover:shadow-primary/40 no-underline"
           >
             Garantir Minha Cota
           </Link>
@@ -298,8 +298,8 @@ export default function LandingPage() {
       <section id="como-funciona" className="py-24 bg-white relative">
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">O Fim das Filas de Lotérica</h2>
-            <p className="text-xl text-gray-500 max-w-2xl mx-auto">Um modelo testado para multiplicar chances investindo de forma inteligente.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-text mb-4 tracking-tight">O Fim das Filas de Lotérica</h2>
+            <p className="text-xl text-text-muted max-w-2xl mx-auto">Um modelo testado para multiplicar chances investindo de forma inteligente.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
@@ -312,35 +312,35 @@ export default function LandingPage() {
                 icon: Wallet,
                 title: 'Abasteça',
                 desc: 'Coloque saldo via Pix. É instantâneo, seguro, sem taxas e fica vinculado 100% ao seu CPF.',
-                bgColor: 'bg-emerald-50',
-                iconColor: 'text-emerald-500'
+                bgColor: 'bg-primary/10',
+                iconColor: 'text-primary'
               },
               {
                 step: '2',
                 icon: Users,
                 title: 'Junte-se à Tropa',
                 desc: 'Adquira cotas dos nossos super bolões. Jogamos com muitas dezenas cercadas matematicamente.',
-                bgColor: 'bg-green-50',
-                iconColor: 'text-green-500'
+                bgColor: 'bg-primary/10',
+                iconColor: 'text-primary'
               },
               {
                 step: '3',
                 icon: TrendingUp,
                 title: 'Comemore!',
                 desc: 'O rateio é automático. Caiu o prêmio, seu saldo infla na hora, pronto para novo saque Pix.',
-                bgColor: 'bg-yellow-50',
-                iconColor: 'text-yellow-500'
+                bgColor: 'bg-secondary/10',
+                iconColor: 'text-secondary'
               },
             ].map((item) => (
-              <div key={item.step} className="bg-white border text-center border-gray-100 p-8 rounded-[32px] shadow-xl shadow-green-900/5 relative z-10 hover:-translate-y-2 transition-transform duration-300">
-                <div className={`w-20 h-20 mx-auto rounded-full ${item.bgColor} ${item.iconColor} flex items-center justify-center mb-6 shadow-sm border border-white`}>
+              <div key={item.step} className="bg-card border text-center border-border p-8 rounded-[32px] shadow-xl shadow-bg-muted relative z-10 hover:-translate-y-2 transition-transform duration-300">
+                <div className={`w-20 h-20 mx-auto rounded-full ${item.bgColor} ${item.iconColor} flex items-center justify-center mb-6 shadow-sm border border-border`}>
                   <item.icon className="w-10 h-10" />
                 </div>
-                <div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center font-black text-xl shadow-lg border-4 border-white">
+                <div className="absolute top-0 right-8 -translate-y-1/2 w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-black text-xl shadow-lg border-4 border-card">
                   {item.step}
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-500 text-lg leading-relaxed">{item.desc}</p>
+                <h3 className="text-2xl font-bold text-text mb-3">{item.title}</h3>
+                <p className="text-text-muted text-lg leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -363,13 +363,13 @@ export default function LandingPage() {
                   { icon: Shield, title: 'Blindagem de Informações', desc: 'Ninguem acessa ou visualiza seus dados. Sombreamento via SSL e banco Supabase V2.' },
                   { icon: Database, title: 'Transparência Auditável', desc: 'Antes mesmo do sorteio você tem comprovante digital de todos os cartões cadastrados e suas dezenas.' },
                 ].map((feat) => (
-                  <div key={feat.title} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white transition-colors border border-transparent hover:border-gray-200 hover:shadow-sm">
-                    <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center shrink-0">
-                      <feat.icon className="w-7 h-7 text-green-700" />
+                  <div key={feat.title} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-card transition-colors border border-transparent hover:border-border hover:shadow-sm">
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center shrink-0">
+                      <feat.icon className="w-7 h-7 text-primary" />
                     </div>
                     <div className="pt-1">
-                      <h3 className="font-bold text-xl text-gray-900 mb-1">{feat.title}</h3>
-                      <p className="text-gray-600 leading-relaxed">{feat.desc}</p>
+                      <h3 className="font-bold text-xl text-text mb-1">{feat.title}</h3>
+                      <p className="text-text-muted leading-relaxed">{feat.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -408,14 +408,14 @@ export default function LandingPage() {
       </section>
 
       {/* ===== FAQ SECTION ===== */}
-      <section id="faq" className="py-24 bg-white border-t border-gray-100">
+      <section id="faq" className="py-24 bg-bg border-t border-border">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Dúvidas Frequentes</h2>
-            <p className="text-xl text-gray-500">Respondemos o essencial para você jogar com confiança.</p>
+            <h2 className="text-4xl font-black text-text mb-4">Dúvidas Frequentes</h2>
+            <p className="text-xl text-text-muted">Respondemos o essencial para você jogar com confiança.</p>
           </div>
 
-          <div className="bg-gray-50 rounded-3xl p-8 md:p-12 border border-gray-200">
+          <div className="bg-card rounded-3xl p-8 md:p-12 border border-border">
             <FAQItem 
               question="Minhas cotas e prêmios são garantidos?" 
               answer="100%. Quando o bolão atinge a meta e é registrado na CEF, enviamos o bilhete digitalizado do jogo. Se o nosso bolão ganhar, o rateio do prêmio (dividido pelo número total de cotas) entra instantaneamente como saldo líquido na sua carteira da plataforma para saque via Pix."

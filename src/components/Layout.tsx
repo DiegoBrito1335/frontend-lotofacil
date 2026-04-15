@@ -15,8 +15,11 @@ import {
   Trophy,
   BookOpen,
   FileText,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useTheme } from '@/context/ThemeContext'
 import { carteiraService } from '@/services/carteiraService'
 import CookieBanner from '@/components/CookieBanner'
 import InstallPWA from '@/components/ui/InstallPWA'
@@ -48,8 +51,10 @@ const adminNav = { to: '/admin', label: 'Admin', icon: Shield }
 
 export default function Layout() {
   const { isAuthenticated, isAdmin, userName, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const [saldo, setSaldo] = useState<number>(0)
 
   useEffect(() => {
@@ -61,6 +66,14 @@ export default function Layout() {
       })
     }
   }, [isAuthenticated, location.pathname])
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const navItems = isAuthenticated
     ? (isAdmin ? [...authNav, adminNav] : authNav)
@@ -69,11 +82,13 @@ export default function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-slate-900">
-            <Clover className="w-7 h-7 text-primary" />
-            <span>Bolão Lotofácil</span>
+      <header className={`sticky top-0 z-40 glass-header ${scrolled ? 'glass-header-scrolled' : ''}`}>
+        <div className={`max-w-7xl mx-auto px-4 flex items-center justify-between transition-all duration-300 ${scrolled ? 'py-2' : 'py-4'}`}>
+          <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-text group">
+            <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-xl group-hover:bg-green-200 transition-colors">
+              <Clover className="w-7 h-7 text-primary" />
+            </div>
+            <span className="tracking-tight text-text">Bolão <span className="text-primary">Lotofácil</span></span>
           </Link>
 
           {/* Desktop Nav */}
@@ -84,8 +99,8 @@ export default function Layout() {
                 to={to}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium no-underline transition-colors ${
                   location.pathname === to
-                    ? 'bg-green-50 text-green-700'
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-text-muted hover:bg-bg hover:text-text'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -100,10 +115,10 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/perfil"
-                  className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg no-underline hover:bg-slate-100 transition-colors border border-slate-200"
+                  className="flex items-center gap-2 bg-bg px-3 py-1.5 rounded-lg no-underline hover:bg-card transition-colors border border-border"
                 >
-                  <User className="w-4 h-4 text-slate-500" />
-                  <span className="text-sm text-slate-700">
+                  <User className="w-4 h-4 text-text-muted" />
+                  <span className="text-sm text-text">
                     {userName || 'Usuário'}
                   </span>
                 </Link>
@@ -117,7 +132,7 @@ export default function Layout() {
                 <button
                   type="button"
                   onClick={logout}
-                  className="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-slate-200"
+                  className="flex items-center gap-1.5 bg-bg hover:bg-card text-text text-sm px-3 py-2 rounded-lg transition-colors cursor-pointer font-medium border border-border"
                 >
                   <LogOut className="w-4 h-4" />
                   Sair
@@ -127,7 +142,7 @@ export default function Layout() {
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
+                  className="flex items-center gap-1.5 text-text-muted hover:text-text text-sm px-3 py-2 rounded-lg no-underline transition-colors font-medium"
                 >
                   <LogIn className="w-4 h-4" />
                   Entrar
@@ -141,13 +156,21 @@ export default function Layout() {
               </div>
             )}
 
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl bg-card text-text-muted hover:text-primary transition-all border border-border cursor-pointer shadow-sm"
+              title={theme === 'light' ? 'Ativar modo escuro' : 'Ativar modo claro'}
+            >
+              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </button>
+
             <InstallPWA />
 
             {/* Mobile menu button */}
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden bg-transparent border-0 text-gray-700 cursor-pointer p-1"
+              className="md:hidden bg-transparent border-0 text-text cursor-pointer p-1"
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -156,7 +179,7 @@ export default function Layout() {
 
         {/* Mobile Nav */}
         {menuOpen && (
-          <nav className="md:hidden border-t border-slate-100 bg-white px-4 py-3 space-y-1">
+          <nav className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-card px-4 py-3 space-y-1">
             {navItems.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
@@ -164,8 +187,8 @@ export default function Layout() {
                 onClick={() => setMenuOpen(false)}
                 className={`flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium no-underline ${
                   location.pathname === to
-                    ? 'bg-green-50 text-green-700'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-text-muted hover:bg-bg'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -187,7 +210,7 @@ export default function Layout() {
                   <Link
                     to="/perfil"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 no-underline"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:bg-bg no-underline"
                   >
                     <User className="w-4 h-4" />
                     {userName || 'Meu Perfil'}
@@ -195,7 +218,7 @@ export default function Layout() {
                   <button
                     type="button"
                     onClick={() => { logout(); setMenuOpen(false) }}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 w-full bg-transparent border-0 cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:bg-bg w-full bg-transparent border-0 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     Sair
@@ -206,7 +229,7 @@ export default function Layout() {
                   <Link
                     to="/login"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 no-underline hover:bg-slate-50"
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-text-muted no-underline hover:bg-bg"
                   >
                     <LogIn className="w-4 h-4" />
                     Entrar
@@ -232,13 +255,13 @@ export default function Layout() {
 
       {/* Mobile Bottom Navbar */}
       {isAuthenticated && (
-        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl flex">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-2xl flex">
           {bottomTabs.map(({ to, label, icon: Icon }) => (
             <Link
               key={to}
               to={to}
               className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 text-xs no-underline transition-colors ${
-                location.pathname === to ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:text-green-600'
+                location.pathname === to ? 'text-primary bg-primary/10' : 'text-text-muted/60 hover:text-primary'
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -249,24 +272,45 @@ export default function Layout() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-green-200 bg-bg/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2">
-              <Clover className="w-4 h-4 text-primary" />
-              <span className="font-semibold text-sm text-slate-700">Bolão Lotofácil</span>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-slate-400">
-              <Link to="/politica-de-privacidade" className="hover:text-slate-600 transition-colors no-underline">
-                Privacidade
+      <footer className="border-t border-border bg-card backdrop-blur-md mt-auto">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center border-b border-border pb-8 mb-8">
+            <div className="space-y-3">
+              <Link to="/" className="flex items-center gap-2 font-bold text-xl no-underline text-text">
+                <Clover className="w-6 h-6 text-primary" />
+                <span>Bolão Lotofácil</span>
               </Link>
-              <Link to="/termos-de-uso" className="hover:text-slate-600 transition-colors no-underline">
-                Termos
-              </Link>
+              <p className="text-sm text-text-muted leading-relaxed">
+                A plataforma mais segura e transparente para você participar de bolões da Lotofácil.
+              </p>
             </div>
-            <p className="text-xs text-slate-400">
-              &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade
-            </p>
+            
+            <div className="flex flex-col md:items-center gap-4">
+              <h4 className="text-sm font-bold text-text uppercase tracking-widest">Links rápidos</h4>
+              <div className="flex gap-4">
+                <Link to="/como-jogar" className="text-sm text-text-muted hover:text-primary no-underline transition-colors">Ajuda</Link>
+                <Link to="/regras" className="text-sm text-text-muted hover:text-primary no-underline transition-colors">Regras</Link>
+                <Link to="/resultados" className="text-sm text-text-muted hover:text-primary no-underline transition-colors">Resultados</Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col md:items-end gap-3 text-text-muted">
+              <div className="flex gap-4 text-xs">
+                <Link to="/politica-de-privacidade" className="hover:text-primary transition-colors no-underline">
+                  Privacidade
+                </Link>
+                <Link to="/termos-de-uso" className="hover:text-primary transition-colors no-underline">
+                  Termos
+                </Link>
+              </div>
+              <p className="text-xs text-text-muted">
+                &copy; {new Date().getFullYear()} &mdash; Jogue com responsabilidade.
+              </p>
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <span className="text-[10px] text-text-muted/40 uppercase tracking-[0.2em]">Sorte é o que acontece quando a preparação encontra a oportunidade</span>
           </div>
         </div>
       </footer>

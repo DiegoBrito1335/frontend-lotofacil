@@ -89,17 +89,17 @@ export default function ComoJogarPage() {
             No sorteio, a Caixa também sorteia 15 dezenas. Ganha quem acertar:
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-              <p className="text-lg font-bold text-yellow-700">15 acertos</p>
-              <p className="text-xs text-yellow-600">Prêmio principal</p>
+            <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3 text-center">
+              <p className="text-lg font-bold text-secondary">15 acertos</p>
+              <p className="text-xs text-secondary/70">Prêmio principal</p>
             </div>
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-              <p className="text-lg font-bold text-yellow-700">14 acertos</p>
-              <p className="text-xs text-yellow-600">Prêmio secundário</p>
+            <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3 text-center">
+              <p className="text-lg font-bold text-secondary">14 acertos</p>
+              <p className="text-xs text-secondary/70">Prêmio secundário</p>
             </div>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-              <p className="text-lg font-bold text-green-700">11 a 13 acertos</p>
-              <p className="text-xs text-green-600">Prêmios menores</p>
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
+              <p className="text-lg font-bold text-primary">11 a 13 acertos</p>
+              <p className="text-xs text-primary/70">Prêmios menores</p>
             </div>
           </div>
         </div>

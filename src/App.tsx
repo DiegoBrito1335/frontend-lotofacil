@@ -125,18 +125,22 @@ function AppRoutes() {
   )
 }
 
+import { ThemeProvider } from '@/context/ThemeContext'
+
 export default function App() {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
   return (
     <HelmetProvider>
       <GoogleOAuthProvider clientId={clientId}>
-        <BrowserRouter>
-          <AuthProvider>
-            <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-            <AppRoutes />
-          </AuthProvider>
-        </BrowserRouter>
+        <ThemeProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+              <AppRoutes />
+            </AuthProvider>
+          </BrowserRouter>
+        </ThemeProvider>
       </GoogleOAuthProvider>
     </HelmetProvider>
   )

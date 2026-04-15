@@ -131,28 +131,32 @@ export default function LoginPage() {
       </div>
 
       <div className="flex-1 flex items-center justify-center px-4 pb-12">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md float-up">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-primary to-green-600 rounded-2xl mb-4 shadow-lg">
-              <Clover className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-extrabold text-text">Bolão Lotofácil</h1>
-            <p className="text-text-muted mt-2">
-              {tab === 'login' ? 'Entre na sua conta para continuar' : 'Crie sua conta gratuita'}
+          <div className="text-center mb-10">
+            <Link to="/" className="inline-block no-underline group">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-green-500 to-green-700 rounded-3xl mb-4 shadow-[0_20px_40px_-10px_rgba(22,163,74,0.3)] group-hover:scale-105 transition-transform duration-300">
+                <Clover className="w-10 h-10 text-white" />
+              </div>
+            </Link>
+            <h1 className="text-4xl font-black text-text tracking-tight">
+              Bem-vindo <span className="text-primary">de volta</span>
+            </h1>
+            <p className="text-text-muted mt-3 font-medium">
+              {tab === 'login' ? 'Acesse sua conta para conferir seus bolões' : 'Junte-se a centenas de vencedores agora'}
             </p>
           </div>
 
           {/* Card */}
-          <div className="bg-card rounded-2xl border border-border overflow-hidden card-hover">
+          <div className="bg-card rounded-3xl border border-border overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] card-hover">
             {/* Tabs */}
-            <div className="flex border-b border-border">
+            <div className="flex bg-bg/50 p-1.5 gap-1.5 m-2 rounded-2xl">
               <button
                 onClick={() => { setTab('login'); setError(''); setSucesso(''); setConfirmarEmail(''); setConfirmarSenha('') }}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
-                  tab === 'login'
-                    ? 'bg-card text-primary border-b-2 border-primary'
-                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border-0 cursor-pointer transition-all rounded-xl ${
+                   tab === 'login'
+                    ? 'bg-card text-primary shadow-sm'
+                    : 'bg-transparent text-text-muted hover:text-text'
                 }`}
               >
                 <LogIn className="w-4 h-4" />
@@ -160,10 +164,10 @@ export default function LoginPage() {
               </button>
               <button
                 onClick={() => { setTab('registro'); setError(''); setSucesso(''); setConfirmarEmail(''); setConfirmarSenha('') }}
-                className={`flex-1 flex items-center justify-center gap-2 py-3.5 text-sm font-semibold border-0 cursor-pointer transition-colors ${
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-bold border-0 cursor-pointer transition-all rounded-xl ${
                   tab === 'registro'
-                    ? 'bg-card text-primary border-b-2 border-primary'
-                    : 'bg-gray-100 text-gray-500 hover:text-gray-700'
+                    ? 'bg-card text-primary shadow-sm'
+                    : 'bg-transparent text-text-muted hover:text-text'
                 }`}
               >
                 <UserPlus className="w-4 h-4" />
@@ -174,7 +178,7 @@ export default function LoginPage() {
             <div className="p-6">
               {/* Mensagem de sucesso */}
               {sucesso && (
-                <div className="flex items-start gap-2 bg-green-50 border border-green-200 text-green-800 p-3 rounded-lg text-sm mb-4">
+                <div className="flex items-start gap-2 bg-primary/10 border border-primary/20 text-primary p-3 rounded-lg text-sm mb-4">
                   <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{sucesso}</span>
                 </div>
@@ -182,7 +186,7 @@ export default function LoginPage() {
 
               {/* Mensagem de erro */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm mb-4">
+                <div className="bg-danger/10 border border-danger/20 text-danger p-3 rounded-lg text-sm mb-4">
                   {error}
                 </div>
               )}
@@ -221,7 +225,7 @@ export default function LoginPage() {
                         value={email}
                         onChange={(e) => { setEmail(e.target.value); setError('') }}
                         placeholder="seu@email.com"
-                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg text-text placeholder:text-text-muted/50 focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                     </div>
                   </div>
@@ -238,7 +242,7 @@ export default function LoginPage() {
                         value={senha}
                         onChange={(e) => { setSenha(e.target.value); setError('') }}
                         placeholder="Sua senha"
-                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-gray-50 text-text placeholder:text-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                        className="w-full pl-10 pr-10 py-3 border border-border rounded-xl text-sm bg-bg text-text placeholder:text-text-muted/50 focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                       />
                       <button
                         type="button"

@@ -348,39 +348,44 @@ export default function AdminEditarBolaoPage() {
   const acertosGridCols = isMegaSena ? 'grid-cols-7' : 'grid-cols-5'
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto fade-in">
       <button
         type="button"
         onClick={() => navigate('/admin/boloes')}
-        className="flex items-center gap-1 text-text-muted hover:text-text mb-4 bg-transparent border-0 cursor-pointer text-sm"
+        className="flex items-center gap-2 text-text-muted hover:text-primary mb-8 bg-transparent border-0 cursor-pointer font-bold transition-colors group"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
         Voltar para Bolões
       </button>
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 float-up">
         <div>
-          <h1 className="text-2xl font-bold">{bolao.nome}</h1>
-          <p className="text-text-muted mt-1">
+          <h1 className="text-4xl font-black text-text tracking-tight leading-none mb-2">
+            {bolao.nome}
+          </h1>
+          <p className="text-text-muted font-medium">
             {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
-              ? <>Concursos {bolao.concurso_numero} a {bolao.concurso_fim} <span className="text-primary font-medium">(Teimosinha — {bolao.concurso_fim - bolao.concurso_numero + 1} concursos)</span></>
-              : <>Concurso {bolao.concurso_numero}</>
+              ? <>Concursos <span className="font-bold">{bolao.concurso_numero}</span> a <span className="font-bold">{bolao.concurso_fim}</span> <span className="text-primary font-black ml-1 uppercase text-xs tracking-widest">(TEIMOSINHA)</span></>
+              : <>Concurso <span className="font-bold">{bolao.concurso_numero}</span></>
             }
           </p>
           {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero && (bolao.concursos_apurados ?? 0) > 0 && (
-            <p className="text-xs text-text-muted mt-1">
+            <p className="text-xs text-text-muted font-bold uppercase tracking-widest mt-2 flex items-center gap-2">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
               {bolao.concursos_apurados} de {bolao.concurso_fim - bolao.concurso_numero + 1} concursos apurados
             </p>
           )}
         </div>
-        <StatusBadge status={bolao.status} />
+        <div className="md:mb-1">
+          <StatusBadge status={bolao.status} />
+        </div>
       </div>
 
       {/* Mensagens */}
       {mensagem && (
         <div className={`flex items-start gap-2 p-3 rounded-lg text-sm mb-4 ${
-          mensagem.tipo === 'sucesso' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+          mensagem.tipo === 'sucesso' ? 'bg-primary/10 text-primary border border-primary/20' : 'bg-danger/10 text-danger border border-danger/20'
         }`}>
           {mensagem.tipo === 'sucesso' ? <CheckCircle className="w-4 h-4 mt-0.5 shrink-0" /> : <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />}
           <span>{mensagem.texto}</span>
@@ -397,17 +402,17 @@ export default function AdminEditarBolaoPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-text mb-2">Tipo de Loteria</label>
-              <div className="grid grid-cols-2 gap-3">
+              <label className="block text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Sistema de Jogo</label>
+              <div className="grid grid-cols-2 gap-4">
                 {(['lotofacil', 'megasena'] as const).map((t) => (
                   <button
                     key={t}
                     type="button"
                     onClick={() => setForm({ ...form, tipo: t })}
-                    className={`py-2.5 px-4 rounded-lg border-2 text-sm font-semibold transition-colors cursor-pointer ${
+                    className={`py-4 px-6 rounded-2xl border-2 text-sm font-black transition-all cursor-pointer flex items-center justify-center gap-2 ${
                       form.tipo === t
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border bg-bg text-text-muted hover:border-primary/50'
+                        ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/10'
+                        : 'border-border bg-bg text-text-muted hover:border-primary/30'
                     }`}
                   >
                     {t === 'lotofacil' ? '🍀 Lotofácil' : '🟢 Mega-Sena'}
@@ -475,10 +480,10 @@ export default function AdminEditarBolaoPage() {
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors border-0 cursor-pointer"
+              className="flex items-center justify-center gap-3 bg-primary text-white font-black text-base px-8 py-4 rounded-2xl transition-all shadow-lg shadow-primary/20 active:scale-95 border-0 cursor-pointer w-full md:w-auto hover:bg-primary/90"
             >
-              <Save className="w-4 h-4" />
-              {saving ? 'Salvando...' : 'Salvar Alterações'}
+              <Save className="w-5 h-5" />
+              {saving ? 'Sincronizando...' : 'Atualizar Dados Básicos'}
             </button>
           </div>
         </div>
@@ -493,11 +498,11 @@ export default function AdminEditarBolaoPage() {
 
         {/* Resultado sorteado (concurso único) */}
         {!isTeimosinha && resultadoDezenas && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-            <p className="text-xs font-semibold text-yellow-800 mb-2">Resultado do Concurso {bolao.concurso_numero}</p>
+          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 mb-4">
+            <p className="text-xs font-semibold text-yellow-500 mb-2">Resultado do Concurso {bolao.concurso_numero}</p>
             <div className="flex flex-wrap gap-2">
               {resultadoDezenas.sort((a, b) => a - b).map((d) => (
-                <span key={d} className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-yellow-500 text-white font-bold text-sm shadow-sm">
+                <span key={d} className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-yellow-500 text-slate-950 font-bold text-sm shadow-sm ring-2 ring-yellow-500/20">
                   {String(d).padStart(2, '0')}
                 </span>
               ))}
@@ -510,25 +515,25 @@ export default function AdminEditarBolaoPage() {
           <div className="mb-4 space-y-2">
             <p className="text-xs font-semibold text-text mb-2">Resultados por Concurso</p>
             {resultadosTeimosinha.map((res) => (
-              <div key={res.concurso_numero} className="bg-yellow-50 border border-yellow-200 rounded-lg overflow-hidden">
+              <div key={res.concurso_numero} className="bg-yellow-500/5 border border-yellow-500/10 rounded-lg overflow-hidden">
                 <button
                   type="button"
                   onClick={() => setConcursoExpandido(concursoExpandido === res.concurso_numero ? null : res.concurso_numero)}
                   className="w-full flex items-center justify-between p-3 bg-transparent border-0 cursor-pointer text-left"
                 >
-                  <span className="text-sm font-semibold text-yellow-800">Concurso {res.concurso_numero}</span>
+                  <span className="text-sm font-semibold text-yellow-500">Concurso {res.concurso_numero}</span>
                   <div className="flex items-center gap-2">
                     {res.premio_total !== undefined && res.premio_total > 0 && (
-                      <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-medium">
+                      <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded font-medium">
                         R$ {res.premio_total.toFixed(2)}
                       </span>
                     )}
                     {acertosKeys.slice(0, 3).map((n) => res.resumo[n] > 0 && (
-                      <span key={n} className="text-xs bg-yellow-200 text-yellow-800 px-1.5 py-0.5 rounded font-medium">
+                      <span key={n} className="text-xs bg-yellow-500/20 text-yellow-500 px-1.5 py-0.5 rounded font-medium">
                         {res.resumo[n]}x {n}ac
                       </span>
                     ))}
-                    <span className="text-xs text-yellow-600">{concursoExpandido === res.concurso_numero ? '▲' : '▼'}</span>
+                    <span className="text-xs text-yellow-500/60">{concursoExpandido === res.concurso_numero ? '▲' : '▼'}</span>
                   </div>
                 </button>
                 {concursoExpandido === res.concurso_numero && (
@@ -585,12 +590,12 @@ export default function AdminEditarBolaoPage() {
                       {acertos !== null && (
                         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                           isMegaSena
-                            ? acertos >= 6 ? 'bg-yellow-100 text-yellow-800' :
-                              acertos >= 4 ? 'bg-green-100 text-green-800' :
-                              'bg-gray-100 text-gray-600'
-                            : acertos >= 14 ? 'bg-yellow-100 text-yellow-800' :
-                              acertos >= 11 ? 'bg-green-100 text-green-800' :
-                              'bg-gray-100 text-gray-600'
+                            ? acertos >= 6 ? 'bg-yellow-500/20 text-yellow-500' :
+                              acertos >= 4 ? 'bg-primary/10 text-primary' :
+                              'bg-text-muted/10 text-text-muted'
+                            : acertos >= 14 ? 'bg-yellow-500/20 text-yellow-500' :
+                              acertos >= 11 ? 'bg-primary/10 text-primary' :
+                              'bg-text-muted/10 text-text-muted'
                         }`}>
                           {acertos} acertos
                         </span>
@@ -600,7 +605,7 @@ export default function AdminEditarBolaoPage() {
                           type="button"
                           onClick={() => handleRemoveJogo(jogo.id)}
                           disabled={removingJogo === jogo.id}
-                          className="p-1 rounded hover:bg-red-50 text-danger bg-transparent border-0 cursor-pointer"
+                          className="p-1 rounded hover:bg-danger/10 text-danger bg-transparent border-0 cursor-pointer transition-colors"
                           title="Remover jogo"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -654,24 +659,24 @@ export default function AdminEditarBolaoPage() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-semibold text-text">Adicionar jogos</p>
               <div className="flex gap-1 bg-bg rounded-lg p-0.5">
-                <button
-                  type="button"
-                  onClick={() => setModoAddJogo('picker')}
-                  className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
-                    modoAddJogo === 'picker' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
-                  }`}
-                >
-                  Manual
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModoAddJogo('csv')}
-                  className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
-                    modoAddJogo === 'csv' ? 'bg-primary text-white font-medium' : 'bg-transparent text-text-muted hover:text-text'
-                  }`}
-                >
-                  Importar CSV
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setModoAddJogo('picker')}
+                    className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
+                      modoAddJogo === 'picker' ? 'bg-primary text-slate-950 font-black' : 'bg-transparent text-text-muted hover:text-text'
+                    }`}
+                  >
+                    Manual
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setModoAddJogo('csv')}
+                    className={`text-xs px-3 py-1.5 rounded-md border-0 cursor-pointer transition-colors ${
+                      modoAddJogo === 'csv' ? 'bg-primary text-slate-950 font-black' : 'bg-transparent text-text-muted hover:text-text'
+                    }`}
+                  >
+                    Importar CSV
+                  </button>
               </div>
             </div>
 
@@ -719,13 +724,13 @@ export default function AdminEditarBolaoPage() {
 
           {/* Linha principal */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-              <p className="text-xs text-green-700 font-medium mb-0.5">Prêmio Total</p>
-              <p className="text-xl font-bold text-green-800">R$ {resultado.premio_total.toFixed(2)}</p>
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
+              <p className="text-xs text-primary font-medium mb-0.5">Prêmio Total</p>
+              <p className="text-xl font-bold text-primary">R$ {resultado.premio_total.toFixed(2)}</p>
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
-              <p className="text-xs text-blue-700 font-medium mb-0.5">Valor por Cota</p>
-              <p className="text-xl font-bold text-blue-800">
+            <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-3 text-center">
+              <p className="text-xs text-secondary font-medium mb-0.5">Valor por Cota</p>
+              <p className="text-xl font-bold text-secondary">
                 R$ {resultado.valor_por_cota != null ? resultado.valor_por_cota.toFixed(2) : (resultado.total_cotas && resultado.total_cotas > 0 ? (resultado.premio_total / resultado.total_cotas).toFixed(2) : '—')}
               </p>
             </div>
@@ -751,17 +756,17 @@ export default function AdminEditarBolaoPage() {
 
           {/* Administrador */}
           {resultado.cotas_admin_total != null && resultado.cotas_admin_total > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between mb-4">
+            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 flex items-center justify-between mb-4">
               <div>
-                <p className="text-sm font-semibold text-yellow-900">Administrador (Criador)</p>
-                <p className="text-xs text-yellow-700 mt-0.5">
+                <p className="text-sm font-semibold text-yellow-500">Administrador (Criador)</p>
+                <p className="text-xs text-yellow-500/70 mt-0.5">
                   {resultado.cotas_admin_total} cota{resultado.cotas_admin_total > 1 ? 's' : ''}
                   {resultado.cotas_restantes != null && resultado.cotas_restantes > 0 && (
                     <span className="ml-1">({resultado.cotas_restantes} não vendidas)</span>
                   )}
                 </p>
               </div>
-              <p className="text-lg font-bold text-yellow-800">R$ {resultado.valor_admin?.toFixed(2) ?? '—'}</p>
+              <p className="text-lg font-bold text-yellow-500">R$ {resultado.valor_admin?.toFixed(2) ?? '—'}</p>
             </div>
           )}
 
@@ -821,9 +826,9 @@ export default function AdminEditarBolaoPage() {
                 <p className="text-xs font-semibold text-text-muted">Concursos Individuais</p>
 
                 {premioTotalGeral > 0 && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center justify-between">
-                    <span className="text-sm font-medium text-green-800">Prêmio Total Distribuído</span>
-                    <span className="text-lg font-bold text-green-700">R$ {premioTotalGeral.toFixed(2)}</span>
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-3 flex items-center justify-between">
+                    <span className="text-sm font-medium text-primary">Prêmio Total Distribuído</span>
+                    <span className="text-lg font-bold text-primary">R$ {premioTotalGeral.toFixed(2)}</span>
                   </div>
                 )}
 
@@ -832,18 +837,18 @@ export default function AdminEditarBolaoPage() {
                     <div
                       key={sc.concurso_numero}
                       className={`flex items-center justify-between p-2 rounded-lg text-sm ${
-                        sc.apurado ? 'bg-green-50' : 'bg-bg'
+                        sc.apurado ? 'bg-primary/10' : 'bg-bg'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         {sc.apurado ? (
-                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <CheckCircle className="w-4 h-4 text-primary" />
                         ) : (
                           <AlertCircle className="w-4 h-4 text-text-muted" />
                         )}
-                        <span className="font-medium">Concurso {sc.concurso_numero}</span>
+                        <span className="font-medium text-text">Concurso {sc.concurso_numero}</span>
                         {sc.apurado && sc.premio_total !== undefined && sc.premio_total > 0 && (
-                          <span className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-medium">
+                          <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded font-medium">
                             R$ {sc.premio_total.toFixed(2)}
                           </span>
                         )}
@@ -874,8 +879,8 @@ export default function AdminEditarBolaoPage() {
                             disabled={apurandoConcurso !== null || apurando}
                             className={`flex items-center gap-1 text-xs font-medium px-2 py-1.5 rounded-lg transition-colors border cursor-pointer disabled:opacity-50 ${
                               manualConcurso === sc.concurso_numero
-                                ? 'bg-text text-white border-text'
-                                : 'bg-white border-border text-text-muted hover:text-text hover:border-text-muted'
+                                ? 'bg-text text-bg border-text'
+                                : 'bg-card border-border text-text-muted hover:text-text hover:border-text-muted'
                             }`}
                           >
                             <PenLine className="w-3 h-3" />
@@ -979,7 +984,7 @@ export default function AdminEditarBolaoPage() {
                   <button
                     type="button"
                     onClick={() => setModoApuracao('manual')}
-                    className="w-full flex items-center justify-center gap-2 bg-bg hover:bg-gray-200 text-text font-medium py-3 px-4 rounded-lg transition-colors border border-border cursor-pointer text-sm"
+                    className="w-full flex items-center justify-center gap-2 bg-card hover:bg-bg text-text font-black py-3 px-4 rounded-lg transition-colors border border-border cursor-pointer text-sm"
                   >
                     <PenLine className="w-4 h-4" />
                     Apuração Manual

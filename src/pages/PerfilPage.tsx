@@ -85,14 +85,14 @@ export default function PerfilPage() {
 
       <div className="bg-card rounded-xl border border-border p-6">
         {sucesso && (
-          <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-800 p-3 rounded-lg text-sm mb-4">
+          <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary p-3 rounded-lg text-sm mb-4">
             <CheckCircle className="w-4 h-4 shrink-0" />
             {sucesso}
           </div>
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm mb-4">
+          <div className="bg-danger/10 border border-danger/20 text-danger p-3 rounded-lg text-sm mb-4">
             {error}
           </div>
         )}
@@ -107,7 +107,7 @@ export default function PerfilPage() {
                 value={perfil.nome}
                 onChange={(e) => { setPerfil({ ...perfil, nome: e.target.value }); setError(''); setSucesso('') }}
                 placeholder="Seu nome completo"
-                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg text-text focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
               />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default function PerfilPage() {
                 type="email"
                 value={perfil.email}
                 disabled
-                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-gray-100 text-text-muted cursor-not-allowed"
+                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg/50 text-text-muted cursor-not-allowed opacity-70"
               />
             </div>
             <p className="text-xs text-text-muted mt-1">O e-mail não pode ser alterado</p>
@@ -136,7 +136,7 @@ export default function PerfilPage() {
                 value={perfil.telefone}
                 onChange={(e) => { setPerfil({ ...perfil, telefone: e.target.value }); setSucesso('') }}
                 placeholder="(00) 00000-0000"
-                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg text-text focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
               />
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function PerfilPage() {
                 value={perfil.chave_pix}
                 onChange={(e) => { setPerfil({ ...perfil, chave_pix: e.target.value }); setSucesso('') }}
                 placeholder="CPF, e-mail, telefone ou chave aleatória"
-                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+                className="w-full pl-10 pr-3 py-3 border border-border rounded-xl text-sm bg-bg text-text focus:bg-card focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
               />
             </div>
             <p className="text-xs text-text-muted mt-1">Usada para receber saques</p>

@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import type { Bolao, Jogo } from '@/types'
 import Skeleton from '@/components/ui/Skeleton'
 import StatusBadge from '@/components/ui/StatusBadge'
-import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, ShoppingCart, Minus, Plus, Ticket, Hash, Trophy, DollarSign, CheckCircle2, Clock } from 'lucide-react'
 import { formatBRL } from '@/utils/format'
 import { fireConfetti } from '@/utils/confetti'
 
@@ -187,16 +187,19 @@ export default function BolaoDetalhesPage() {
       </button>
 
       {/* Cabeçalho */}
-      <div className="bg-card rounded-xl border border-border p-6 mb-4">
-        <div className="flex items-start justify-between mb-4">
+      <div className="bg-card rounded-3xl border border-border p-8 mb-6 float-up shadow-sm">
+        <div className="flex items-start justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold">{bolao.nome}</h1>
-            <p className="text-text-muted mt-1">
-              {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
-                ? <>Concursos {bolao.concurso_numero} a {bolao.concurso_fim} <span className="text-primary font-medium">(Teimosinha)</span></>
-                : <>Concurso {bolao.concurso_numero}</>
-              }
-            </p>
+            <h1 className="text-3xl md:text-4xl font-black text-text leading-tight mb-2">{bolao.nome}</h1>
+            <div className="flex items-center gap-2 text-text-muted font-medium">
+              <Clock className="w-4 h-4 text-primary" />
+              <span>
+                {bolao.concurso_fim && bolao.concurso_fim > bolao.concurso_numero
+                  ? <>Concursos {bolao.concurso_numero} a {bolao.concurso_fim} <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-lg text-xs font-bold ml-1 uppercase">Teimosinha</span></>
+                  : <>Concurso {bolao.concurso_numero}</>
+                }
+              </span>
+            </div>
           </div>
           <StatusBadge status={bolao.status} />
         </div>
@@ -204,35 +207,35 @@ export default function BolaoDetalhesPage() {
         {bolao.descricao && <p className="text-text-muted mb-4">{bolao.descricao}</p>}
 
         {/* Progresso */}
-        <div className="mb-4">
-          <div className="flex justify-between text-sm text-text-muted mb-1">
-            <span>{cotasVendidas}/{bolao.total_cotas} cotas vendidas</span>
+        <div className="mb-8">
+          <div className="flex justify-between text-xs font-bold text-text-muted/60 uppercase tracking-widest mb-2">
+            <span>Exploração: {cotasVendidas}/{bolao.total_cotas} Cotas</span>
             <span>{percentual.toFixed(0)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
             <div
-              className={`bg-primary h-3 rounded-full progress-animated [--progress:${Math.min(percentual, 100)}%]`}
+              className={`bg-linear-to-r from-primary to-green-600 h-full rounded-full progress-animated [--progress:${Math.min(percentual, 100)}%] transition-all duration-1000`}
             />
           </div>
         </div>
 
         {/* Info grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-bg rounded-lg p-3 text-center">
-            <p className="text-xs text-text-muted">Valor/Cota</p>
-            <p className="text-lg font-bold text-primary">{formatBRL(Number(bolao.valor_cota))}</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-bg border border-border/50 rounded-2xl p-4 text-center">
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-1">Valor/Cota</p>
+            <p className="text-xl font-black text-primary">{formatBRL(Number(bolao.valor_cota))}</p>
           </div>
-          <div className="bg-bg rounded-lg p-3 text-center">
-            <p className="text-xs text-text-muted">Total de Cotas</p>
-            <p className="text-lg font-bold">{bolao.total_cotas}</p>
+          <div className="bg-bg border border-border/50 rounded-2xl p-4 text-center">
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-1">Total</p>
+            <p className="text-xl font-black text-text">{bolao.total_cotas}</p>
           </div>
-          <div className="bg-bg rounded-lg p-3 text-center">
-            <p className="text-xs text-text-muted">Disponíveis</p>
-            <p className="text-lg font-bold text-success">{bolao.cotas_disponiveis}</p>
+          <div className="bg-bg border border-border/50 rounded-2xl p-4 text-center">
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-1">Disponíveis</p>
+            <p className="text-xl font-black text-green-600">{bolao.cotas_disponiveis}</p>
           </div>
-          <div className="bg-bg rounded-lg p-3 text-center">
-            <p className="text-xs text-text-muted">Jogos</p>
-            <p className="text-lg font-bold">{jogos.length}</p>
+          <div className="bg-bg border border-border/50 rounded-2xl p-4 text-center">
+            <p className="text-[10px] text-text-muted font-bold uppercase tracking-wider mb-1">Qtd Jogos</p>
+            <p className="text-xl font-black text-text">{jogos.length}</p>
           </div>
         </div>
       </div>
@@ -240,27 +243,31 @@ export default function BolaoDetalhesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Comprar Cotas */}
         <div className="lg:col-span-1">
-          <div className="bg-card rounded-xl border border-border p-5 sticky top-20">
-            <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
+          <div className="bg-card rounded-3xl border border-border p-6 sticky top-24 shadow-sm float-up float-up-delay-1">
+            <h2 className="font-black text-xl mb-6 flex items-center gap-2 text-text">
               <ShoppingCart className="w-5 h-5 text-primary" />
-              Comprar Cotas
+              Comprar
             </h2>
 
             {bolao.status !== 'aberto' ? (
-              <p className="text-text-muted text-sm">Este bolão não está aberto para compras.</p>
+              <div className="bg-bg rounded-2xl p-4 text-center">
+                <p className="text-text-muted text-sm font-medium">Este bolão não está aberto para novas compras.</p>
+              </div>
             ) : bolao.cotas_disponiveis === 0 ? (
-              <p className="text-text-muted text-sm">Todas as cotas foram vendidas!</p>
+              <div className="bg-amber-50 rounded-2xl p-4 text-center border border-amber-100">
+                <p className="text-amber-700 text-sm font-bold">Cotas esgotadas!</p>
+              </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <label className="text-sm text-text-muted block mb-1">Quantidade</label>
-                  <div className="flex items-center gap-2">
+                  <label className="text-[10px] text-text-muted font-bold uppercase tracking-wider block mb-3">Selecione a quantidade</label>
+                  <div className="flex items-center justify-between gap-4 bg-bg p-2 rounded-2xl border border-border">
                     <button
                       aria-label="Diminuir quantidade"
                       onClick={() => setQuantidade(Math.max(1, quantidade - 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-green-50 transition-colors cursor-pointer"
+                      className="w-12 h-12 flex items-center justify-center rounded-xl bg-card text-text shadow-xs border border-border hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
                     >
-                      <Minus className="w-4 h-4" />
+                      <Minus className="w-5 h-5" />
                     </button>
                     <input
                       type="number"
@@ -270,34 +277,37 @@ export default function BolaoDetalhesPage() {
                       title="Quantidade de cotas"
                       aria-label="Quantidade de cotas"
                       onChange={(e) => setQuantidade(Math.max(1, Math.min(bolao.cotas_disponiveis, parseInt(e.target.value) || 1)))}
-                      className="w-16 h-10 text-center border border-border rounded-lg bg-bg text-lg font-semibold"
+                      className="w-full h-12 text-center bg-transparent border-0 text-2xl font-black text-text focus:outline-none"
                     />
                     <button
                       aria-label="Aumentar quantidade"
                       onClick={() => setQuantidade(Math.min(bolao.cotas_disponiveis, quantidade + 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-border bg-bg hover:bg-green-50 transition-colors cursor-pointer"
+                      className="w-12 h-12 flex items-center justify-center rounded-xl bg-card text-text shadow-xs border border-border hover:text-primary hover:border-primary/30 transition-all cursor-pointer"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
 
-                <div className="bg-bg rounded-lg p-3">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-text-muted">{quantidade}x {formatBRL(Number(bolao.valor_cota))}</span>
-                    <span className="font-semibold">{formatBRL(valorTotal)}</span>
+                <div className="bg-primary/10 rounded-2xl p-4 border border-primary/20">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-text-muted uppercase tracking-tight">{quantidade} Cota{quantidade > 1 ? 's' : ''}</span>
+                    <span className="text-2xl font-black text-primary">{formatBRL(valorTotal)}</span>
                   </div>
                 </div>
 
                 <button
                   onClick={handleComprar}
                   disabled={comprando}
-                  className="w-full flex items-center justify-center gap-2 btn-gradient text-white font-semibold py-3 px-4 rounded-lg border-0 cursor-pointer text-sm"
+                  className="w-full flex items-center justify-center gap-2 btn-gradient text-white font-black py-4 px-4 rounded-2xl border-0 cursor-pointer text-base shadow-lg shadow-green-600/20 active:scale-95 transition-all"
                 >
-                  <Ticket className="w-4 h-4" />
-                  {comprando ? 'Comprando...' : `Comprar ${quantidade} cota${quantidade > 1 ? 's' : ''}`}
+                  <Ticket className="w-5 h-5" />
+                  {comprando ? 'Processando...' : `Confirmar Composta`}
                 </button>
 
+                <p className="text-[10px] text-center text-text-muted font-medium">
+                  Ao clicar em confirmar, você concorda com nossos termos de uso e regras do bolão.
+                </p>
               </div>
             )}
           </div>
@@ -373,23 +383,23 @@ export default function BolaoDetalhesPage() {
             </div>
           )}
 
-          <div className="bg-card rounded-xl border border-border p-5">
-            <h2 className="font-semibold text-lg mb-4 flex items-center gap-2">
+          <div className="bg-card rounded-3xl border border-border p-6 shadow-sm float-up float-up-delay-2">
+            <h2 className="font-black text-xl mb-6 flex items-center gap-2 text-text">
               <Hash className="w-5 h-5 text-primary" />
-              Jogos ({jogos.length})
+              Jogos Inclusos <span className="text-text-muted/40 ml-auto font-bold text-sm bg-bg px-3 py-1 rounded-lg">{jogos.length}</span>
             </h2>
 
             {jogos.length === 0 ? (
               <p className="text-text-muted text-sm">Nenhum jogo cadastrado ainda.</p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {jogos.map((jogo, index) => {
                   const resultadoSet = bolao.resultado_dezenas ? new Set(bolao.resultado_dezenas) : null
                   const acertos = jogo.acertos ?? (resultadoSet ? jogo.dezenas.filter((d) => resultadoSet.has(d)).length : null)
                   return (
-                    <div key={jogo.id} className="bg-bg rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs text-text-muted font-medium">Jogo {index + 1}</p>
+                    <div key={jogo.id} className="bg-bg border border-border rounded-2xl p-5 hover:bg-card transition-all card-hover group">
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Jogo #{index + 1}</p>
                         {acertos !== null && (
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                             acertos >= 14 ? 'bg-yellow-100 text-yellow-800' :
@@ -424,9 +434,9 @@ export default function BolaoDetalhesPage() {
 
       {/* Sticky CTA — mobile only */}
       {bolao.status === 'aberto' && bolao.cotas_disponiveis > 0 && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-green-200 p-4 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-primary/20 p-4 flex items-center gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-gray-500">{quantidade} cota{quantidade > 1 ? 's' : ''}</p>
+            <p className="text-xs text-text-muted">{quantidade} cota{quantidade > 1 ? 's' : ''}</p>
             <p className="font-bold text-primary text-lg">{formatBRL(valorTotal)}</p>
           </div>
           <button

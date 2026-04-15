@@ -79,7 +79,7 @@ export default function RegrasPage() {
         {/* Saques */}
         <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-lg mb-3 text-text flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-green-600" />
+            <Wallet className="w-5 h-5 text-primary" />
             Saques
           </h2>
           <div className="space-y-3 text-text-muted text-sm">
@@ -87,12 +87,12 @@ export default function RegrasPage() {
               Para solicitar um saque do seu saldo disponível, entre em contato com o administrador do site.
               O valor será transferido via Pix para a conta informada.
             </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-              <p className="text-amber-800 font-medium text-sm flex items-center gap-1.5">
+            <div className="bg-warning/10 border border-warning/20 rounded-lg p-3">
+              <p className="text-warning font-medium text-sm flex items-center gap-1.5">
                 <AlertCircle className="w-4 h-4" />
                 Taxa de saque
               </p>
-              <p className="text-amber-700 text-sm mt-1">
+              <p className="text-warning/80 text-sm mt-1">
                 Cada saque possui uma taxa fixa de <strong>R$ 0,50</strong> (cinquenta centavos) para manutenção do site.
                 Essa taxa é descontada automaticamente do valor sacado.
               </p>
@@ -117,7 +117,7 @@ export default function RegrasPage() {
         {/* Apuração e Prêmios */}
         <div className="bg-card rounded-xl border border-border p-5">
           <h2 className="font-semibold text-lg mb-3 text-text flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-yellow-500" />
+            <Trophy className="w-5 h-5 text-secondary" />
             Apuração e Prêmios
           </h2>
           <ul className="space-y-2 text-text-muted text-sm">

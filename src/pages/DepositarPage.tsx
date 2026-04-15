@@ -91,7 +91,7 @@ export default function DepositarPage() {
                   key={v}
                   type="button"
                   onClick={() => setValor(String(v))}
-                  className="flex-1 py-2 text-sm font-semibold bg-white border border-border rounded-xl hover:border-primary hover:text-primary cursor-pointer transition-colors shadow-sm"
+                  className="flex-1 py-2 text-sm font-semibold bg-card border border-border rounded-xl hover:border-primary hover:text-primary cursor-pointer transition-colors shadow-sm text-text"
                 >
                   R$ {v}
                 </button>
@@ -109,7 +109,7 @@ export default function DepositarPage() {
           </form>
         ) : (
           <div className="space-y-4 text-center">
-            <div className="bg-green-100 text-green-800 p-3 rounded-lg text-sm ring-1 ring-green-200">
+            <div className="bg-primary/10 text-primary p-3 rounded-lg text-sm ring-1 ring-primary/20">
               Pix gerado com sucesso! Escaneie o QR Code ou copie o código.
             </div>
 
@@ -141,7 +141,7 @@ export default function DepositarPage() {
                   value={pix.qr_code}
                   title="Código Pix"
                   aria-label="Código Pix copia e cola"
-                  className="flex-1 px-3 py-2 text-xs bg-white border border-border rounded font-mono truncate"
+                  className="flex-1 px-3 py-2 text-xs bg-bg border border-border rounded font-mono truncate text-text"
                 />
                 <button
                   onClick={copiarCodigoPix}

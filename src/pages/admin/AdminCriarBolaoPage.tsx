@@ -59,17 +59,17 @@ export default function AdminCriarBolaoPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto fade-in">
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-1 text-text-muted hover:text-text mb-4 bg-transparent border-0 cursor-pointer text-sm"
+        className="flex items-center gap-2 text-text-muted hover:text-primary mb-8 bg-transparent border-0 cursor-pointer font-bold transition-colors group"
       >
-        <ArrowLeft className="w-4 h-4" />
-        Voltar
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        Voltar à listagem
       </button>
 
-      <div className="bg-card rounded-xl border border-border p-6">
-        <h1 className="text-xl font-bold mb-6">Criar Novo Bolão</h1>
+      <div className="bg-card rounded-[32px] border border-border p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] float-up">
+        <h1 className="text-3xl font-black text-text mb-8 tracking-tight">Criar Novo <span className="text-primary">Bolão</span></h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Seletor de tipo de loteria */}
@@ -179,7 +179,7 @@ export default function AdminCriarBolaoPage() {
                     value={form.quantidade_concursos}
                     onChange={handleChange}
                     placeholder="Ex: 6"
-                    className="w-full px-3 py-2.5 border border-border rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-3 py-2.5 border border-border rounded-lg bg-bg text-text text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
                 </div>
                 {form.concurso_numero && form.quantidade_concursos && (
@@ -235,16 +235,16 @@ export default function AdminCriarBolaoPage() {
           )}
 
           {error && (
-            <div className="bg-red-50 text-red-800 p-3 rounded-lg text-sm">{error}</div>
+            <div className="bg-danger/10 text-danger border border-danger/20 p-3 rounded-lg text-sm">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-colors border-0 cursor-pointer"
+            className="w-full flex items-center justify-center gap-3 btn-gradient text-white font-black py-5 rounded-2xl no-underline shadow-lg shadow-green-600/20 active:scale-95 transition-all text-lg mt-8"
           >
-            <Save className="w-4 h-4" />
-            {loading ? 'Criando...' : 'Criar Bolão'}
+            <Save className="w-6 h-6" />
+            {loading ? 'Sincronizando...' : 'Lançar Bolão Oficial'}
           </button>
         </form>
       </div>

@@ -35,15 +35,15 @@ function ResumoAcertosFaixas({ resultado, tipo }: { resultado: ResultadoConcurso
               key={faixa}
               className={`text-center rounded-lg p-2 ${
                 qtd > 0 && isTop
-                  ? 'bg-yellow-50 border border-yellow-200'
+                  ? 'bg-yellow-100/20 border border-yellow-500/30'
                   : qtd > 0 && hasPrize
-                  ? 'bg-green-50 border border-green-200'
-                  : 'bg-gray-50 border border-gray-200'
+                  ? 'bg-primary/10 border border-primary/30'
+                  : 'bg-bg border border-border'
               }`}
             >
               <div className={`text-lg font-bold ${
-                qtd > 0 && isTop ? 'text-yellow-700' :
-                qtd > 0 && hasPrize ? 'text-green-700' : 'text-gray-400'
+                qtd > 0 && isTop ? 'text-amber-500' :
+                qtd > 0 && hasPrize ? 'text-primary' : 'text-text-muted/40'
               }`}>
                 {qtd}
               </div>
@@ -92,7 +92,7 @@ function ConcursoResultado({
         </h4>
         {resultado.premio_total > 0 && (
           <div className="flex flex-col items-end gap-1">
-            <span className="text-xs bg-green-100 text-green-800 px-2.5 py-1 rounded-full font-bold ring-1 ring-green-200">
+            <span className="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-full font-bold border border-primary/20">
               Prêmio total: {formatBRL(resultado.premio_total)}
             </span>
             {resultado.valor_por_cota != null && resultado.valor_por_cota > 0 && (
@@ -105,7 +105,7 @@ function ConcursoResultado({
       </div>
 
       {/* Dezenas sorteadas */}
-      <div className="bg-linear-to-r from-green-700 to-green-500 rounded-xl p-4">
+      <div className="bg-linear-to-r from-primary to-green-500 rounded-xl p-4">
         <p className="text-white text-xs font-medium mb-3 uppercase tracking-wide">
           Dezenas Sorteadas
         </p>
@@ -122,7 +122,7 @@ function ConcursoResultado({
       {/* Botão para expandir jogos */}
       <button
         onClick={() => setJogosAbertos(!jogosAbertos)}
-        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-2.5 bg-bg rounded-lg border border-border cursor-pointer hover:bg-bg/80 transition-colors"
       >
         <span className="text-sm font-medium text-text">
           Ver Jogos ({resultado.jogos.length})
@@ -144,12 +144,12 @@ function ConcursoResultado({
                 <span
                   className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                     jogo.acertos >= 15
-                      ? 'bg-yellow-400 text-yellow-900'
+                      ? 'bg-yellow-400 text-yellow-950'
                       : jogo.acertos >= 14
-                      ? 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-yellow-100/20 text-amber-500 border border-amber-500/20'
                       : jogo.acertos >= 11
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-100 text-gray-400'
+                      ? 'bg-primary/10 text-primary border border-primary/20'
+                      : 'bg-bg text-text-muted/40 border border-border'
                   }`}
                 >
                   {jogo.acertos} acertos
@@ -225,28 +225,27 @@ export default function ResultadosPage() {
 
   return (
     <div className="max-w-4xl mx-auto fade-in">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-text flex items-center gap-2">
-          <Trophy className="w-6 h-6 text-yellow-500" />
-          Meus Resultados
+      <div className="mb-10 float-up">
+        <h1 className="text-4xl font-black text-text tracking-tight flex items-center gap-3">
+          Meus <span className="text-primary">Resultados</span>
         </h1>
-        <p className="text-text-muted text-sm mt-1">
-          Resultados dos concursos em que você participou
+        <p className="text-text-muted font-medium mt-1">
+          Confira o desempenho de todos os concursos que você participou
         </p>
       </div>
 
       {/* Resumo geral */}
       {resultados.length > 0 && (
-        <div className="p-5 mb-5 saldo-glow">
-          <div className="flex items-center justify-between">
+        <div className="bg-slate-900 dark:bg-slate-800 border border-slate-700 dark:border-slate-700/50 rounded-[32px] p-8 text-white shadow-2xl shadow-slate-950/20 mb-8 relative overflow-hidden group float-up float-up-delay-1">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 blur-2xl" />
+          <div className="relative z-10 flex items-center justify-between">
             <div>
-              <p className="text-white/80 text-sm">Total em Prêmios</p>
-              <p className="text-4xl font-extrabold mt-1 tracking-tight text-white">{formatBRL(totalPremios)}</p>
+              <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-1">Total em Prêmios</p>
+              <p className="text-4xl font-black text-amber-400">{formatBRL(totalPremios)}</p>
             </div>
             <div className="text-right">
-              <p className="text-white/80 text-sm">Bolões com resultado</p>
-              <p className="text-2xl font-bold mt-1 text-white">{resultados.length}</p>
+              <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-1">Bolões Apurados</p>
+              <p className="text-3xl font-black mt-1 text-white">{resultados.length}</p>
             </div>
           </div>
         </div>
@@ -261,7 +260,7 @@ export default function ResultadosPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 float-up float-up-delay-2">
           {resultados.map((bolao) => {
             const isTeimosinha =
               bolao.concurso_fim != null && bolao.concurso_fim > bolao.concurso_numero
@@ -270,12 +269,12 @@ export default function ResultadosPage() {
             return (
               <div
                 key={bolao.bolao_id}
-                className="bg-card border border-border overflow-hidden card-hover"
+                className="bg-card border border-border overflow-hidden rounded-[32px] shadow-sm hover:shadow-md transition-all card-hover"
               >
                 {/* Header do bolão */}
                 <button
                   onClick={() => toggleExpandido(bolao.bolao_id)}
-                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-slate-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 bg-transparent border-0 cursor-pointer text-left hover:bg-bg transition-colors"
                 >
                   <div>
                     <h3 className="font-bold text-lg text-text">{bolao.bolao_nome}</h3>
@@ -291,12 +290,12 @@ export default function ResultadosPage() {
                     {bolao.premio_usuario > 0 ? (
                       <div className="text-right">
                         <p className="text-xs text-text-muted">Seu prêmio</p>
-                        <p className="text-sm font-bold text-green-700">
+                        <p className="text-sm font-bold text-primary">
                           {formatBRL(bolao.premio_usuario)}
                         </p>
                       </div>
                     ) : (
-                      <span className="text-sm bg-gray-100 text-gray-500 px-3 py-1 rounded-lg">
+                      <span className="text-sm bg-bg text-text-muted/60 px-3 py-1 rounded-lg border border-border">
                         Sem prêmio
                       </span>
                     )}

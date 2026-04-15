@@ -15,6 +15,14 @@
   --color-text-muted: #64748b;
 }
 
+.dark {
+  --color-bg: #020617;
+  --color-card: #0f172a;
+  --color-border: #1e293b;
+  --color-text: #f8fafc;
+  --color-text-muted: #94a3b8;
+}
+
 /* ── Body: fundo fintech com toque verde sutil ── */
 body {
   margin: 0;
@@ -22,6 +30,11 @@ body {
   min-height: 100vh;
   color: var(--color-text);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: linear-gradient(180deg, #064e3b 0%, #020617 40%);
 }
 
 /* ── Lottery number circles ── */
@@ -177,6 +190,27 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-header {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-header {
+  background: rgba(15, 23, 42, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-header-scrolled {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(22, 163, 74, 0.15);
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
 }
 
 /* ── Glows ── */

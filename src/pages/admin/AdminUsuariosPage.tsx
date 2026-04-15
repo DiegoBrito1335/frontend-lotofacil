@@ -83,54 +83,56 @@ export default function AdminUsuariosPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/admin"
-            className="text-text-muted hover:text-text transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 float-up">
+        <div className="flex items-center gap-4">
+          <Link to="/admin" className="w-12 h-12 flex items-center justify-center rounded-2xl bg-card border border-border text-text-muted hover:text-primary hover:border-primary/30 transition-all shadow-sm">
+            <ArrowLeft className="w-6 h-6" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-text">Gerenciar Usuários</h1>
-            <p className="text-text-muted text-sm mt-1">{usuarios.length} usuário(s) cadastrado(s)</p>
+            <h1 className="text-4xl font-black text-text tracking-tight">Gerenciar <span className="text-primary">Usuários</span></h1>
+            <p className="text-text-muted font-medium mt-1">{usuarios.length} registros no sistema</p>
           </div>
         </div>
         <button
           onClick={carregarUsuarios}
-          className="flex items-center gap-2 bg-bg border border-border text-text text-sm px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center gap-2 bg-card border border-border text-text-muted font-black text-sm px-6 py-4 rounded-2xl hover:bg-bg hover:border-primary/30 transition-all shadow-sm group active:scale-95"
         >
-          <RefreshCw className="w-4 h-4" />
-          Atualizar
+          <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+          Sincronizar
         </button>
       </div>
 
       {mensagem && (
-        <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-primary/10 border border-primary/20 text-primary rounded-lg text-sm">
           {mensagem}
         </div>
       )}
 
       {erro && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 p-3 bg-danger/10 border border-danger/20 text-danger rounded-lg text-sm">
           {erro}
         </div>
       )}
 
-      <div className="bg-card rounded-xl border border-border overflow-hidden">
+      <div className="bg-card rounded-[32px] border border-border overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] float-up float-up-delay-1">
         {usuarios.length === 0 ? (
-          <p className="text-text-muted text-sm text-center py-10">Nenhum usuário encontrado.</p>
+          <div className="text-center py-20 px-6">
+            <div className="w-16 h-16 bg-bg rounded-full flex items-center justify-center mx-auto mb-4">
+               <ArrowLeft className="w-8 h-8 text-text-muted/40" />
+            </div>
+            <p className="text-text-muted font-bold">Nenhum usuário encontrado no sistema.</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm border-separate border-spacing-0">
               <thead>
-                <tr className="border-b border-border bg-bg">
-                  <th className="text-left px-4 py-3 font-semibold text-text-muted">Nome</th>
-                  <th className="text-left px-4 py-3 font-semibold text-text-muted">Email</th>
-                  <th className="text-left px-4 py-3 font-semibold text-text-muted hidden md:table-cell">Telefone</th>
-                  <th className="text-right px-4 py-3 font-semibold text-text-muted hidden sm:table-cell">Saldo</th>
-                  <th className="text-center px-4 py-3 font-semibold text-text-muted">Admin</th>
-                  <th className="text-right px-4 py-3 font-semibold text-text-muted">Ações</th>
+                <tr>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Nome Completo</th>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Acesso</th>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border hidden md:table-cell">Telefone</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border hidden sm:table-cell">Saldo</th>
+                  <th className="text-center py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Nível</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,9 +140,11 @@ export default function AdminUsuariosPage() {
                   const isMe = u.id === userId
                   const isLoading = loadingAction === u.id
                   return (
-                    <tr key={u.id} className="border-b border-border last:border-0 hover:bg-bg/50 transition-colors">
-                      <td className="px-4 py-3">
-                        <span className="font-medium">{u.nome || <span className="text-text-muted italic">—</span>}</span>
+                    <tr key={u.id} className="hover:bg-bg/50 transition-colors group">
+                      <td className="py-4 px-6">
+                        <span className="font-black text-text">
+                          {u.nome || <span className="text-text-muted/40 font-medium italic">Sem nome</span>}
+                        </span>
                         {isMe && (
                           <span className="ml-2 text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded">você</span>
                         )}
@@ -155,14 +159,14 @@ export default function AdminUsuariosPage() {
                           <span className="block text-xs text-text-muted">+R$ {u.saldo_bloqueado.toFixed(2)} bloq.</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-center">
+                      <td className="py-4 px-6 text-center">
                         {u.is_admin ? (
-                          <span className="inline-flex items-center gap-1 text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                          <span className="inline-flex items-center gap-1.5 text-[10px] bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-black uppercase tracking-tight shadow-sm shadow-amber-200">
                             <Shield className="w-3 h-3" />
-                            Admin
+                            Administrador
                           </span>
                         ) : (
-                          <span className="text-text-muted text-xs">—</span>
+                          <span className="text-slate-300 font-black text-[10px] uppercase tracking-widest">Usuário</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -217,30 +221,27 @@ export default function AdminUsuariosPage() {
 
       {/* Modal de confirmação de remoção */}
       {confirmRemover && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-card rounded-xl border border-border p-6 max-w-sm w-full shadow-xl">
-            <h2 className="text-lg font-bold mb-2">Remover usuário?</h2>
-            <p className="text-text-muted text-sm mb-1">
-              Você está prestes a remover permanentemente:
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 fade-in">
+          <div className="bg-card rounded-[32px] border border-border p-8 max-w-sm w-full shadow-2xl float-up">
+            <div className="w-20 h-20 bg-danger/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Trash2 className="w-10 h-10 text-danger" />
+            </div>
+            <h2 className="text-2xl font-black text-text text-center mb-2">Remover usuário?</h2>
+            <p className="text-text-muted text-center text-sm mb-6 leading-relaxed">
+              Você está prestes a remover permanentemente <strong>{confirmRemover.nome || confirmRemover.email}</strong>. Esta ação é irreversível.
             </p>
-            <p className="font-semibold mb-1">{confirmRemover.nome || 'Sem nome'}</p>
-            <p className="text-sm text-text-muted mb-4">{confirmRemover.email}</p>
-            <p className="text-xs text-red-600 mb-4">
-              Esta ação não pode ser desfeita. O perfil, carteira e conta de acesso serão removidos.
-              Não é possível remover usuários com cotas ativas.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmRemover(null)}
-                className="flex-1 px-4 py-2 border border-border rounded-lg text-sm hover:bg-bg transition-colors"
-              >
-                Cancelar
-              </button>
+            <div className="flex flex-col gap-3">
               <button
                 onClick={() => handleRemover(confirmRemover)}
-                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition-colors"
+                className="w-full px-6 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-base font-black transition-all shadow-lg shadow-red-200 active:scale-95"
               >
-                Remover
+                Sim, Remover Permanente
+              </button>
+              <button
+                onClick={() => setConfirmRemover(null)}
+                className="w-full px-6 py-4 bg-bg text-text-muted rounded-2xl text-base font-black hover:bg-bg/80 transition-all active:scale-95"
+              >
+                Não, Cancelar
               </button>
             </div>
           </div>

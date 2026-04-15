@@ -42,14 +42,14 @@ export default function AdminDashboard() {
         <div className="flex gap-2">
           <Link
             to="/admin/usuarios"
-            className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-bg/80 transition-colors"
           >
             <UserCog className="w-4 h-4" />
             Usuários
           </Link>
           <Link
             to="/admin/boloes"
-            className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 bg-bg border border-border text-text font-medium text-sm px-4 py-2 rounded-lg no-underline hover:bg-bg/80 transition-colors"
           >
             <List className="w-4 h-4" />
             Gerenciar Bolões
@@ -66,41 +66,48 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-          <div className="bg-card rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-text-muted text-sm mb-1">
-              <BarChart3 className="w-4 h-4" />
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="bg-card rounded-2xl border border-border p-5 card-hover float-up">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-bold uppercase tracking-wider mb-2">
+              <BarChart3 className="w-4 h-4 text-primary" />
               Bolões Ativos
             </div>
-            <p className="text-2xl font-bold">{stats.boloes_ativos}</p>
+            <p className="text-3xl font-black text-text counter-reveal">{stats.boloes_ativos}</p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-text-muted text-sm mb-1">
-              <Ticket className="w-4 h-4" />
+          
+          <div className="bg-card rounded-2xl border border-border p-5 card-hover float-up float-up-delay-1">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-bold uppercase tracking-wider mb-2">
+              <Ticket className="w-4 h-4 text-primary" />
               Cotas Vendidas
             </div>
-            <p className="text-2xl font-bold">{stats.total_cotas_vendidas}</p>
+            <p className="text-3xl font-black text-text counter-reveal">{stats.total_cotas_vendidas}</p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-text-muted text-sm mb-1">
-              <DollarSign className="w-4 h-4" />
+
+          <div className="bg-card rounded-2xl border border-border p-5 card-hover float-up float-up-delay-2">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-bold uppercase tracking-wider mb-2">
+              <DollarSign className="w-4 h-4 text-green-600" />
               Receita Total
             </div>
-            <p className="text-2xl font-bold text-primary">R$ {stats.receita_total.toFixed(2)}</p>
+            <p className="text-3xl font-black text-primary counter-reveal">
+              <span className="text-sm font-bold mr-1">R$</span>
+              {stats.receita_total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-text-muted text-sm mb-1">
-              <Users className="w-4 h-4" />
+
+          <div className="bg-card rounded-2xl border border-border p-5 card-hover float-up float-up-delay-3">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-bold uppercase tracking-wider mb-2">
+              <Users className="w-4 h-4 text-blue-500" />
               Usuários
             </div>
-            <p className="text-2xl font-bold">{stats.total_usuarios}</p>
+            <p className="text-3xl font-black text-text counter-reveal">{stats.total_usuarios}</p>
           </div>
-          <div className="bg-card rounded-xl border border-border p-4">
-            <div className="flex items-center gap-2 text-text-muted text-sm mb-1">
-              <Clock className="w-4 h-4" />
-              Pgtos Pendentes
+
+          <div className="bg-card rounded-2xl border border-border p-5 card-hover float-up float-up-delay-3">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-bold uppercase tracking-wider mb-2">
+              <Clock className="w-4 h-4 text-accent" />
+              Pendentes
             </div>
-            <p className="text-2xl font-bold text-accent">{stats.pagamentos_pendentes}</p>
+            <p className="text-3xl font-black text-accent counter-reveal">{stats.pagamentos_pendentes}</p>
           </div>
         </div>
       )}

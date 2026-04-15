@@ -74,21 +74,21 @@ export default function AdminBoloesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Link to="/admin" className="text-text-muted hover:text-text">
-            <ArrowLeft className="w-5 h-5" />
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 float-up">
+        <div className="flex items-center gap-4">
+          <Link to="/admin" className="w-12 h-12 flex items-center justify-center rounded-2xl bg-card border border-border text-text-muted hover:text-primary hover:border-primary/30 transition-all shadow-sm">
+            <ArrowLeft className="w-6 h-6" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-text">Gerenciar Bolões</h1>
-            <p className="text-text-muted text-sm mt-1">{boloes.length} bolão(ões) encontrado(s)</p>
+            <h1 className="text-4xl font-black text-text tracking-tight">Gerenciar <span className="text-primary">Bolões</span></h1>
+            <p className="text-text-muted font-medium mt-1">{boloes.length} registros no sistema</p>
           </div>
         </div>
         <Link
           to="/admin/boloes/novo"
-          className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-semibold text-sm px-4 py-2 rounded-lg no-underline transition-colors"
+          className="flex items-center justify-center gap-2 btn-gradient text-white font-black text-base px-8 py-4 rounded-2xl no-underline shadow-lg shadow-green-600/20 active:scale-95 transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Novo Bolão
         </Link>
       </div>
@@ -102,40 +102,46 @@ export default function AdminBoloesPage() {
           { label: 'Apurados', value: 'apurado' },
           { label: 'Cancelados', value: 'cancelado' },
         ].map((f) => (
-          <button
-            key={f.label}
-            onClick={() => setFiltro(f.value)}
-            className={`px-3 py-1.5 text-xs rounded-lg border-0 cursor-pointer transition-colors font-medium ${
-              filtro === f.value
-                ? 'bg-primary text-white'
-                : 'bg-bg text-text-muted hover:bg-gray-200'
-            }`}
-          >
+            <button
+              key={f.label}
+              onClick={() => setFiltro(f.value)}
+              className={`px-3 py-1.5 text-xs rounded-lg border-0 cursor-pointer transition-colors font-medium ${
+                filtro === f.value
+                  ? 'bg-primary text-white'
+                  : 'bg-bg text-text-muted hover:bg-bg/80'
+              }`}
+            >
             {f.label}
           </button>
         ))}
       </div>
 
       {loading ? (
-        <LoadingSpinner />
+        <div className="py-20 flex flex-col items-center gap-4 bg-bg/50 backdrop-blur-sm rounded-[32px] border border-border">
+          <LoadingSpinner />
+          <p className="text-text-muted font-bold uppercase tracking-widest text-xs">Sincronizando Banco...</p>
+        </div>
       ) : boloes.length === 0 ? (
-        <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <p className="text-text-muted">Nenhum bolão encontrado</p>
+        <div className="text-center py-20 bg-card rounded-[32px] border border-border shadow-sm float-up">
+           <div className="w-16 h-16 bg-bg rounded-full flex items-center justify-center mx-auto mb-4">
+             <ArrowLeft className="w-8 h-8 text-text-muted/40" />
+           </div>
+           <p className="text-text-muted font-bold">Nenhum bolão encontrado</p>
         </div>
       ) : (
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
+        <div className="bg-card rounded-[32px] border border-border overflow-hidden shadow-[0_20px_50px_-12px_rgba(0,0,0,0.05)] float-up float-up-delay-1">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm border-separate border-spacing-0">
               <thead>
-                <tr className="border-b border-border bg-bg">
-                  <th className="text-left p-3 font-medium text-text-muted">Nome</th>
-                  <th className="text-left p-3 font-medium text-text-muted">Concurso</th>
-                  <th className="text-left p-3 font-medium text-text-muted">Status</th>
-                  <th className="text-right p-3 font-medium text-text-muted">Valor/Cota</th>
-                  <th className="text-right p-3 font-medium text-text-muted">Cotas</th>
-                  <th className="text-right p-3 font-medium text-text-muted">Vendidas</th>
-                  <th className="text-right p-3 font-medium text-text-muted">Receita</th>
-                  <th className="text-right p-3 font-medium text-text-muted">Ações</th>
+                <tr>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Nome</th>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Concurso</th>
+                  <th className="text-left py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Status</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Valor/Cota</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Cotas</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Pendentes</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Receita</th>
+                  <th className="text-right py-5 px-6 font-bold text-text-muted uppercase tracking-widest text-[10px] bg-bg/50 border-b border-border">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -143,9 +149,9 @@ export default function AdminBoloesPage() {
                   const vendidas = b.cotas_vendidas ?? (b.total_cotas - b.cotas_disponiveis)
                   const receita = b.receita_total ?? vendidas * Number(b.valor_cota)
                   return (
-                    <tr key={b.id} className="border-b border-border hover:bg-bg/50">
-                      <td className="p-3">
-                        <Link to={`/bolao/${b.id}`} className="font-medium text-text hover:text-primary no-underline">
+                    <tr key={b.id} className="hover:bg-bg/50 transition-colors group">
+                      <td className="py-4 px-6">
+                        <Link to={`/bolao/${b.id}`} className="font-black text-text hover:text-primary no-underline transition-colors block">
                           {b.nome}
                         </Link>
                       </td>
@@ -209,14 +215,14 @@ export default function AdminBoloesPage() {
                           <Link
                             to={`/admin/boloes/${b.id}`}
                             title="Editar bolão"
-                            className="p-1.5 rounded hover:bg-blue-50 text-text-muted hover:text-primary no-underline"
+                            className="p-1.5 rounded hover:bg-primary/10 text-text-muted hover:text-primary no-underline transition-colors"
                           >
                             <PenLine className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDeletar(b.id)}
                             title="Deletar bolão"
-                            className="p-1.5 rounded hover:bg-red-50 text-danger bg-transparent border-0 cursor-pointer"
+                            className="p-1.5 rounded hover:bg-danger/10 text-danger bg-transparent border-0 cursor-pointer transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>

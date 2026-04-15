@@ -87,16 +87,20 @@ export default function HomePage() {
 
   return (
     <div className="fade-in">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-text">Bolões Disponíveis</h1>
-        <p className="text-text-muted text-sm mt-1">Escolha um bolão e compre suas cotas</p>
+      <div className="mb-10 text-center md:text-left">
+        <h1 className="text-4xl font-black text-text tracking-tight mb-2">
+          Bolões <span className="text-primary">Disponíveis</span>
+        </h1>
+        <p className="text-text-muted font-medium">Escolha sua sorte e participe dos melhores grupos da Lotofácil</p>
       </div>
 
       {boloes.length === 0 ? (
-        <div className="text-center py-16 bg-card rounded-xl border border-border">
-          <Ticket className="w-12 h-12 text-text-muted mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-text">Nenhum bolão disponível</h3>
-          <p className="text-text-muted text-sm mt-1">Novos bolões serão abertos em breve!</p>
+        <div className="text-center py-20 bg-card rounded-[32px] border border-border shadow-sm float-up">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-bg rounded-full mb-6">
+            <Ticket className="w-10 h-10 text-text-muted/40" />
+          </div>
+          <h3 className="text-2xl font-bold text-text mb-2">Opa! Sem lançamentos agora</h3>
+          <p className="text-text-muted font-medium max-w-xs mx-auto">Novos bolões exclusivos estão sendo preparados pela nossa equipe.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -109,7 +113,7 @@ export default function HomePage() {
               <Link
                 key={bolao.id}
                 to={`/bolao/${bolao.id}`}
-                className="bg-card border border-border p-5 no-underline text-text block card-hover"
+                className="bg-card border border-border p-6 no-underline text-text block card-hover float-up"
               >
                 <div className="flex items-start justify-between flex-wrap gap-2 mb-3">
                   <div>
@@ -142,7 +146,7 @@ export default function HomePage() {
                       <span>{cotasVendidas}/{bolao.total_cotas} cotas vendidas</span>
                       <span>{percentual.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
                       <div
                         className="bg-primary h-2 rounded-full progress-animated"
                         style={{ '--progress': `${Math.min(percentual, 100)}%` } as CSSProperties}
